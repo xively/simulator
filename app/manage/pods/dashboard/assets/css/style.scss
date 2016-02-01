@@ -3,6 +3,12 @@
   max-width: 900px;
   margin: 0 auto;
 
+  @include mobile-intent {
+    // This is to ensure that Boldchat doesn't cover up
+    // the bottom-most nav item
+    padding-bottom: 55px;
+  }
+
   .dashboard-content {
     display: flex;
     flex-direction: row;

@@ -12,6 +12,7 @@ commonModule.directive('alert', require('./alert-directive'));
 commonModule.directive('qrCode', require('./qr-code-directive'));
 commonModule.directive('loader', require('./loader-directive'));
 commonModule.directive('iphoneFrame', require('./iphone-frame-directive'));
+commonModule.directive('boldChat', require('./boldchat-directive'));
 
 // Providers for endpoints that use blueprint
 /* Note: Providers are a subset of... providers (yeah they didn't do a good job naming that one)
