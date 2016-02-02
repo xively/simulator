@@ -1,0 +1,7 @@
+/node_modules
+/public
+.env
+/accounts.json
+/store-*.json
+/provision/temp-heroku-app
+.vscode/
