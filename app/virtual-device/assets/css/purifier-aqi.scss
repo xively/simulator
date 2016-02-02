@@ -1,0 +1,23 @@
+.purifier-aqi {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  /* This makes the interface less "jumpy" as the AQI's digit count changes */
+  min-width: 160px;
+
+  .purifier-aqi-value {
+    width: 100%;
+    font-size: 120px;
+    line-height: 120px;
+    height: 115px;
+    text-align: center;
+  }
+
+  .purifier-aqi-label {
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+}

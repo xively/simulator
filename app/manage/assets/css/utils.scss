@@ -1,0 +1,44 @@
+@mixin mobile-screen {
+  @media ($mobileMax) {
+    @content;
+  }
+}
+
+@mixin mobile-intent {
+  .mobile-width & {
+    @content;
+  }
+  @include mobile-screen {
+    @content;
+  }
+}
+
+@mixin demo {
+  .demo-mode & {
+    @include mobile-intent {
+      @content;
+    }
+  }
+}
+
+@mixin hide-if-mobile {
+  @include mobile-screen {
+    display: none;
+  }
+}
+
+@mixin show-if-mobile {
+  display: none;
+
+  @include mobile-screen {
+    display: block;
+  }
+}
+
+.clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}

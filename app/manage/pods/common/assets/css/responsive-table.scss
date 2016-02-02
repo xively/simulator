@@ -1,0 +1,50 @@
+/* From https://github.com/awerlang/angular-responsive-tables */
+
+@media ($mobileMax) {
+  .responsive-table {
+    /* Force table to not be like tables anymore */
+    /* table.responsive,*/
+    thead, tbody, tr, th {
+      display: block;
+    }
+    /* Hide table headers (but not display: none;, for accessibility) */
+    thead tr, th {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+    td {
+      /* Behave like a "row" */
+      border: none;
+      position: relative;
+      padding-left: 50%;
+      white-space: normal;
+      text-align: left;
+      display: block;
+      box-sizing: content-box;
+      min-height: 1em;
+
+      &::before {
+        /* Now like a table header */
+        position: absolute;
+        /* Top/left values mimic padding */
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        word-wrap: break-word;
+        text-align: left;
+        /* Label the data */
+        content: attr(data-title);
+      }
+    }
+    td.responsive-table-omit-title {
+      padding-left: 6px;
+      &::before {
+        display: none;
+      }
+    }
+    td.responsive-table-omit-if-empty:empty {
+      display: none;
+    }
+  }
+}

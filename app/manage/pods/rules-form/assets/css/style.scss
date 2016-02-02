@@ -1,0 +1,86 @@
+.conditional-wrapper {
+  position: relative;
+  border-left: 3px solid #EEEEEE;
+  padding: 5px 19px;
+  margin-bottom: 10px;
+  select {
+    background: #fdfdfd;
+    background: -moz-linear-gradient(top, #fdfdfd 0%, #f7f7f7 100%);
+    background: -webkit-linear-gradient(top, #fdfdfd 0%,#f7f7f7 100%);
+    background: linear-gradient(to bottom, #fdfdfd 0%,#f7f7f7 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fdfdfd', endColorstr='#f7f7f7',GradientType=0 );
+
+    &[disabled] {
+      background: #fdfdfd;
+    }
+  }
+  &:before {
+    content: '';
+    background-color: #EEEEEE;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 3px;
+    width: 10px;
+    display: block;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: #EEEEEE;
+    height: 3px;
+    width: 10px;
+    display: block;
+  }
+  hr {
+    border: none;
+    border-bottom: 1px solid #E6E6E6;
+  }
+}
+.submit-button {
+  margin-top: 20px;
+
+}
+.conditional-statement {
+  color: #919191;
+  background-color: #F5F5F5;
+  padding: 7px 24px;
+  display: inline-block;
+  margin: 5px 0 15px 0;
+  border-radius: 5px;
+  font-size: 14px;
+  .link-style {
+    color: #6AA0D9;
+    font-weight: 500;
+    text-decoration: underline;
+  }
+}
+.conditional-form {
+  h3 {
+    color: #3d3d3d;
+    font-size: 13px;
+    font-weight: 500;
+  }
+}
+.condition-list {
+  li {
+    color: #D1D1D1;
+    border: none;
+    &:last-child {
+      border-bottom: none;
+    }
+    .icon-container {
+      height: 30px;
+      line-height: 30px;
+      font-size: 16px;
+      color: #c9c9c9;
+    }
+  }
+}
+.icon-container {
+  i {
+    padding: 0 10px;
+  }
+}

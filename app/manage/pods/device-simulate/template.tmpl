@@ -1,0 +1,18 @@
+<div class="device-simulate">
+  <h1 class="device-simulate-header">Simulated Sensor Data</h1>
+  <div ng-click="toggleSimulation()">{{simulatePlayPause}}</div>
+  <table class="device-simulate-table">
+    <thead class="device-simulate-table-thead">
+      <tr>
+        <td class="device-simulate-table-cell">Device ID</td>
+        <td class="device-simulate-table-cell">Sensor Data</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="item in items">
+        <td><code>{{item.device}}</code></td>
+        <td><code>{{item.sensorData}}</code></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

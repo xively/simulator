@@ -1,0 +1,54 @@
+<div class='conditional-form'>
+  <fieldset ng-disabled="!editMode">
+    <div class='form-row'>
+      <!-- note: device type is just for show -->
+      <div class="styled-select">
+        <select name='device-type'>
+          <option>AirSoClean3000</option>
+        </select>
+      </div>
+
+      <!-- do these have hardcoded values or should they be generated? -->
+      <div class="styled-select">
+        <select name='topic' ng-model='rule.topic'>
+          <option value='sensor'>Sensor</option>
+          <option value='control'>Control</option>
+        </select>
+      </div>
+
+      <div class="styled-select">
+        <select name='comparator' ng-model='rule.device'>
+          <option value='temp'>Temperature</option>
+          <option value='humidity'>Humidity</option>
+          <option value='no2'>NO2</option>
+          <option value='co'>CO</option>
+          <option value='dust'>Dust</option>
+          <option value='filter'>Filter</option>
+          <option value='fan'>Fan</option>
+        </select>
+      </div>
+
+      <!--$lt, $lte, $gt, $gte, $eq, $in, $nin -->
+      <div class="styled-select">
+        <select name='comparator' ng-model='rule.operator'>
+          <option value='$lt'> &lt; </option>
+          <option value='$lte'>&lt;=</option>
+          <option value='$gt'>&gt;</option>
+          <option value='$gte'>&gt;=</option>
+          <option value='$eq'>=</option>
+          <option value='$in'>Matches Any</option>
+          <option value='$nin'>Matches None</option>
+        </select>
+      </div>
+
+      <input id='value' name='value' type='text' ng-class="{error:errorvalue}" placeholder='value' ng-model='rule.value' />
+      <!-- List mode -->
+      <span class='icon-container' ng-if="listMode">
+        <i class="fa fa-pencil" ng-click='editCondition()'></i>
+        <i class="fa fa-times" ng-click='deleteCondition(index)'></i>
+      </span>
+      <!-- new mode -->
+      <button class='button secondary' ng-if="!listMode" ng-click='callUpdate()'>+ Add</button>
+    </div>
+  </fieldset>
+</div>

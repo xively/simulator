@@ -1,0 +1,28 @@
+iphone-frame,
+.iphone-frame-wrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+iphone-frame.iphone-frame-visible {
+  width: 100%;
+  min-height: 946px;
+  background-image: url('/manage/img/iphone-6-plus-gold.png');
+  background-repeat: no-repeat;
+  background-size: 450px;
+  background-position: 30px 20px;
+  position: relative;
+  background-color: #343D58;
+  border-right: 1px solid #57607E;
+
+  .iphone-frame-wrapper {
+    width: 380px;
+    height: 680px;
+    overflow: hidden;
+    position: absolute;
+    top: 130px;
+    left: 65px;
+    background-color: #f5f6f8;
+  }
+}

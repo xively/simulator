@@ -1,0 +1,64 @@
+<div class="device-list" launch-simulator>
+  <h1 class="device-list-header">Devices</h1>
+  <label class="device-list-select">
+    <span class="device-list-select-title">
+      Sort:
+    </span>
+    <span class="device-list-select-container">
+      <select class="device-list-select-select"
+        ng-model="sortByDesc"
+        ng-change="sortSelectChange()">
+        <option ng-repeat-start="column in columns"
+          value="{{column.sortBy}},0">{{column.title}}: Ascending</option>
+        <option ng-repeat-end
+          value="{{column.sortBy}},1">{{column.title}}: Descending</option>
+      </select>
+    </span>
+  </label>
+  <table class="device-list-table responsive-table">
+    <thead class="device-list-table-thead">
+      <tr class="device-list-table-row">
+        <th ng-repeat="column in columns"
+          class="device-list-table-header device-list-cell-{{column.classSuffix}}"
+          sortable-header="{{column.sortBy}}"
+          sortable-sort-by="sortBy"
+          sortable-sort-desc="sortDesc"
+          sortable-click="sortHeaderClick(params)">{{column.title}}</th>
+      </tr>
+    </thead>
+    <tbody class="device-list-table-tbody">
+      <tr class="device-list-table-row" ng-repeat="device in devices | orderBy:sortBy:sortDesc" ng-click="showDevice(device)">
+        <td class="device-list-table-cell device-list-cell-{{columns[0].classSuffix}}"
+          data-title="{{columns[0].title}}">
+          {{device.name}}
+        </td>
+        <td class="device-list-table-cell device-list-cell-{{columns[1].classSuffix}}"
+          data-title="{{columns[1].title}}">
+          {{device.templateName}}
+        </td>
+        <td class="device-list-table-cell device-list-cell-{{columns[2].classSuffix}}"
+          data-title="{{columns[2].title}}">
+          {{device.provisioningState}}
+        </td>
+        <td class="device-list-table-cell device-list-cell-{{columns[3].classSuffix}}"
+          data-title="{{columns[3].title}}">
+          {{device.organizationName}}
+        </td>
+        <td class="device-list-table-cell device-list-cell-{{columns[4].classSuffix}}"
+          data-title="{{columns[4].title}}">
+          <img class="device-list-table-icon" src="/manage/img/connected.svg" alt="">
+        </td>
+        <td class="device-list-table-cell device-list-cell-{{columns[5].classSuffix}}"
+          data-title="{{columns[5].title}}">
+          {{device.sensor.fan}}
+        </td>
+        <td class="device-list-table-cell device-list-cell-{{columns[6].classSuffix}}"
+          data-title="{{columns[6].title}}">
+          <img ng-if="device.sensor.filter" class="device-list-table-icon" src="/manage/img/icon-check.svg" alt="">
+          <img ng-if="device.sensor.filter === false" class="device-list-table-icon" src="/manage/img/icon-exclamation.svg" alt="">
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <loader class="device-loader" ng-if="!device" />
+</div>

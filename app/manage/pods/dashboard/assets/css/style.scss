@@ -1,0 +1,18 @@
+.dashboard {
+  width: 90%;
+  max-width: 900px;
+  margin: 0 auto;
+
+  .dashboard-content {
+    display: flex;
+    flex-direction: row;
+  }
+
+  @media ($mobileMax) {
+    width: calc(100% - 1rem);
+
+    .dashboard-content {
+      flex-direction: column;
+    }
+  }
+}

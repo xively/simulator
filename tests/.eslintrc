@@ -1,0 +1,8 @@
+---
+globals:
+  angular: false
+  inject: false
+extends:
+  - "../eslint/eslint-defaults.yaml"
+  - "../eslint/eslint-node-commonjs.yaml"
+  - "../eslint/eslint-mocha.yaml"

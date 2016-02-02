@@ -1,0 +1,175 @@
+<device-details-alert></device-details-alert> 
+<div class="content-panel container" ng-if="isLoggedIn" launch-simulator="device.id">
+  <!-- share modal -->
+  <share-modal ng-show="displayModal" close-modal="toggleModal"></share-modal>
+  <!-- link bar -->
+  <div class="link-bar">
+    <a ui-sref="device.list" class="return-link">
+      <img src="/manage/img/back-arrow.svg" alt="<">
+      Back to devices list
+    </a>
+    <!-- Share link -->
+    <a class="share-link" ng-click="toggleModal()">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a class="ne-arrow-link frame-link" ng-click="toggleVirtualDevice()">
+      <img src="/manage/img/icon-ne-arrow-circle.svg" alt="" ng-if="!displayVirtualDevice">
+      <img src="/manage/img/icon-ne-arrow-circle-highlight.svg" alt="" ng-if="displayVirtualDevice">
+    </a>
+    <a class="ne-arrow-link new-window-link" ng-href="/virtual-device/device/{{device.id}}" target="_blank">
+      <img src="/manage/img/icon-ne-arrow-circle.svg" alt="">
+    </a>
+  </div>
+
+  <!-- Sidebar control panel -->
+  <div class="control-panel">
+    <div class="control-panel-section clearfix">
+      <h1>AirSoClean3000</h1>
+      <div class="device-connectivity">
+        <small>Connected <span>9/1/2015</span></small>
+      </div>
+      <div class="device-more-info">
+        <div class="info-label">
+          <b>Location:</b>
+          <span class="info-value">Back</span>
+        </div>
+        <div class="info-label">
+          <b>Users:</b>
+          <span class="info-value">15</span>
+        </div>
+      </div>
+      <div class="control-panel-link">
+        <button>Edit</button>
+      </div>
+    </div>
+    <div class="device-status-content control-panel-section">
+      <div class="device-status-description"
+         ng-show="deviceStatus.deviceConnected === true">
+        <div>Device is <span class="status-ok">connected</span></div>
+      </div>
+      <div class="device-status-description"
+         ng-show="deviceStatus.deviceConnected !== true">
+        <div>This device is <span class="status-ok">disconnected</span></div>
+      </div>
+      <div class="device-status-description">
+        <div class="fan-state-label">Fan State:</div>
+      </div>
+      <div class="device-fan-speed-toggle-value clearfix">
+        <button
+            ng-class="{'device-fan-speed-selected': deviceStatus.fanSpeed == 'off'}"
+            ng-click="changeFanSpeedTo(fanProperties.speed[0])">
+          Off
+        </button>
+        <button ng-class="{'device-fan-speed-selected': deviceStatus.fanSpeed == 'low'}"
+            ng-click="changeFanSpeedTo(fanProperties.speed[1])">
+          Low
+        </button>
+        <button
+            ng-class="{'device-fan-speed-selected': deviceStatus.fanSpeed == 'high'}"
+            ng-click="changeFanSpeedTo(fanProperties.speed[2])">
+          High
+        </button>
+      </div>
+    </div>
+    <div class="control-panel-section control-panel-section-last"
+       ng-show="deviceStatus.deviceConnected === true">
+      <div class="progress device-status-filter-life">
+        <svg viewBox="-10 -10 220 220">
+          <path class="progress-background"
+              d="M 0,100 A 100,100 0 1,1 0,100.01"></path>
+          <path class="progress-indicator"
+              d="M 0,100 A 100,100 0 1,1 0,100.01"
+              stroke-dashoffset="{{filterLife.dashOffset}}"
+              stroke-dasharray="{{filterLife.dashArray}}"></path>
+        </svg>
+        <div class="device-status-filter-life-value">
+          {{filterLife.lifeLeft}}
+          <div class="device-status-filter-life-measure">{{filterLife.measure}}</div>
+        </div>
+      </div>
+      <div class="device-status-label">
+        This filter should be replaced in:
+        <br>
+        <span>
+          {{filterLife.lifeLeft}} {{filterLife.measure}}
+        </span>
+      </div>
+      <div class="control-panel-link">
+        <button>Help</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status panel -->
+  <div class="status-panel">
+    <div class="status-panel-content">
+      <div class="status-accurate">
+        <div class="status-accurate-loader" ng-show="deviceStatus.deviceConnected !== true">
+          <div class="progress progress-tiny">
+            <svg viewBox="-10 -10 220 220">
+              <path class="progress-background"
+                  d="M 0,100 A 100,100 0 1,1 0,100.01"></path>
+              <path class="progress-indicator"
+                  d="M 0,100 A 100,100 0 1,1 0,100.01"
+                  stroke-dasharray="100, 100"></path>
+            </svg>
+            <div ng-if="deviceStatus.deviceConnected !== true">
+              Device is off. Turn on device to see accurate data!
+            </div>
+          </div>
+        </div>
+        <div class="status-accurate-content" ng-show="deviceStatus.deviceConnected === true">
+          <div class="panel-head">
+            <h2>Right Now:</h2>
+          </div>
+          <div class="panel-list">
+            <div class="panel-secondary panel-secondary-first">
+              <div class="panel-head">
+                <h3>AQI</h3>
+                <img src="/manage/img/icon-check-circle.svg" alt="">
+              </div>
+              <div class="panel-data">
+                <div class="panel-value"
+                   ng-bind-html="customData.latestAqi.value|toIntWithUnit:units['aqi']">
+                </div>
+              </div>
+            </div>
+            <div class="panel-secondary">
+              <div class="panel-head">
+                <h3>Temperature</h3>
+                <img src="/manage/img/icon-thermostat.svg" alt="">
+              </div>
+              <div class="panel-data">
+                <div class="panel-value"
+                   ng-bind-html="deviceStatus.sensor.temp|toIntWithUnit:units['temp']">
+                </div>
+              </div>
+            </div>
+            <div class="panel-secondary">
+              <div class="panel-head">
+                <h3>Humidity</h3>
+                <img src="/manage/img/icon-humidity.svg" alt="">
+              </div>
+              <div class="panel-data">
+                <div class="panel-value"
+                   ng-bind-html="deviceStatus.sensor.humidity|toIntWithUnit:units['humidity']">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="status-panel-caption">
+        <div class="panel-head">
+          <h2>Health Stats:</h2>
+        </div>
+      </div>
+
+      <device-details-chart-tabs
+      tabs="chartTabs"
+      ng-if="chartTabs"
+      >
+      </device-details-charts>
+    </div>
+  </div>
+</div>

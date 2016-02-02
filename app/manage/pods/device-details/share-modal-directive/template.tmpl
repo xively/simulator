@@ -1,0 +1,16 @@
+<div class="modal">
+  <h2>Share the link</h2>
+  <span ng-click="removeModal()" class="remove-modal">
+    <i class="fa fa-times" ></i>
+  </span>
+
+  <qr-code data="url" class="qr-container"></qr-code>
+
+  <div class="form-row copy-wrapper">
+    <input id="copy-target" value="{{url}}" type="text">
+    <button class="copy-btn button primary" data-clipboard-target="#copy-target">
+        <i class="fa fa-clipboard"></i>
+    </button>
+    <span class="success-text" ng-show="copySuccess">Copied!</span>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+{
+  "name": "Concaria Xively Demo",
+  "description": "By deploying you are agreeing to, and subject to, the agreements and policies found here: http://goo.gl/1O1h9f and http://goo.gl/5J9Tcn",
+  "website": "http://xively.com",
+  "repository": "https://github.com/ionia-corporation/concaria",
+  "keywords": [
+    "MQTT",
+    "Messaging",
+    "Xively"
+  ],
+  "logo": "https://ws.cubbyusercontent.com/p/_661602227cec4153a1b32ba548e01245/Xively_Concaria_Logo_IconOnly_RGB.png/1516920927",
+  "image": "https://ws.cubbyusercontent.com/p/_661602227cec4153a1b32ba548e01245/Xively_Concaria_Logo_IconOnly_RGB.png/1516920927",
+  "addons": [
+    "heroku-postgresql:hobby-dev",
+    "xively:test",
+    "redistogo:nano"
+  ],
+  "scripts": {
+    "postdeploy": "node provision"
+  },
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-nodejs"
+    }
+  ],
+  "env": {
+    "SALESFORCE_USER": {
+      "description": "Your Salesforce username",
+      "required": false
+    },
+    "SALESFORCE_PASSWORD": {
+      "description": "Your Salesforce password",
+      "required": false
+    },
+    "SALESFORCE_TOKEN": {
+      "description": "Your Salesforce token",
+      "required": false
+    }
+  }
+}

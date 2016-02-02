@@ -1,0 +1,34 @@
+.device-fan-speed-toggle-value {
+  display: flex;
+  justify-content: center;
+}
+
+.device-fan-speed-toggle-value > button {
+  color: #353e5a;
+  font-weight: 300;
+  font-size: 1.3rem;
+  outline: none;
+  cursor: pointer;
+  height: 3.16rem;
+  width: 90px;
+  box-sizing: border-box;
+  border: 1px solid #e7e7e7;
+  -moz-border-radius: 1.58rem;
+  -webkit-border-radius: 1.58rem;
+  border-radius: 1.58rem;
+  background: transparent;
+  margin-right: 15px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.device-fan-speed-toggle-value > button:hover {
+  border-color: #17BAE3;
+}
+
+.device-fan-speed-toggle-value > button.device-fan-speed-selected {
+  border: 1px solid #17bae3;
+  color: #17bae3;
+}

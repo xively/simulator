@@ -1,0 +1,11 @@
+<div class="conditional-statement">
+  if
+  <span class="link-style" ng-click='toggleProperty("showModeSelect")' ng-show="!showModeSelect">{{mode}}</span>
+  <div class="styled-select" ng-show="showModeSelect" >
+    <select ng-model="mode" ng-change='toggleProperty("showModeSelect")'>
+      <option value="all">all</option>
+      <option value="any">any</option>
+    </select>
+  </div>
+  conditions are true
+</div>

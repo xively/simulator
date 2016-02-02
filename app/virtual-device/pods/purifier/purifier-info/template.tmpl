@@ -1,0 +1,25 @@
+<div class="purifier-device-toggle"
+  ng-class="[{'active': active}, 'toggle-' + name]"
+  ng-cloak>
+  <div class="purifier-device-toggle-btn" ng-click="toggleActive()"></div>
+  <div class="purifier-device-toggle-label" title-transclude></div>
+</div>
+<div class="purifier-device-popover-line"
+  ng-class="[{'active': active}, 'purifier-' + name + '-popover-line']">
+</div>
+<div class="purifier-info-popover"
+  ng-class="[{'active': active}, 'purifier-' + name + '-popover']"
+  popover-transclude>
+  <span class="purifier-info-popover-value" ng-bind="value"></span>
+  <div class="range-container">
+    <input type="range"
+      class="purifier-range"
+      min="{{ model().min }}"
+      max="{{ model().max }}"
+      ng-model="value"
+      ng-model-options="{ getterSetter: true }"
+      ng-change="change()">
+    <span class="lower-range-value">{{ model().min }}</span>
+    <span class="upper-range-value">{{ model().max }}</span>
+  </div>
+</div>

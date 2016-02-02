@@ -1,0 +1,35 @@
+.purifier-select-bar {
+  height: 30px;
+  padding: 10px 0px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid #57607E;
+  text-align: center;
+}
+
+button {
+  font-family: Arial, Helvetica, sans-serif;
+  cursor: pointer;
+  min-width: 130px;
+  font-size: 14px;
+  color: #7683A8;
+  border: 1px solid #57607E;
+  background: transparent;
+  border-radius: 5px;
+  padding: 6px 5px;
+  margin: 0 5px;
+
+  &:hover {
+    color: #97A3C3;
+    border-color: #697392;
+  }
+
+  &.active {
+    color: #fff;
+    border: 0;
+    background: #8284A7;
+
+    &:hover {
+      background: #9EA0C3;
+    }
+  }
+}

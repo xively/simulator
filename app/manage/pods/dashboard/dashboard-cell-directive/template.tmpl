@@ -1,0 +1,7 @@
+<img src="{{icon}}" class="dashboard-cell-icon" />
+<div class="dashboard-cell-spacer"></div>
+<loader class="dashboard-cell-loader" tiny="true" ng-if="loaderIf()"></loader>
+<a class="dashboard-cell-link" ui-sref="device.list" ng-if="!loaderIf()">
+  <span ng-transclude></span>
+  <img class="dashboard-cell-link-icon" src="/manage/img/icon-link.svg" />
+</a>

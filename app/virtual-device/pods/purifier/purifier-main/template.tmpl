@@ -1,0 +1,18 @@
+<div mode="mode" class="purifier-mode-bar purifier-select-bar"></div>
+<div class="container" ng-class="mode">
+  <div class="purifier-title">
+    <div class="purifier-title-device">
+      AirSoClean3000
+    </div>
+    <div class="purifier-title-creation-date">
+      Created&nbsp;<date>9/1/2015</date>
+    </div>
+    <div class="purifier-title-powered-by">Powered by</div>
+    <img src="/virtual-device/img/xively-logo-white-2x.png" alt="Xively" class="xively-logo">
+  </div>
+  <div class="purifier-aqi" ng-controller="aqiCtrl as ctrl">
+    <div class="purifier-aqi-value" ng-bind="aqi"></div>
+    <div class="purifier-aqi-label">AQI</div>
+  </div>
+  <purifier-controls class="purifier-controls"></purifier-controls>
+</div>

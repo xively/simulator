@@ -1,0 +1,10 @@
+
+<conditional-statement mode='condition.mode' ng-show='condition.mode'></conditional-statement>
+<ul class="condition-list">
+  <li ng-repeat="combination in condition.rules" class="form-row">
+    <conditional-form rule="combination" list-mode="true" delete-rule='deleteCondition' index='$index' parentIndex='parentIndex'></conditional-form>
+  </li>
+</ul>
+
+<conditional-form add-conditional="addNewCombinationRule" ng-show="showConditionalForm" edit-mode='true'></conditional-form>
+<button class="button secondary combination-button" ng-show="!showConditionalForm" ng-click='showForm()'>+ Add Combination</button>

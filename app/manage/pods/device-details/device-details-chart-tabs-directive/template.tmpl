@@ -1,0 +1,21 @@
+<div class="status-detailed">
+  <div class="status-detailed-buttons">
+    <button
+    ng-repeat="chart in tabs"
+    class="sensor-select-button"
+    ng-class="{'sensor-select-button-selected': currentChart === chart.name}"
+    ng-click="switchChart(chart.name)"
+    >
+    {{chart.title}}
+    </button>
+  </div>
+  <div
+  class="sensor-actual-value"
+  ng-bind-html="currentTab.value|toIntWithUnit:units[currentChart]"
+  >
+  </div>
+  <device-details-chart
+  chart-data="currentTab.chartData"
+  >
+  </device-details-chart>
+</div>

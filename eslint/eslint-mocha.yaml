@@ -1,0 +1,16 @@
+---
+env:
+  mocha: true
+
+globals:
+  expect: false
+  sinon: false
+  chai: false
+
+rules:
+  no-unused-expressions: 0
+  max-len:
+    - 1
+    - 120
+    - 4
+    - ignorePattern: "^\\s*(it|describe|expect)\\("

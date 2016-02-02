@@ -1,0 +1,273 @@
+.purifier-info-popover {
+  box-sizing: border-box;
+  position: absolute;
+  width: 160px;
+  height: 140px;
+  background-color: #536C7E;
+  border-radius: 8px;
+  display: none;
+  padding: 10px;
+  z-index: 2000;
+}
+
+.purifier-info-popover-value {
+  font-size: 70px;
+  height: 55px;
+  line-height: 50px;
+  display: block;
+  text-align: center;
+  font-weight: 500;
+  margin-top: 13px;
+  margin-bottom: 25px;
+}
+
+.purifier-info-popover.active {
+  display: block;
+}
+
+.purifier-filter-btn {
+  width: 80%;
+  color: #000;
+  display: block;
+  background-color: #97D2E0;
+  border-radius: 10px;
+  border: 0;
+  margin: 5px auto;
+  height: 25px;
+  font-size: 15px;
+  padding: 0;
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+
+  &[disabled] {
+    cursor: not-allowed;
+    color: #5D6E72;;
+    background-color: #8CA3AB;
+  }
+
+  &[disabled]:hover {
+    cursor: not-allowed;
+    background-color: #8CA3AB;
+  }
+
+  &:hover {
+    background-color: #D4F1F7;
+  }
+
+  &:first-child {
+    margin-bottom: 15px;
+  }
+}
+
+.purifier-device-popover-line {
+  display: none;
+  height: 1px;
+  width: 1px;
+  /* These are below the button and popover */
+  z-index: 1000;
+
+  &.active {
+    position: absolute;
+    background-color: #97D2E0;
+    display: block;
+  }
+}
+
+/* Range container */
+.range-container {
+  position: relative;
+  height: 28px;
+
+  &:before, &:after {
+    content: '';
+    position: absolute;
+    z-index: 1000;
+    height: 8px;
+    width: 2px;
+    background-color: #97d2e0;
+    top: 3px;
+  }
+
+  &:before {
+    left: 0;
+  }
+
+  &:after {
+    right: 0;
+  }
+}
+
+.lower-range-value,
+.upper-range-value {
+  color: #2E3649;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.lower-range-value {
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+}
+
+.upper-range-value {
+  position: absolute;
+  bottom: -3px;
+  right: 0;
+}
+
+/* filter */
+.home {
+  .purifier-filter-popover {
+    top: 525px;
+    left: -100px;
+    height: 150px;
+    padding: 35px 0;
+  }
+  .purifier-filter-popover-line {
+    width: 80px;
+    top: 625px;
+    left: 45px;
+  }
+}
+
+.industrial {
+  .purifier-filter-popover {
+    top: 441px;
+    left: 0px;
+    height: 150px;
+    padding: 35px 0;
+  }
+  .purifier-filter-popover-line {
+    height: 120px;
+    top: 343px;
+    left: 75px;
+  }
+}
+
+/* no2 */
+.home {
+  .purifier-no2-popover {
+    top: 160px;
+    left: -100px;
+  }
+  .purifier-no2-popover-line {
+    top: 174px;
+    left: 45px;
+    width: 100px;
+  }
+}
+
+.industrial {
+  .purifier-no2-popover {
+    top: -50px;
+    left: 250px;
+  }
+  .purifier-no2-popover-line {
+    top: 90px;
+    left: 280px;
+    height: 40px;
+  }
+}
+
+/* dust */
+.home {
+  .purifier-dust-popover {
+    top: -50px;
+    left: 269px;
+  }
+  .purifier-dust-popover-line {
+    top: 74px;
+    left: 343px;
+    height: 110px;
+  }
+}
+
+.industrial {
+  .purifier-dust-popover {
+    top: -50px;
+    left: 430px;
+  }
+  .purifier-dust-popover-line {
+    top: 80px;
+    left: 460px;
+    height: 45px;
+  }
+}
+
+
+/* co */
+.home {
+  .purifier-co-popover {
+    top: 145px;
+    right: -100px;
+  }
+  .purifier-co-popover-line {
+    top: 174px;
+    right: 45px;
+    width: 100px;
+  }
+}
+
+.industrial {
+  .purifier-co-popover {
+    top: -50px;
+    right: 230px;
+  }
+  .purifier-co-popover-line {
+    top: 80px;
+    right: 337px;
+    height: 45px;
+  }
+}
+
+
+/* temp */
+.home {
+  .purifier-temp-popover {
+    top: 321px;
+    right: -100px;
+  }
+  .purifier-temp-popover-line {
+    top: 385px;
+    right: 18px;
+    width: 100px;
+  }
+}
+
+.industrial {
+  .purifier-temp-popover {
+    top: 441px;
+    right: 295px;
+  }
+  .purifier-temp-popover-line {
+    top: 400px;
+    right: 372px;
+    height: 43px;
+  }
+}
+
+/* humidity */
+.home {
+  .purifier-humidity-popover {
+    top: 341px;
+    left: -100px;
+  }
+  .purifier-humidity-popover-line {
+    top: 385px;
+    left: 20px;
+    width: 100px;
+  }
+}
+
+.industrial {
+  .purifier-humidity-popover {
+    top: 441px;
+    left: 265px;
+  }
+  .purifier-humidity-popover-line {
+    top: 400px;
+    left: 285px;
+    height: 43px;
+  }
+}
