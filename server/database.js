@@ -65,8 +65,8 @@ Database.prototype._insertQuery = function(tableName, columnNames, rowData) {
 };
 
 Database.prototype.end = function() {
-  // something's wrong with the pg-promise library, this function is documented, don't work tho
-  // return this._client.end();
+  // shutting down the library, not just one database connection:
+   pg.end(); // nothing to return here;
 };
 
 Database.prototype.runScriptFile = function(fileName) {
