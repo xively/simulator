@@ -5,6 +5,8 @@ var _ = require('lodash');
 require('paho');
 var MqttClient = require('../../../vendor/xively-mqtt-client');
 
+var generateUniqueId = require('./generate-unique-id');
+
 module.exports = function() {
   var mqttObj = {};
 
@@ -14,7 +16,7 @@ module.exports = function() {
         host: host, port: port,
         user: user, pass: pass,
         useSSL: useSSL,
-        clientId: clientId,
+        clientId: generateUniqueId(),
         debug: true,
       });
     newClient.connect();
