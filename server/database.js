@@ -7,7 +7,6 @@ var pg = require('pg-promise')({
   promiseLib: Promise,
 });
 
-
 function Database(options) {
   // TODO: Maybe deal with options in a cleaner way.
   var databaseAddress = url.parse(options.databaseURL);
@@ -66,7 +65,7 @@ Database.prototype._insertQuery = function(tableName, columnNames, rowData) {
 
 Database.prototype.end = function() {
   // shutting down the library, not just one database connection:
-   pg.end(); // nothing to return here;
+  pg.end(); // nothing to return here;
 };
 
 Database.prototype.runScriptFile = function(fileName) {
