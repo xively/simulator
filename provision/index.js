@@ -38,7 +38,6 @@ bp.getEnv(process.env)
     color: 'string',
     productionRun: 'string',
     powerVersion: 'string',
-    firmwareVersion: 'string',
     activatedDate: 'datetime',
     filterType: 'string',
   }, function(bodyArray, fieldType, name) {
