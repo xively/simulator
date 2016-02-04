@@ -3,7 +3,6 @@
 'use strict';
 
 var _ = require('lodash');
-var store = require('../server/store')();
 var bp = require('./blueprint');
 var Promise = require('bluebird');
 var Database = require('../server/database');
@@ -152,24 +151,21 @@ bp.getEnv(process.env)
       });
     })
     .then(function() {
+      // add org and mqtt user to the application_config db
+      // this will replace redis
+      var appConfig = {
+        accountId: $.env.XIVELY_ACCOUNT_ID,
+        organization: $.organization,
+        mqttUser: $.mqttUser,
+        endUser: $.endUser,
+        device: $.device[0]
+      };
+      return database.insertApplicationConfig(appConfig);
+    })
+    .then(function() {
       database.end();
       return $;
     });
-  })
-
-  // Store in Redis for backwards compatibility
-  .then(function($) {
-    var data = _.pick($, [
-      'env',
-      'organization',
-      'deviceTemplate',
-      'device',
-      'mqttDevice',
-      'endUser',
-      'mqttUser',
-    ]);
-
-    return store.set($.env.XIVELY_ACCOUNT_ID, data);
   })
   .then(function(data) {
     // console.log(JSON.stringify(data, null, 2));

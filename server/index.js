@@ -49,24 +49,34 @@ parsers.use(bodyParser.urlencoded({extended: false}));
 parsers.use(cookieParser());
 
 database.selectApplicationConfig(process.env.XIVELY_ACCOUNT_ID).then(function(data) {
-  var envData = {
-    env: {}
+  console.log('Provisioning data loaded.');
+  var envData = data[0];
+
+  // create the env data that is taken from env
+  envData.env = {
+    NODE_ENV: process.env.NODE_ENV,
+    XIVELY_IDM_HOST: process.env.XIVELY_IDM_HOST,
+    XIVELY_TIMESERIES_HOST: process.env.XIVELY_TIMESERIES_HOST,
+    XIVELY_BROKER_HOST: process.env.XIVELY_BROKER_HOST,
+    XIVELY_BROKER_PORT: process.env.XIVELY_BROKER_PORT,
+    XIVELY_BROKER_WS_PORT: process.env.XIVELY_BROKER_WS_PORT,
+    XIVELY_BLUEPRINT_HOST: process.env.XIVELY_BLUEPRINT_HOST,
+    XIVELY_ACCOUNT_ID: process.env.XIVELY_ACCOUNT_ID,
+    XIVELY_ACCOUNT_USER_NAME: process.env.XIVELY_ACCOUNT_USER_NAME,
+    XIVELY_ACCOUNT_USER_PASSWORD: process.env.XIVELY_ACCOUNT_USER_PASSWORD,
+    XIVELY_ACCOUNT_BROKER_USER: process.env.XIVELY_ACCOUNT_BROKER_USER,
+    XIVELY_ACCOUNT_BROKER_PASSWORD: process.env.XIVELY_ACCOUNT_BROKER_PASSWORD
   };
-  // Augment data object with NODE_ENV value.
-  envData.env.NODE_ENV = process.env.NODE_ENV;
-  envData.organization = data.organization;
-  envData.mqttUser = data.mqttUser;
 
   config.raw = require('./config').load({
     env: envData,
     files: ['meta.json', 'account.json', 'virtualdevice.json'],
   });
-  console.log('config', JSON.stringify(config, null, 2));
+
   // Allow config to be referenced by name inside of views.
   // This creates a new object that has everything in config plus an
   // additional property "config" that is a circular reference
   config.view = _.merge({}, config.raw, {config: config.raw});
-  console.log('Provisioning data loaded.');
 });
 
 

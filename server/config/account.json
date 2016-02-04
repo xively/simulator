@@ -17,8 +17,8 @@
     "password": "${mqttUser.secret}"
   },
   "device": {
-    "id": "${device[0].id}",
-    "accountId": "${device[0].accountId}",
+    "id": "${device.id}",
+    "accountId": "${device.accountId}",
     "mqtt": {
       "username": "${env.XIVELY_ACCOUNT_BROKER_USER}",
       "password": "${env.XIVELY_ACCOUNT_BROKER_PASSWORD}"

@@ -77,17 +77,12 @@ Database.prototype.runScriptFile = function(fileName) {
 // inserted during provisioning
 // this will replace the redis store
 Database.prototype.insertApplicationConfig = function(data) {
-  var columns = ['accountId', 'organization', 'mqttUser'];
+  var columns = ['accountId', 'organization', 'mqttUser', 'device', 'endUser'];
   return this._insertQuery('application_config', columns, data);
 };
 
-Database.prototype.selectApplicationConfig = function() {
-  return this._query('SELECT * FROM application_config');
-};
-
 Database.prototype.selectApplicationConfig = function(accountid) {
-  console.log(accountid);
-  return this._query('SELECT * FROM application_config WHERE "accountId" = $1 LIMIT 1', accountid);
+  return this._query('SELECT * FROM application_config WHERE "accountId" = $1', accountid);
 };
 
 

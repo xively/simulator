@@ -8,9 +8,9 @@
     "mqttPort": "${env.XIVELY_BROKER_PORT}",
     "mqttWsPort": "${env.XIVELY_BROKER_WS_PORT}",
     "mqttUseSSL": true,
-    "deviceId": "${device[0].id}",
-    "mqttDataChannel": "${_.find(device[0].channels, 'channelTemplateName', 'sensor').channel}",
-    "mqttControlChannel": "${_.find(device[0].channels, 'channelTemplateName', 'control').channel}",
-    "mqttDeviceDataChannel": "${_.find(device[0].channels, 'channelTemplateName', 'device-log').channel}"
+    "deviceId": "${device.id}",
+    "mqttDataChannel": "${_.find(device.channels, 'channelTemplateName', 'sensor').channel}",
+    "mqttControlChannel": "${_.find(device.channels, 'channelTemplateName', 'control').channel}",
+    "mqttDeviceDataChannel": "${_.find(device.channels, 'channelTemplateName', 'device-log').channel}"
   }
 }

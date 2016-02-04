@@ -11,9 +11,8 @@
   "logo": "https://ws.cubbyusercontent.com/p/_661602227cec4153a1b32ba548e01245/Xively_Concaria_Logo_IconOnly_RGB.png/1516920927",
   "image": "https://ws.cubbyusercontent.com/p/_661602227cec4153a1b32ba548e01245/Xively_Concaria_Logo_IconOnly_RGB.png/1516920927",
   "addons": [
-    "heroku-postgresql:hobby-dev",
     "xively:test",
-    "redistogo:nano"
+    "heroku-postgresql:hobby-dev"
   ],
   "scripts": {
     "postdeploy": "node provision"
