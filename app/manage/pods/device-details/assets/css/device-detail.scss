@@ -3,6 +3,10 @@
   @extend .clearfix;
   height: 100%;
   margin-top: 20px;
+
+  @include mobile-intent {
+    margin-bottom: 30px;
+  }
 }
 
 
