@@ -10,9 +10,6 @@ var _ = require('lodash');
 // Load environment vars and .env file into process.env.
 require('dotenv').load();
 
-// Generate config from env and fetched Blueprint data.
-var store = require('./store')();
-
 // This attempts to send over our devices to Salesforce. It
 // does nothing if:
 // 1. The data has already been sent to Salesforce
@@ -22,21 +19,6 @@ var attemptSalesforce = require('./attempt-salesforce');
 attemptSalesforce();
 
 var config = {raw: null, view: null};
-store.get(process.env.XIVELY_ACCOUNT_ID).then(function(data) {
-  console.log('Provisioning data loaded.');
-  // Augment data object with NODE_ENV value.
-  data.env.NODE_ENV = process.env.NODE_ENV;
-  // console.log('data', JSON.stringify(data, null, 2));
-  config.raw = require('./config').load({
-    env: data,
-    files: ['meta.json', 'account.json', 'virtualdevice.json'],
-  });
-  // console.log('config', JSON.stringify(config, null, 2));
-  // Allow config to be referenced by name inside of views.
-  // This creates a new object that has everything in config plus an
-  // additional property "config" that is a circular reference
-  config.view = _.merge({}, config.raw, {config: config.raw});
-});
 
 var mqttConfig = {
   host: 'mqtt://' + process.env.XIVELY_BROKER_HOST,
@@ -65,6 +47,27 @@ var parsers = express();
 parsers.use(bodyParser.json());
 parsers.use(bodyParser.urlencoded({extended: false}));
 parsers.use(cookieParser());
+
+database.selectApplicationConfig(process.env.XIVELY_ACCOUNT_ID).then(function(data) {
+  var envData = {
+    env: {}
+  };
+  // Augment data object with NODE_ENV value.
+  envData.env.NODE_ENV = process.env.NODE_ENV;
+  envData.organization = data.organization;
+  envData.mqttUser = data.mqttUser;
+
+  config.raw = require('./config').load({
+    env: envData,
+    files: ['meta.json', 'account.json', 'virtualdevice.json'],
+  });
+  console.log('config', JSON.stringify(config, null, 2));
+  // Allow config to be referenced by name inside of views.
+  // This creates a new object that has everything in config plus an
+  // additional property "config" that is a circular reference
+  config.view = _.merge({}, config.raw, {config: config.raw});
+  console.log('Provisioning data loaded.');
+});
 
 
 // Show "loading" page until Blueprint data has been fetched.

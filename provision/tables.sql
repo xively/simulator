@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS inventory, firmware; 
+DROP TABLE IF EXISTS inventory, firmware, application_config;
 
 CREATE TABLE inventory
 (
@@ -23,6 +23,7 @@ CREATE TABLE firmware
   "associationCode" text,
   "organizationId" character(36),
   "deviceId" character(36),
+  "organization" json,
   CONSTRAINT firmware_pkey PRIMARY KEY (id),
   CONSTRAINT firmware_id_fkey FOREIGN KEY (id)
       REFERENCES inventory (id) MATCH SIMPLE
@@ -36,7 +37,18 @@ CREATE TABLE rules
 (
   id serial NOT NULL,
   "ruleConfig" json
-) 
+)
+WITH (
+  OIDS = FALSE
+);
+
+CREATE TABLE application_config
+(
+  id serial NOT NULL,
+  "accountId" text,
+  "organization" json,
+  "mqttUser" text
+)
 WITH (
   OIDS = FALSE
 );
