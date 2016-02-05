@@ -26,7 +26,7 @@ module.exports = function(grunt) {
       tasks: ['eslint:test', 'karma:watch:run'],
     },
     sass: {
-      files: ['app/virtual-device/**/*.scss', 'app/manage/**/*.scss'],
+      files: ['app/virtual-device/**/*.scss', 'app/manage/**/*.scss', 'app/landing/**/*.scss'],
       tasks: ['sass:dev', 'postcss:css'],
     },
     copy: {

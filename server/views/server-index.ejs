@@ -6,113 +6,123 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Concaria Virtual Device and Dashboard</title>
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-  <style type='text/css'>
-    .wrapper{
-      width: 1000px;
-      margin: 0px auto;
-      font-size: 14pt;
-
-    }
-    .header{
-      background: #00B0AB;
-      font-size: 30pt;
-      padding: 30px;
-      text-align: center;
-      color: #fff;
-    }
-    .welcome{
-      background: #eee;
-      color: #000;
-      padding: 15px;
-      margin-top: 15px;
-    }
-    .button{
-      border-radius: 10px;
-      padding: 8px;
-      display: inline-block;
-      color: #fff;
-    }
-    .button:hover{
-      color: white;
-      text-decoration: none;
-      color: #eee;
-    }
-    .views{
-      margin-top: 15px;
-      padding: 15px;
-    }
-    .redtext{
-      color: #FF4833;
-    }
-    .column{
-      width: 360px;
-      float: left;
-    }
-    .red{
-      background-color: #FF4833;
-    }
-    .blue{
-      background-color: #00B0AB;
-    }
-  </style>
+    <link rel="stylesheet" href="/landing/css/main.css">
   </head>
-  <body ng-app="concaria">
-    <div class='wrapper'>
-      <div class='header'>
-      Congratulations! You now have your own IoT Connected Business
-      </div>
-
-      <div class='welcome'>
-        Welcome to the fastest way to get started with the Internet of Things.
-        <br/><br/>
-        <div style='margin-bottom:10px; font-weight: bold'>Included in this bundle:</div>
-        Xively CPM to model your IoT business<br/>
-        Xively Broker connectivity platform<br/>
-        Xively data storage to track product data<br/>
-        Reference connected product and app<br/>
-        Personal environment to test, learn, and scale<br/>
-        <br/>
-        <div style='margin-bottom:10px; font-weight: bold'>Here is what you can do:</div>
-        Send <strong>messages</strong> to and from a product<br/>
-        <strong>Model your business</strong> – users, devices, apps, orgs<br/>
-        <strong>Test</strong> your product features and usage model<br/>
-        <strong>Accelerate</strong> your time to market, physical hardware, scale!<br/>
-      </div>
-      <div class='views'>
-        Get started now by selecting one of the <span class='redtext'>two views of your business</span> below:<br/><br/>
-        <div style='margin-bottom: 30px;'>
-          <div class='column'>
-            <img src='/manage/img/user.png' alt='user'/>
-          </div>
-          <div class='column' style='height: 150px; margin-top: 50px; width: 230px; text-align: center;'>
-            <a class='button red' href="/manage/#/device/<%= virtualdevice.mqtt.deviceId %>?demo=1" target="_blank">End User View</a>
-          </div>
-          <div class='column' style='margin-top: 30px; height: 200px;'>
-            <strong>View one connected product and the end user app</strong> to control the product and see product data and status
+  <body>
+    <main>
+      <div class="hero">
+        <div class="container">
+          <header>
+            <h1>
+              <a href="https://xively.com/">
+                <img src="/landing/img/xively-logo.png" alt="Xively by LogMeIn" class="xively-logo">
+              </a>
+            </h1>
+          </header>
+          <div class="hero-text">
+            <h1 class="congrats">Congratulations!</h1>
+            <p class="congrats-subheader">
+              You've started your IoT Journey.
+            </p>
+            <i class="down-arrow-icon">
+              <img src="/landing/img/down-arrow.png" alt="" class="down-arrow-img">
+            </i>
           </div>
         </div>
-        
-        <div style='margin-bottom: 50px;'>
-          <div class='column'>
-            <img src='/manage/img/company.png' alt='company' style='width: 377px; height: auto;'/>
-            <br/><br/><br/>
-          </div>
-          <div class='column' style='height: 150px; margin-top: 140px; width: 230px; text-align: center;'>
-            <a class='button red' href="/manage/" target="_blank">Business View</a>
-          </div>
-          <div class='column' style='margin-top: 110px; height: 350px;'>
-            <strong>View a dashboard of all connected products, users and organizational structure,</strong> to set-up, manage and run your connected business
-          </div>
-        </div>
-        <div style='text-align: center'>
-          <a class='button blue' href='https://blog.xively.com/introducing-concaria/' style='width: 200px;'>Learn more about Concaria and Xively</a>
-          <br/><br/>
+      </div>
+      <div class="app-links">
+        <div class="container">
+          <h2 class="ready-set-xively">Ready. Set. Xively...</h2>
+          <p class="ready-set-xively-subheader">
+            Click on the icons below to
+            <br>
+            see the complete solution.
+          </p>
+          <ul class="app-link-list">
+            <li class="app-link-block dashboard-block">
+              <a href="/manage/" target="_blank">
+                <h3>Xively Dashboard</h3>
+                <p class="block-detail">Management dashboard for connected products.</p>
+                <span class="learn-more">Learn more</span>
+              </a>
+            </li>
+            <li class="app-link-block end-user-block">
+              <a href="/manage/#/device/<%= virtualdevice.mqtt.deviceId %>?demo=1" target="_blank">
+                <h3>End User View</h3>
+                <p class="block-detail">Interact with a connected product and end user app.</p>
+                <span class="learn-more">Learn more</span>
+              </a>
+            </li>
+            <li class="app-link-block rules-block">
+              <a href="/manage/#/rules" target="_blank">
+                <h3>Rules Engine</h3>
+                <p class="block-detail">Rules to manage product data flow, ops and support.</p>
+                <span class="learn-more">Learn more</span>
+              </a>
+            </li>
+            <li class="app-link-block salesforce-block">
+              <a href="https://www.salesforce.com/" target="_blank">
+                <h3>Engage Salesforce</h3>
+                <p class="block-detail">Product data is given meaning in Salesforce.</p>
+                <span class="learn-more">Learn more</span>
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
-    </div>
+      <footer>
+        <div class="container">
+          <div class="footer-nav-container">
+            <h2>
+              About Us
+            </h2>
+            <ul class="footer-nav">
+              <li>
+                <a href="http://xively.com/whats_xively/">What is Xively?</a>
+              </li>
+              <li>
+                <a href="http://xively.com/partners/">
+                  Partners
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="footer-nav-container">
+            <h2>
+              Learn
+            </h2>
+            <ul class="footer-nav">
+              <li>
+                <a href="https://blog.xively.com/">
+                  Blog
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="etc">
+            <a href="https://xively.com/">
+              <img src="/landing/img/xively-logo.png" alt="Xively by LogMeIn" width="185" class="xively-logo">
+            </a>
+            <small class="copyright">
+              Copyright © 2003-2016 LogMeIn, Inc.
+              <br>
+              All rights reserved.
+            </small>
+            <a href="https://secure.logmein.com/policies/privacy.aspx?" class="legal-link">
+              Legal info
+            </a>
+            <a href="http://xively.com/contact_us/" class="contact-us-link">
+              Contact Us
+              <i class="fa fa-chevron-right"></i>
+            </a>
+          </div>
+        </div>
+      </footer>
+    </main>
   </body>
 </html>

@@ -13,6 +13,9 @@ module.exports = function(grunt) {
         'public/manage/css/main.css': [
           'app/manage/assets/css/main.scss',
         ],
+        'public/landing/css/main.css': [
+          'app/landing/assets/css/main.scss',
+        ],
       },
     },
     build: {

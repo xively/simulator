@@ -16,6 +16,13 @@ module.exports = function(grunt) {
       src: 'img/*',
     },
 
+    landing: {
+      expand: true,
+      cwd: 'app/landing/assets/',
+      dest: 'public/landing/',
+      src: 'img/*',
+    },
+
     fonts: {
       expand: true,
       cwd: './node_modules/font-awesome/',

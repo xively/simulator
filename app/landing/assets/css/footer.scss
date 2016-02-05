@@ -1,0 +1,73 @@
+footer {
+  color: #fff;
+  background-color: #0f1d25;
+  padding: 66px 0 90px;
+
+  .container {
+    display: flex;
+  }
+
+  .footer-nav-container {
+    margin-right: 95px;
+
+    h2 {
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .footer-nav {
+      margin: 0;
+      padding: 0;
+      font-size: 13px;
+      list-style: none;
+
+      a {
+        text-decoration: none;
+        color: #a5aeb6;
+
+        &:hover {
+          text-decoration: underline;
+          color: #dfe5e6;
+        }
+      }
+
+      li {
+        margin-bottom: 14px;
+      }
+    }
+  }
+
+  .etc {
+    margin-left: auto;
+  }
+
+  .xively-logo {
+    margin-bottom: 15px;
+  }
+
+  .contact-us-link {
+    color: #00A79D;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 16px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .legal-link, .copyright {
+    font-size: 12px;
+    color: #51626f;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .legal-link {
+    margin-bottom: 15px;
+  }
+
+  .legal-link:hover {
+    color: #a5aeb6;
+  }
+}
