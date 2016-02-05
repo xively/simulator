@@ -14,7 +14,7 @@ module.exports = [
         function($scope, $timeout) {
           // template variables -------------------
           $scope.copySuccess = false;
-          $scope.url = window.location.href;
+          $scope.url = window.location.hostname + window.location.pathname;
 
           // create clipboard ---------------------
           var clipboard = new Clipboard('.copy-btn');
