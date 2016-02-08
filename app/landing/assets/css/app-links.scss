@@ -1,8 +1,8 @@
 .app-links {
   color: #e1412b;
   background-color: #feffff;
-  padding-top: 80px;
-  padding-bottom: 130px;
+  padding-top: 40px;
+  padding-bottom: 120px;
 
   .ready-set-xively {
     font-size: 24px;
@@ -20,6 +20,7 @@
   .app-link-list {
     display: flex;
     list-style: none;
+    padding-left: 0px;
   }
 
   .app-link-block {

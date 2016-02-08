@@ -5,11 +5,12 @@
   background-repeat: no-repeat;
   background-position: bottom;
   background-size: auto 100%;
-  height: 480px;
+  // height: 480px;
+  height: 100px;
 
   header {
     display: flex;
-    margin-top: 25px;
+    margin-top: 15px;
     margin-bottom: 115px;
 
     h1 {
@@ -18,7 +19,7 @@
     }
 
     .xively-logo {
-      width: 135px;
+      width: 180px;
     }
 
     .connected-product-link {
