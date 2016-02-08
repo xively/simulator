@@ -77,6 +77,8 @@ database.selectApplicationConfig(process.env.XIVELY_ACCOUNT_ID).then(function(da
   // This creates a new object that has everything in config plus an
   // additional property "config" that is a circular reference
   config.view = _.merge({}, config.raw, {config: config.raw});
+}).catch(function(error) {
+  console.log(error);
 });
 
 
