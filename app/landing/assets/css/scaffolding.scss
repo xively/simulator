@@ -1,0 +1,13 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  min-width: $appWidth + 40px;
+}
+
+.container {
+  width: $appWidth;
+  margin: 0 auto;
+}

@@ -1,0 +1,114 @@
+.app-links {
+  color: #e1412b;
+  background-color: #feffff;
+  padding-top: 40px;
+  padding-bottom: 120px;
+
+  .ready-set-xively {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0 0 5px;
+    text-align: center;
+  }
+
+  .ready-set-xively-subheader {
+    font-size: 24px;
+    margin-bottom: 60px;
+    text-align: center;
+  }
+
+  .app-link-list {
+    display: flex;
+    list-style: none;
+    padding-left: 0px;
+  }
+
+  .app-link-block {
+    cursor: pointer;
+    width: 25%;
+    background-color: #f0f1f3;
+    text-align: center;
+    margin: 0 5px;
+    background-repeat: no-repeat;
+    background-position: 50% 50px;
+    background-size: auto 100px;
+
+    &.dashboard-block {
+      background-image: url("/landing/img/1r.svg");
+
+      &:hover {
+        background-image: url("/landing/img/1w.svg");
+      }
+    }
+
+    &.end-user-block {
+      background-image: url("/landing/img/2r.svg");
+
+      &:hover {
+        background-image: url("/landing/img/2w.svg");
+      }
+    }
+
+    &.rules-block {
+      background-image: url("/landing/img/3r.svg");
+
+      &:hover {
+        background-image: url("/landing/img/3w.svg");
+      }
+    }
+
+    &.salesforce-block {
+      background-image: url("/landing/img/4r.svg");
+
+      &:hover {
+        background-image: url("/landing/img/4w.svg");
+      }
+    }
+
+
+    a {
+      display: block;
+      color: #e1412b;
+      padding: 160px 10px 30px;
+
+      &:hover {
+        text-decoration: none;
+        color: #fff;
+      }
+    }
+
+    img {
+      display: block;
+      margin: 0 auto;
+      margin-bottom: 35px;
+    }
+
+    h3 {
+      font-size: 14px;
+      text-transform: uppercase;
+      margin-bottom: 34px;
+    }
+
+    .block-detail {
+      margin-bottom: 30px;
+    }
+
+    .learn-more {
+      text-decoration: none;
+      color: #fff;
+      opacity: 0;
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    &:hover {
+      color: #fff;
+      background-color: #e1412b;
+
+      .learn-more {
+        opacity: 1;
+      }
+    }
+  }
+}
