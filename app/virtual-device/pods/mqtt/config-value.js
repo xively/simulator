@@ -7,10 +7,7 @@ config = _.get(config, 'virtualdevice.mqtt') || {};
 var mqttConfig = {
   broker: config.mqttBroker,
   port: Number(config.mqttWsPort),
-  useSSL: config.mqttUseSSL,
-  dataChannel: config.mqttDataChannel,
-  controlChannel: config.mqttControlChannel,
-  deviceDataChannel: config.mqttDeviceDataChannel,
+  useSSL: config.mqttUseSSL
 };
 
 module.exports = mqttConfig;
