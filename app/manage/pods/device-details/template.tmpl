@@ -1,4 +1,4 @@
-<device-details-alert></device-details-alert> 
+<device-details-alert></device-details-alert>
 <div class="content-panel container" ng-if="isLoggedIn" launch-simulator="device.id">
   <!-- share modal -->
   <share-modal ng-show="displayModal" close-modal="toggleModal"></share-modal>
@@ -25,6 +25,7 @@
   <div class="control-panel">
     <div class="control-panel-section clearfix">
       <h1>AirSoClean3000</h1>
+      <span class="serial">{{device.name}}</span>
       <div class="device-connectivity">
         <small>Connected <span>9/1/2015</span></small>
       </div>
