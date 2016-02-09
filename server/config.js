@@ -3,15 +3,6 @@
 
 function Config(opts) {
 
-  var getChannel = function(type) {
-    var channels = opts.device.channels;
-    for (var i = 0; i < channels.length; i++) {
-      if (channels[i].channelTemplateName === type) {
-        return channels[i].channel;
-      }
-    }
-  };
-
   return {
     account: {
       idmHost: process.env.XIVELY_IDM_HOST,
@@ -58,10 +49,7 @@ function Config(opts) {
         mqttPort: process.env.XIVELY_BROKER_PORT,
         mqttWsPort: process.env.XIVELY_BROKER_WS_PORT,
         mqttUseSSL: true,
-        deviceId: opts.device.id,
-        mqttDataChannel: getChannel('sensor'),
-        mqttControlChannel: getChannel('control'),
-        mqttDeviceDataChannel: getChannel('device-log')
+        deviceId: opts.device.id
       }
     }
   };
