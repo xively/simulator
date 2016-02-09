@@ -11,10 +11,12 @@ module.exports = [
       controller: [
         '$scope',
         '$timeout',
-        function($scope, $timeout) {
+        '$location',
+        function($scope, $timeout, $location) {
+
           // template variables -------------------
           $scope.copySuccess = false;
-          $scope.url = window.location.hostname + window.location.pathname;
+          $scope.url = $location.absUrl().replace('?demo=1', '');
 
           // create clipboard ---------------------
           var clipboard = new Clipboard('.copy-btn');
