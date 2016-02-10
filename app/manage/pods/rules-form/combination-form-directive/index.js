@@ -14,7 +14,7 @@ module.exports = [
       },
       link: function(scope, elm, attrs) {
         scope.showConditionalForm = false;
-
+        scope.buttonText = scope.conditions ? 'Combination' : 'Condition';
         scope.operatorTypes = {
           '$lt': 'Less Than',
           '$lte': 'Less Than or Equal to',
