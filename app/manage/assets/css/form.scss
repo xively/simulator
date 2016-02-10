@@ -9,6 +9,9 @@ fieldset {
       border-color: #cecece;
       background: #f5f5f5;
     }
+    .styled-select:before {
+      border-color: transparent;
+    }
   }
 }
 .form-row {
@@ -93,7 +96,7 @@ fieldset {
     cursor: default;
 
     &:before {
-      border-top-color: #ddd;
+      border-top-color: transparent;
     }
   }
 }
