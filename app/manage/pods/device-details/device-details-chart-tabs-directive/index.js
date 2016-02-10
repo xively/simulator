@@ -14,7 +14,7 @@ module.exports = [
         '$scope',
         'sensorUnitConfig',
         function($scope, sensorUnitConfig) {
-          $scope.currentChart = 'aqi';
+          $scope.currentChart = 'dust';
           $scope.units = sensorUnitConfig;
 
           $scope.switchChart = function(newChart) {
