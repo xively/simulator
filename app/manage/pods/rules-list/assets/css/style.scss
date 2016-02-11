@@ -48,10 +48,17 @@
     }
   }
   .button-group {
-    font-size: 0.9em;
+    font-size: 1.5em;
     position: absolute;
+    color: #c9c9c9;
     right: 0;
     top: 20px;
+    i {
+      padding: 0 5px;
+      &:hover {
+        color: #797979;
+      }
+    }
   }
 }
 .rules-wrapper {

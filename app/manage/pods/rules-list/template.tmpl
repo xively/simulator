@@ -24,7 +24,8 @@
       <li ng-repeat="rule in rules track by $index">
         <a ng-click="showRule(rule.id)" >{{rule.ruleConfig.name}}</a>
         <div class="button-group">
-          <button type="button" ng-click="deleteRule(rule.id, $index)" class="button delete">Delete</button>
+          <i class="fa fa-pencil" ng-click="showRule(rule.id)"></i>
+          <i class="fa fa-times" ng-click="deleteRule(rule.id, $index)"></i>
         </div>
       </li>
     </ul>
