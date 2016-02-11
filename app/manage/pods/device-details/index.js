@@ -47,6 +47,7 @@ deviceDetailsModule.config([
           'TimeSeries',
           'ChartDataTool',
           'sensorUnitConfig',
+          'applicationConfig',
           resolveArgs({$scopeIndex: 0, indices: [3]}, function(
             $scope,
             $rootScope,
@@ -57,7 +58,8 @@ deviceDetailsModule.config([
             AqiData,
             TimeSeries,
             chartDataTool,
-            sensorUnitConfig
+            sensorUnitConfig,
+            applicationConfig
           ) {
             var device = _.cloneDeep(_.find(devices, 'id', stateParams.deviceId));
             if (!device) {
@@ -68,7 +70,7 @@ deviceDetailsModule.config([
               $rootScope.$broadcast('toggleDemo', true);
               $rootScope.$broadcast('toggleVirtualDevice', stateParams.deviceId);
             }
-
+            $scope.email = applicationConfig.emailAddress;
             $scope.units = sensorUnitConfig;
             $scope.device = device;
             $scope.deviceStatus = device;
