@@ -47,8 +47,10 @@
         <i class="fa fa-pencil" ng-click='editCondition()'></i>
         <i class="fa fa-times" ng-click='deleteCondition(index)'></i>
       </span>
+      <!--edit mode -->
+      <button class='button secondary' ng-if="!listMode && editting" ng-click='editCondition()'>+ Save </button>
       <!-- new mode -->
-      <button class='button secondary' ng-if="!listMode" ng-click='callUpdate()'>+ Add</button>
+      <button class='button secondary' ng-if="!listMode && !editting" ng-click='callUpdate()'>+ Add</button>
     </div>
   </fieldset>
 </div>
