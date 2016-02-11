@@ -249,12 +249,12 @@ deviceDetailsModule.config([
 
             $scope.chartTabs = [
               {
-                name: 'aqi',
-                title: 'AQI',
-              },
-              {
                 name: 'dust',
                 title: 'Dust',
+              },
+              {
+                name: 'aqi',
+                title: 'AQI',
               },
               {
                 name: 'co',
