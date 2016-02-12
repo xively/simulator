@@ -13,7 +13,7 @@ module.exports = [
         conditions: '=?',
       },
       link: function(scope, elm, attrs) {
-        scope.showConditionalForm = false;
+        scope.showConditionalForm = !scope.conditions;
         scope.buttonText = scope.conditions ? 'Combination' : 'Condition';
         scope.operatorTypes = {
           '$lt': 'Less Than',
@@ -32,8 +32,8 @@ module.exports = [
             var newCondition = _.cloneDeep(scope.condition);
             scope.conditions.push(newCondition);
             scope.cleanup();
+            scope.toggleProperty('showConditionalForm');
           }
-          scope.toggleProperty('showConditionalForm');
         };
 
         scope.cleanup = function() {

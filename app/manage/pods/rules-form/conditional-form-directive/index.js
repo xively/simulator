@@ -27,10 +27,14 @@ module.exports = [
           };
         }
 
+        scope.toggleProperty = function(type) {
+          scope[type] = !scope[type];
+        };
+
         scope.editCondition = function() {
-          scope.editMode = !scope.editMode;
-          scope.editting = !scope.editting;
-          scope.listMode = !scope.listMode;
+          scope.toggleProperty('editMode');
+          scope.toggleProperty('editting');
+          scope.toggleProperty('listMode');
         };
 
         scope.deleteCondition = function(index, parentIndex) {
