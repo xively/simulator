@@ -17,6 +17,7 @@ module.exports = [
       },
       link: function(scope, elm, attrs) {
         scope.disableForm = true;
+        scope.editting = false;
         if (!scope.rule) {
           scope.rule = {
             'topic': 'sensor',
@@ -27,7 +28,9 @@ module.exports = [
         }
 
         scope.editCondition = function() {
-          scope.editMode = true;
+          scope.editMode = !scope.editMode;
+          scope.editting = !scope.editting;
+          scope.listMode = !scope.listMode;
         };
 
         scope.deleteCondition = function(index, parentIndex) {

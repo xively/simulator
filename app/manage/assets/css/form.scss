@@ -1,8 +1,8 @@
 /* Forms ------------------*/
 fieldset {
   border: none;
-  margin-left: 0;
-  padding-left: 0;
+  margin: 0;
+  padding: 0;
   &[disabled] {
     input[type='text'] {
       color: #777;
@@ -17,6 +17,7 @@ fieldset {
 .form-row {
   color: #3D3D3D;
   padding-bottom: 5px;
+  padding: 5px 0;
   label {
     display: block;
     font-size: 13px;
