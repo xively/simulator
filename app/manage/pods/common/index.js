@@ -32,6 +32,7 @@ commonModule.provider('TimeSeries', require('./time-series-provider'));
   Factories are more common in typical angular projects.
 */
 commonModule.factory('RulesData', require('./rules-data-factory'));
+commonModule.factory('Sms', require('./sms-factory'));
 
 commonModule.value('aqiCategories', require('./utils/aqi-categories-value'));
 
