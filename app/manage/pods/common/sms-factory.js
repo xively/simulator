@@ -11,7 +11,14 @@ module.exports = [
     // to '/call'
 
     messageFactory.sendMessage = function(data) {
-      return $http.post(urlBase + '/message', data);
+      return $http({
+        url: '/api/proxy',
+        method: 'POST',
+        params: {
+          'url': urlBase + '/message',
+          'data': data,
+        },
+      });
     };
 
     return messageFactory;
