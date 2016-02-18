@@ -4,7 +4,7 @@
   background-color: #fff;
   padding: 20px;
   position: absolute;
-  height: 400px;
+  min-height: 500px;
   width: 400px;
   display: block;
   box-sizing: border-box;
@@ -27,6 +27,9 @@
   .copy-wrapper {
     margin-top: 10px;
     text-align: center;
+    label {
+      text-align: left;
+    }
     #copy-target{
       width: 200px;
     }
@@ -36,7 +39,7 @@
 @media ($mobileMax) {
   .modal {
     left: 0;
-    top: 65px;
+    top: -20px;
     width: 100%;
   }
   .remove-modal {
@@ -48,7 +51,7 @@
 .mobile-width {
   .modal {
     left: 0;
-    top: 65px;
+    top: -20px;
     width: 100%;
   }
   .remove-modal {
