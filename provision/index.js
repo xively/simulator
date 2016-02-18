@@ -66,6 +66,48 @@ bp.getEnv(process.env)
       body.name = 'device-log';
       body.persistenceType = 'timeSeries';
     },
+    function(body, $) {
+      body.entityId = $.deviceTemplate.id;
+      body.entityType = 'deviceTemplate';
+      body.name = 'temp';
+      body.persistenceType = 'timeSeries';
+    },
+    function(body, $) {
+      body.entityId = $.deviceTemplate.id;
+      body.entityType = 'deviceTemplate';
+      body.name = 'humidity';
+      body.persistenceType = 'timeSeries';
+    },
+    function(body, $) {
+      body.entityId = $.deviceTemplate.id;
+      body.entityType = 'deviceTemplate';
+      body.name = 'no2';
+      body.persistenceType = 'timeSeries';
+    },
+    function(body, $) {
+      body.entityId = $.deviceTemplate.id;
+      body.entityType = 'deviceTemplate';
+      body.name = 'co';
+      body.persistenceType = 'timeSeries';
+    },
+    function(body, $) {
+      body.entityId = $.deviceTemplate.id;
+      body.entityType = 'deviceTemplate';
+      body.name = 'dust';
+      body.persistenceType = 'timeSeries';
+    },
+    function(body, $) {
+      body.entityId = $.deviceTemplate.id;
+      body.entityType = 'deviceTemplate';
+      body.name = 'filter';
+      body.persistenceType = 'timeSeries';
+    },
+    function(body, $) {
+      body.entityId = $.deviceTemplate.id;
+      body.entityType = 'deviceTemplate';
+      body.name = 'fan';
+      body.persistenceType = 'timeSeries';
+    }
   ]))
 
   .then(bp.createOrganizationTemplate(function(body, $) {
