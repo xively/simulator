@@ -93,6 +93,7 @@ app.use('/api/proxy', parsers, proxy({
   whitelist: [
     'http://www.airnowapi.org/aq/data',
     'https://timeseries.demo.xively.com/api/v4/data/xi/blue/v1',
+    'http://concaria-sms.herokuapp.com/api'
   ],
 }));
 

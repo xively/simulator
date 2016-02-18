@@ -40,11 +40,11 @@ module.exports = [
 
             Sms.sendMessage(data)
             .then(function(res) {
-              $scope.messageText = res;
+              $scope.messageText = res.data.message;
 
             },
             function(err) {
-              $scope.messageText = err.message;
+              $scope.messageText = err.data.message;
             });
           };
 
