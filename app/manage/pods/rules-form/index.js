@@ -112,6 +112,10 @@ rulesFormModule.config([
               var actions = [];
               for (var key in caseTypes) {
                 if (caseTypes[key].selected) {
+                  // validation
+                  if (!caseTypes[key].value) {
+                    return;
+                  }
                   actions.push({
                     value: caseTypes[key].value,
                     type: key
@@ -125,9 +129,17 @@ rulesFormModule.config([
             // Form submit functions ---------------------------------------------
             $scope.formSubmit = function() {
               $scope.setActions();
-              if (!$scope.rule.conditions.rules.length) {
+              if (!$scope.rule.name) {
+                $scope.failure = true;
+                $scope.errorMessage = 'You need to add a name.';
+              }
+              else if (!$scope.rule.conditions.rules.length) {
                 $scope.failure = true;
                 $scope.errorMessage = 'You need at least one condition.';
+              }
+              else if (!$scope.rule.actions.length) {
+                $scope.failure = true;
+                $scope.errorMessage = 'You need at least one action.';
               }
               else {
                 var formData = {
