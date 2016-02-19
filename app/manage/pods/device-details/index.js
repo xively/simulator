@@ -34,7 +34,7 @@ deviceDetailsModule.config([
   function(stateProvider) {
     stateProvider
       .state('device.details', {
-        url: '/device/:deviceId?{demo:bool}',
+        url: '/device/:deviceId?{demo:bool}&{noheader:bool}',
         template: require('./template.tmpl'),
         controller: [
           '$scope',
@@ -65,7 +65,9 @@ deviceDetailsModule.config([
             if (!device) {
               console.error('device %s not found', stateParams.deviceId);
             }
-
+            if (stateParams.noheader) {
+              $rootScope.$broadcast('toggleHeader', true);
+            }
             if (stateParams.demo) {
               $rootScope.$broadcast('toggleDemo', true);
               $rootScope.$broadcast('toggleVirtualDevice', stateParams.deviceId);

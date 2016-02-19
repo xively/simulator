@@ -21,6 +21,12 @@
   }
 }
 
+@mixin noheader{
+  .no-header & {
+      @content;
+  }
+}
+
 @mixin hide-if-mobile {
   @include mobile-screen {
     display: none;
