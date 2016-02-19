@@ -11,9 +11,12 @@
     <div class="alert error" ng-if="serverFailure">
       <p>Oh no... Something went wrong.</p>
     </div>
-    <form>
+    <form name="form" novalidate="">
       <div class="form-row">
-        <input id="name" name="name" class="large-input" type="text" placeholder="Name" ng-model='rule.name' />
+        <input id="name" name="name" class="large-input" type="text" placeholder="Name" ng-model='rule.name' required=""/>
+        <div class="errors" ng-show="submitted || form.name.$touched">
+          <span ng-show="form.name.$error.required">You need to add a name.</span>
+        </div>
       </div>
       <h2>Conditions</h2>
 
@@ -43,6 +46,10 @@
         </div>
       </div>
 
+      <div class="errors" ng-show="submitted">
+        <span ng-show="!rule.conditions.rules.length">You need at least one condition.</span>
+      </div>
+
       <h2>Actions</h2>
       <div class="form-row">
         <label for="case">
@@ -68,13 +75,12 @@
         </label>
       </div>
 
-      <!-- form error message -->
-      <div class="alert error" ng-if="failure">
-        <p>{{errorMessage}}</p>
+      <div class="errors" ng-show="submitted || form.case.$touched || form.opportunity.$touched || form.emailch.$touched">
+        <span ng-show="!rule.actions.length">You need at least one action.</span>
       </div>
 
       <div class="form-row submit-button">
-        <button class="button primary" type="submit" ng-click='formSubmit()'>Save</button>
+        <button class="button primary" type="submit" ng-click='formSubmit(form)'>Save</button>
         <button class="button" ui-sref="rules">Cancel</button>
       </div>
     </form>

@@ -112,6 +112,10 @@ rulesFormModule.config([
               var actions = [];
               for (var key in caseTypes) {
                 if (caseTypes[key].selected) {
+                  // validation
+                  if (!caseTypes[key].value) {
+                    return;
+                  }
                   actions.push({
                     value: caseTypes[key].value,
                     type: key
@@ -123,13 +127,13 @@ rulesFormModule.config([
 
 
             // Form submit functions ---------------------------------------------
-            $scope.formSubmit = function() {
+            $scope.formSubmit = function(form) {
+              $scope.submitted = true;
               $scope.setActions();
-              if (!$scope.rule.conditions.rules.length) {
-                $scope.failure = true;
-                $scope.errorMessage = 'You need at least one condition.';
-              }
-              else {
+
+              if (!form.$invalid &&
+                $scope.rule.actions.length &&
+                $scope.rule.conditions.rules.length) {
                 var formData = {
                   ruleConfig: angular.toJson($scope.rule, true)
                 };
@@ -139,10 +143,6 @@ rulesFormModule.config([
                     newRule: $scope.rule.name,
                     action: $scope.actionType
                   });
-                },
-                function() {
-                  $scope.failure = true;
-                  $scope.errorMessage = 'Server error.';
                 });
               }
             };
