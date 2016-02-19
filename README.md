@@ -118,6 +118,38 @@ a `.env` file.
 3. Restart the Node application. It will upload a Contact and the devices as Assets
   to your Salesforce account
 
+#### Staging and Release notes
+
+Pull Requests are not to be merged into master without first being confirmed by QA.
+After your PR is reviewed, merge your PR into the `staging` branch. Then cut a new build release into `staging-build`. 
+
+(**NOTE:** You will have to run `grunt build` & add the public folder by force `git add public --force`)
+
+[Deploy the staging branch](https://heroku.com/deploy?template=https://github.com/xively/concaria/tree/staging-build)
+
+When a staging branch has been QA'd and no regressions are found, then you can merge your Pull Request into master. After you've done that, tag master with the lastest version #. 
+
+```
+git tag -a v1.1 -m "write a note about what this version includes"
+git push origin v1.1
+
+```
+
+Update the `new-build` branch with a new build.  Master and new-build should always match.
+
+
+##### Release notes
+If you want to include release notes between each tagged version, you can get a list of commits using this command:
+
+`git log v1.0..v1.1`
+
+This will give you all the commits made between those 2 versions.  
+
+Tags are like branches, so you can also do that with any branch. For example if you want to see how many commits staging is ahead of master:
+
+`git log master..staging`
+
+
 ### System Requirements
 
 - Heroku &amp; Heroku CLI
