@@ -81,12 +81,6 @@ bp.getEnv(process.env)
     function(body, $) {
       body.entityId = $.deviceTemplate.id;
       body.entityType = 'deviceTemplate';
-      body.name = 'no2';
-      body.persistenceType = 'timeSeries';
-    },
-    function(body, $) {
-      body.entityId = $.deviceTemplate.id;
-      body.entityType = 'deviceTemplate';
       body.name = 'co';
       body.persistenceType = 'timeSeries';
     },
@@ -106,7 +100,7 @@ bp.getEnv(process.env)
       body.entityId = $.deviceTemplate.id;
       body.entityType = 'deviceTemplate';
       body.name = 'fan';
-      body.persistenceType = 'timeSeries';
+      body.persistenceType = 'simple';
     }
   ]))
 
