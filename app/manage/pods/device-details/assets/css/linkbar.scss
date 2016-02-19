@@ -14,6 +14,9 @@
     @include demo {
       display: none;
     }
+    @include noheader {
+      display: none;
+    }
   }
 
   .new-window-link {
@@ -43,6 +46,9 @@
   }
   margin-bottom: 15px;
   @include demo {
+    display: none;
+  }
+  @include noheader {
     display: none;
   }
 }

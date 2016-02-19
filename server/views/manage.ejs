@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" sizes="144x144" href="/manage/img/concaria-logo@2x.png" />
     <% include partials/config %>
 </head>
-<body ng-controller="loginController" ng-init="setDisplay={'display':''};" ng-class="{demo: demoMode}">
+<body ng-controller="loginController" ng-init="setDisplay={'display':''};" ng-class="{demo: demoMode, 'no-header': noHeaderMode}">
 <div id="content-loader" ng-if="!isLoggedIn">
     <div><div>
         <div class="progress">

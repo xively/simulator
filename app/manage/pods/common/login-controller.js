@@ -9,6 +9,7 @@ module.exports = [
     $scope.isLoggedIn = false;
     $scope.displayVirtualDevice = false;
     $scope.demoMode = false;
+    $scope.noHeaderMode = false;
 
     // Toggle the virtual device state
     $scope.$on('toggleVirtualDevice', function(e, deviceId) {
@@ -23,11 +24,16 @@ module.exports = [
       $scope.displayVirtualDevice = false;
       $scope.showIphoneFrame = false;
       $scope.demoMode = false;
+      $scope.noHeaderMode = false;
     });
 
     $rootScope.$on('toggleDemo', function(event, value) {
       $scope.showIphoneFrame = value;
       $scope.demoMode = value;
+    });
+
+    $rootScope.$on('toggleHeader', function(event, value) {
+      $scope.noHeaderMode = value;
     });
 
     Login.token()

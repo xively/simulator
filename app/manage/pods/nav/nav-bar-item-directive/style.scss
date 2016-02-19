@@ -11,6 +11,9 @@ nav-bar-item {
   @include demo {
     display: none;
   }
+  @include noheader {
+    display: none;
+  }
 
   .nav-bar-item-content {
     display: flex;
