@@ -5,3 +5,4 @@
 /store-*.json
 /provision/temp-heroku-app
 .vscode/
+npm-debug.log
