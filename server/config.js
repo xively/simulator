@@ -1,6 +1,10 @@
 'use strict';
 
 module.exports = {
+  server: {
+    port: process.env.PORT || 5000,
+    databaseURL: process.env.DATABASE_URL
+  },
   account: {
     idmHost: process.env.XIVELY_IDM_HOST,
     timeSeriesHost: process.env.XIVELY_TIMESERIES_HOST,
