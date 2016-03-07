@@ -7,20 +7,18 @@ var router = express.Router;
 module.exports = function(options) {
   var app = router();
 
-  var config = options.config;
-
   // Server index page.
   app.get('/', function(req, res) {
-    res.render('server-index', config.view);
+    res.render('server-index', options);
   });
 
   // Render the app landing page.
   app.get('/virtual-device', function(req, res) {
-    res.render('virtual-device', config.view);
+    res.render('virtual-device', options);
   });
 
   app.get('/manage', function(req, res) {
-    res.render('manage', config.view);
+    res.render('manage', options);
   });
 
   // Serve up any remaining existing path as requested.
@@ -28,11 +26,11 @@ module.exports = function(options) {
 
   // Render the app landing page if the requested path isn't found.
   app.get('/virtual-device/*', function(req, res) {
-    res.render('virtual-device', config.view);
+    res.render('virtual-device', options);
   });
 
   app.get('/manage/*', function(req, res) {
-    res.render('manage', config.view);
+    res.render('manage', options);
   });
 
   return app;
