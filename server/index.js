@@ -25,7 +25,7 @@ const health = require('./health');
 // 1. The data has already been sent to Salesforce
 // 2. There are no Salesforce credentials set up in the environment
 // Refer to the README to figure out how to set up 2
-require('./attempt-salesforce')();
+require('./salesforce');
 
 const mqttConfig = {
   host: `mqtt://${config.account.brokerHost}`,
@@ -38,7 +38,7 @@ const mqttConfig = {
 const app = express();
 
 const database = new Database({
-  databaseURL: config.databaseURL
+  databaseURL: config.server.databaseURL
 });
 app.set('db', database);
 

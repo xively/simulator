@@ -1,5 +1,3 @@
-/* eslint no-process-exit: 0 */
-
 'use strict';
 
 // This file attempts to create and/or update data in Salesforce. It updates
@@ -23,35 +21,30 @@
 // This is a wrapper client for Salesforce. It wraps the Salesforce JavaScript
 // API, JSForce, that is documented here:
 // https://jsforce.github.io/
-var Salesforce = require('./vendor/salesforce');
-var request = require('request');
+const request = require('request');
+const Salesforce = require('./vendor/salesforce');
 
 // One of the goals for this file is to send our device list over to Salesforce
 // We use the BlueprintClient to do retrieve the devices that we then send
 // to Salesforce
-var BlueprintClient = require('./vendor/blueprint-client-node');
+const BlueprintClient = require('./vendor/blueprint-client-node');
+const config = require('./config');
 
-module.exports = function() {
-  // Attempt to retrieve the Salesforce credentials from the environment.
-  // The credentials always come from the environment, whether the developer
-  // is running this locally or on Heroku
-  var creds = {
-    user: process.env.SALESFORCE_USER,
-    pass: process.env.SALESFORCE_PASSWORD,
-    token: process.env.SALESFORCE_TOKEN,
-  };
+const options = config.salesforce;
+// Attempt to retrieve the Salesforce credentials from the environment.
+// The credentials always come from the environment, whether the developer
+// is running this locally or on Heroku
 
-  // If we have no credentials, then no worries. The user isn't required
-  // to hook the application up with Salesforce, so we just return.
-  if (!creds.user || !creds.pass || !creds.token) {
-    console.warn('Skipping Salesforce provisioning. To set up this application with Salesforce, follow the instructions in the README.');
-    return;
-  }
-
+// If we have no credentials, then no worries. The user isn't required
+// to hook the application up with Salesforce, so we just return.
+if (!(options.user && options.pass && options.token)) {
+  console.warn('Skipping Salesforce provisioning.',
+    'To set up this application with Salesforce, follow the instructions in the README.');
+} else {
   // Create a new Salesforce client. This also attempts to connect immediately.
   // The current API of the salesforce wrapper requires that we catch connection
   // errors in subsequent method calls.
-  var salesforce = new Salesforce(creds);
+  const salesforce = new Salesforce(options);
 
   // The first part of setting things up in Salesforce is to register the
   // contact we pull from the environment.
@@ -66,33 +59,32 @@ module.exports = function() {
   // exists it just gets updated.
   console.log('Creating (or updating) the Salesforce contact.');
   salesforce.addContacts([{
-    email: process.env.SALESFORCE_USER,
-    orgId: process.env.XIVELY_SAMPLE_ORG_ID,
+    email: options.user,
+    orgId: config.sample.orgId,
   }]);
 
   // We need to make a request to the demo API to log in. This will give us
   // back the `jwt`, which is a token we need to fetch the 50 devices.
-  var postData = {
-    emailAddress: process.env.XIVELY_ACCOUNT_USER_NAME,
-    password: process.env.XIVELY_ACCOUNT_USER_PASSWORD,
-    accountId: process.env.XIVELY_ACCOUNT_ID,
+  const postData = {
+    emailAddress: config.account.emailAddress,
+    password: config.account.password,
+    accountId: config.account.accountId,
   };
 
   request.post({
     url: 'https://id.demo.xively.com/api/v1/auth/login-user',
     form: postData
-  }, function(err, httpResponse, body) {
+  }, (err, httpResponse, body) => {
     if (err) {
-      console.error('We could not authenticate you with the Xively server; Salesforce will not be provisioned.');
+      console.error('We could not authenticate you with the Xively server; Salesforce will not be provisioned.', err);
       return;
     }
     try {
       body = JSON.parse(body);
+    } catch (e) {
+      console.error('The Xively server returned a malformed response; Salesforce will not be provisioned.', e);
     }
-    catch (e) {
-      console.error('The Xively server returned a malformed response; Salesforce will not be provisioned.');
-    }
-    var jwt = body.jwt;
+    const jwt = body.jwt;
 
     // Once the request has returned, we get our JWT back. We then use
     // this to connect to Blueprint, which downloads our API endpoints from
@@ -100,42 +92,31 @@ module.exports = function() {
     // After that, we make a request for all 50 of our devices.
     // Then, finally, we post to Salesforce and hope that all 50 requests are
     // processed
-    var client = new BlueprintClient({
-      authorization: 'Bearer ' + jwt,
+    new BlueprintClient({
+      authorization: `Bearer ${jwt}`,
       docsUrl: 'https://blueprint.demo.xively.com/docs',
-    });
-
-    client.ready.then(function(c) {
-      c.setAccountId(postData.accountId);
-      c.apis.devices.all({
+    }).ready.then((client) => {
+      client.setAccountId(postData.accountId);
+      client.apis.devices.all({
         // This ensures that we get all of the devices
         pageSize: 100,
-      })
-        .then(function(res) {
-          var data, deviceList;
-          try {
-            data = JSON.parse(res.data.toString());
-            // Transforms the data into the format that the
-            // Salesforce JS client expects.
-            deviceList = data.devices.results.map(function(d) {
-              return {
-                product: d.name,
-                serial: d.serialNumber,
-                deviceId: d.id,
-                orgId: d.organizationId,
-              };
-            });
+      }).then((res) => {
+        const data = JSON.parse(res.data.toString());
+        // Transforms the data into the format that the
+        // Salesforce JS client expects.
+        const deviceList = data.devices.results.map((d) => ({
+          product: d.name,
+          serial: d.serialNumber,
+          deviceId: d.id,
+          orgId: d.organizationId,
+        }));
 
-            console.log('Adding the 50 devices to Salesforce.');
-            salesforce.addAssets(deviceList);
-          }
-          catch (e) {
-            console.error('Blueprint returned malformed JSON; Salesforce will not be provisioned.');
-          }
-        })
-        .catch(function(e) {
-          console.error('Blueprint failed to return the devices; Salesforce will not be provisioned.');
-        });
+        console.log('Adding the 50 devices to Salesforce.');
+        salesforce.addAssets(deviceList);
+      })
+      .catch(function(e) {
+        console.error('Blueprint failed to return the devices; Salesforce will not be provisioned.', e);
+      });
     });
   });
-};
+}

@@ -78,6 +78,6 @@
     "pg-promise": "2.3.1",
     "request": "2.69.0",
     "serve-favicon": "2.3.0",
-    "swagger-client": "2.1.13"
+    "swagger-client": "<2.1"
   }
 }

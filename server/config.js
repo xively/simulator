@@ -5,6 +5,14 @@ module.exports = {
     port: process.env.PORT || 5000,
     databaseURL: process.env.DATABASE_URL
   },
+  salesforce: {
+    user: process.env.SALESFORCE_USER,
+    pass: process.env.SALESFORCE_PASSWORD,
+    token: process.env.SALESFORCE_TOKEN
+  },
+  sample: {
+    orgId: process.env.XIVELY_SAMPLE_ORG_ID
+  },
   account: {
     idmHost: process.env.XIVELY_IDM_HOST,
     timeSeriesHost: process.env.XIVELY_TIMESERIES_HOST,

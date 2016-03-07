@@ -47,8 +47,7 @@ Database.prototype._insertQuery = function(tableName, columnNames, rowData) {
     // This checks to see if the data we're assuming is there is actually present
     if (typeof rowData[field] !== 'undefined') {
       values.push(rowData[field]);
-    }
-    else {
+    } else {
       throw new Error('Missing field: ' + field);
     }
   });
