@@ -45,8 +45,7 @@ module.exports = function() {
     .then(function(rows) {
       if (rows.length) {
         res.json(rows[0]);
-      }
-      else {
+      } else {
         // TODO: Send custom 404 page
         res.status(404).send();
       }
@@ -75,8 +74,7 @@ module.exports = function() {
       if (rows.length) {
         res.status(204).send();
         observer.resetRules();
-      }
-      else {
+      } else {
         // TODO: Send custom 404 page
         res.status(404).send();
       }
@@ -93,8 +91,7 @@ module.exports = function() {
       if (rows.length) {
         res.json(rows[0]);
         observer.resetRules();
-      }
-      else {
+      } else {
         // TODO: Send custom 404 page
         res.status(404).send();
       }

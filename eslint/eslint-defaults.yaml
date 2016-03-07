@@ -135,8 +135,6 @@ rules:
     - never
   brace-style:
     - 2
-    - stroustrup
-    - allowSingleLine: true
   camelcase:
     - 2
     - properties: never
