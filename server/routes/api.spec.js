@@ -3,11 +3,11 @@
 const request = require('super-request');
 const expect = require('chai').expect;
 const server = require('../server');
+const database = require('../database');
 
 describe('API endpoints (/api/*)', () => {
   describe('GET /firmware/:id', () => {
     it('should return a firmware', function *() {
-      const database = server.get('db');
       this.sandbox.stub(database, 'selectFirmware')
         .withArgs('id')
         .returnsWithResolve(['data']);
@@ -24,7 +24,6 @@ describe('API endpoints (/api/*)', () => {
 
   describe('PUT /inventory/:verb/:id', () => {
     it('should update an inventory', function *() {
-      const database = server.get('db');
       this.sandbox.stub(database, 'updateInventory')
         .withArgs('verb', 'id')
         .returnsWithResolve(['data']);
@@ -41,7 +40,6 @@ describe('API endpoints (/api/*)', () => {
 
   describe('GET /rules', () => {
     it('should get rules', function *() {
-      const database = server.get('db');
       this.sandbox.stub(database, 'selectRules').returnsWithResolve(['data']);
 
       const resp = yield request(server.listen())
@@ -56,7 +54,6 @@ describe('API endpoints (/api/*)', () => {
 
   describe('GET /rules/:id', () => {
     it('should get rules', function *() {
-      const database = server.get('db');
       this.sandbox.stub(database, 'selectRule')
         .withArgs('id')
         .returnsWithResolve(['data']);
@@ -71,7 +68,6 @@ describe('API endpoints (/api/*)', () => {
     });
 
     it('should response with 404 if there is no such rule', function *() {
-      const database = server.get('db');
       this.sandbox.stub(database, 'selectRule').returnsWithResolve([]);
 
       yield request(server.listen())
@@ -84,7 +80,6 @@ describe('API endpoints (/api/*)', () => {
 
   describe('POST /rules', () => {
     it('should create a new rule', function *() {
-      const database = server.get('db');
       const observer = server.get('observer');
       const ruleConfig = {a: 1};
 
@@ -109,7 +104,6 @@ describe('API endpoints (/api/*)', () => {
 
   describe('DELETE /rules/:id', () => {
     it('should remove a rule', function *() {
-      const database = server.get('db');
       const observer = server.get('observer');
 
       this.sandbox.stub(database, 'deleteRule')
@@ -127,7 +121,6 @@ describe('API endpoints (/api/*)', () => {
     });
 
     it('should response with 404 if there is no such rule', function *() {
-      const database = server.get('db');
       const observer = server.get('observer');
 
       this.sandbox.stub(database, 'deleteRule')
@@ -147,7 +140,6 @@ describe('API endpoints (/api/*)', () => {
 
   describe('PUT /rules/:id', () => {
     it('should update a rule', function *() {
-      const database = server.get('db');
       const observer = server.get('observer');
       const ruleConfig = {a: 1};
 
@@ -169,7 +161,6 @@ describe('API endpoints (/api/*)', () => {
     });
 
     it('should response with 404 if there is no such rule', function *() {
-      const database = server.get('db');
       const observer = server.get('observer');
 
       this.sandbox.stub(database, 'updateRule').returnsWithResolve([]);
