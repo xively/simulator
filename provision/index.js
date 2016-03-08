@@ -5,7 +5,7 @@
 var _ = require('lodash');
 var bp = require('./blueprint');
 var Promise = require('bluebird');
-var Database = require('../server/database');
+var database = require('../server/database');
 var path = require('path');
 
 require('dotenv').load();
@@ -161,7 +161,6 @@ bp.getEnv(process.env)
 
   // Store in PostGRES – for the future!
   .then(function($) {
-    var database = new Database({databaseURL: process.env.DATABASE_URL});
     var tableScript = path.join(__dirname, 'tables.sql');
 
     return database.runScriptFile(tableScript)

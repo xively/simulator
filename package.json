@@ -7,7 +7,7 @@
     "build": "grunt build",
     "work": "grunt",
     "test": "npm run server-test && grunt test",
-    "server-test": "NODE_ENV=test mocha --require co-mocha 'server/**/*.spec.js'",
+    "test-server": "NODE_ENV=test mocha --require co-mocha 'server/**/*.spec.js'",
     "test-headless": "grunt test-headless",
     "local-provision": "sh provision/pre-provision.sh && node provision",
     "clear-sf-data": "node bin/clear-salesforce"
@@ -68,7 +68,6 @@
   },
   "dependencies": {
     "bluebird": "3.0.5",
-    "bluebird-retry": "0.5.2",
     "body-parser": "1.15.0",
     "cookie-parser": "1.4.1",
     "dotenv": "2.0.0",
@@ -76,10 +75,11 @@
     "express": "4.13.3",
     "font-awesome": "4.5.0",
     "jsforce": "1.5.0",
+    "knex": "0.10.0",
     "lodash": "3.10.1",
     "mqtt": "1.6.3",
     "nools": "0.4.1",
-    "pg-promise": "2.3.1",
+    "pg": "4.5.1",
     "request": "2.69.0",
     "serve-favicon": "2.3.0",
     "swagger-client": "<2.1"

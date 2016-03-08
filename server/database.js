@@ -1,166 +1,130 @@
 'use strict';
 
-var url = require('url');
-var Promise = require('bluebird');
-var fs = require('fs');
-var pg = require('pg-promise')({
-  promiseLib: Promise,
+const fs = require('fs');
+const createKnex = require('knex');
+const moment = require('moment');
+const config = require('./config');
+
+const knex = createKnex({
+  client: 'pg',
+  connection: config.database.pgUri,
+  debug: Boolean(process.env.KNEX_DEBUG)
 });
 
-function Database(options) {
-  // TODO: Maybe deal with options in a cleaner way.
-  var databaseAddress = url.parse(options.databaseURL);
-  var pgOptions = {
-    host: databaseAddress.hostname,
-    port: databaseAddress.port,
-    database: databaseAddress.path.slice(1),
-    connect: function() {
-      console.log('Connected to Postgres');
-    },
-  };
-
-  if (databaseAddress.auth) {
-    var databaseAuth = databaseAddress.auth.split(':');
-    pgOptions.user = databaseAuth[0];
-    pgOptions.password = databaseAuth[1];
-    pgOptions.ssl = true;
-  }
-
-  this._client = pg(pgOptions);
-  this.connectedClient = this._client.connect();
-  this.connectedClient.catch(function(error) {
-    console.log(error);
-  });
+// Application
+function selectApplicationConfig(accountId) {
+  return knex('application_config')
+    .select()
+    .where('accountId', accountId);
 }
 
-Database.prototype._query = function(query, data) {
-  var client = this._client;
-  return this.connectedClient.then(function() {
-    return client.query(query, data);
-  });
-};
-
-Database.prototype._insertQuery = function(tableName, columnNames, rowData) {
-  var fields = [];
-  var values = [];
-  // Loop through the list of expected column names
-  columnNames.forEach(function(field, key) {
-    // The format for psql prepared statements is $1, $2 for ['a', 'b'] - this adds to array of placeholders
-    fields.push('$' + (key + 1));
-    // This checks to see if the data we're assuming is there is actually present
-    if (typeof rowData[field] !== 'undefined') {
-      values.push(rowData[field]);
-    } else {
-      throw new Error('Missing field: ' + field);
-    }
-  });
-
-  // Puts together lists of column names and placeholders
-  var columnList = columnNames.join('","');
-  var fieldList = fields.join(', ');
-
-  return this._query(
-    'INSERT INTO ' + tableName + ' ("' + columnList + '") VALUES (' + fieldList + ') RETURNING *',
-    values
-    );
-};
-
-Database.prototype.end = function() {
-  // shutting down the library, not just one database connection:
-  pg.end(); // nothing to return here;
-};
-
-Database.prototype.runScriptFile = function(fileName) {
-  var script = fs.readFileSync(fileName, 'utf8');
-
-  return this._query(script);
-};
-
-// inserted during provisioning
-// this will replace the redis store
-Database.prototype.insertApplicationConfig = function(data) {
-  var columns = ['accountId', 'organization', 'mqttUser', 'device', 'endUser'];
-  return this._insertQuery('application_config', columns, data);
-};
-
-Database.prototype.selectApplicationConfig = function(accountid) {
-  return this._query('SELECT * FROM application_config WHERE "accountId" = $1', accountid);
-};
-
-
-// Inventory
-Database.prototype.insertInventory = function(data) {
-  var columns = ['serial'];
-
-  return this._insertQuery('inventory', columns, data);
-};
-
-Database.prototype.updateInventory = function(verb, inventoryId) {
-  var query = 'UPDATE inventory ';
-  switch (verb) {
-    case 'sell':
-      query += 'SET "sold" = true, "soldDate" = now()::timestamp';
-      break;
-
-    case 'reserve':
-      query += 'SET "reserved" = true';
-      break;
-
-    default:
-      throw new Error('Tried to ' + verb + ' the inventory');
-  }
-  query += ' WHERE id = $1 RETURNING *';
-
-  return this._query(query, inventoryId);
-};
-
-Database.prototype.selectInventory = function() {};
+function insertApplicationConfig(data) {
+  return knex('application_config')
+    .insert(data)
+    .returning('*');
+}
 
 // Firmware
-Database.prototype.insertFirmware = function(data) {
-  var columns = [
-    'id',
-    'serial',
-    'mqttUser',
-    'mqttPassword',
-    'associationCode',
-    'organizationId',
-    'deviceId',
-  ];
+function selectFirmwares() {
+  return knex('firmware')
+    .select();
+}
 
-  return this._insertQuery('firmware', columns, data);
+function selectFirmware(deviceId) {
+  return knex('firmware')
+    .select()
+    .where('deviceId', deviceId)
+    .limit(1);
+}
+
+function insertFirmware(data) {
+  return knex('firmware')
+    .insert(data)
+    .returning('*');
+}
+
+// Rule
+function selectRules() {
+  return knex('rules')
+    .select();
+}
+
+function selectRule(id) {
+  return knex('rules')
+    .select()
+    .where('id', id);
+}
+
+function insertRule(ruleConfig) {
+  return knex('rules')
+    .insert(ruleConfig)
+    .returning('*');
+}
+
+function updateRule(id, ruleConfig) {
+  const updateQuery = {
+    ruleConfig: JSON.stringify(ruleConfig)
+  };
+  return knex('rules')
+    .where('id', id)
+    .update(updateQuery)
+    .returning('*');
+}
+
+function deleteRule(id) {
+  return knex('rules')
+    .where('id', id)
+    .del()
+    .returning('*');
+}
+
+// Inventory
+function insertInventory(data) {
+  return knex('inventory')
+    .insert(data)
+    .returning('*');
+}
+
+function updateInventory(verb, inventoryId) {
+  const updateQuery = {};
+  if (verb === 'sell') {
+    updateQuery.sold = true;
+    updateQuery.soldDate = moment.utc().format();
+  } else if (verb === 'reserve') {
+    updateQuery.reserved = true;
+  } else {
+    throw new Error(`Tried to ${verb} the inventory`);
+  }
+
+  return knex('inventory')
+    .where('id', inventoryId)
+    .update(updateQuery)
+    .returning('*');
+}
+
+// Misc
+function runScriptFile(fileName) {
+  var script = fs.readFileSync(fileName, 'utf8');
+
+  return knex.raw(script);
+}
+
+module.exports = {
+  selectApplicationConfig,
+  insertApplicationConfig,
+
+  selectFirmwares,
+  selectFirmware,
+  insertFirmware,
+
+  selectRules,
+  selectRule,
+  insertRule,
+  updateRule,
+  deleteRule,
+
+  insertInventory,
+  updateInventory,
+
+  runScriptFile
 };
-
-Database.prototype.selectFirmwares = function() {
-  return this._query('SELECT * FROM firmware');
-};
-
-Database.prototype.selectFirmware = function(deviceId) {
-  return this._query('SELECT * FROM firmware WHERE "deviceId" = $1 LIMIT 1', [deviceId]);
-};
-
-// Rules
-Database.prototype.insertRule = function(ruleConfig) {
-  var columns = ['ruleConfig'];
-  return this._insertQuery('rules', columns, {ruleConfig: JSON.stringify(ruleConfig)});
-};
-
-Database.prototype.updateRule = function(id, ruleConfig) {
-  var query = 'UPDATE rules SET "ruleConfig" = $1 WHERE id = $2 RETURNING *';
-
-  return this._query(query, [JSON.stringify(ruleConfig), id]);
-};
-
-Database.prototype.selectRules = function() {
-  return this._query('SELECT * FROM rules');
-};
-
-Database.prototype.selectRule = function(id) {
-  return this._query('SELECT * FROM rules WHERE id = $1', id);
-};
-
-Database.prototype.deleteRule = function(id) {
-  return this._query('DELETE FROM rules WHERE id = $1 RETURNING *', id);
-};
-
-module.exports = Database;

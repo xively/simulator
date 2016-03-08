@@ -9,7 +9,7 @@ const favicon = require('serve-favicon');
 
 const config = require('./config');
 
-const Database = require('./database');
+const database = require('./database');
 const Observer = require('./observer');
 
 const routes = require('./routes');
@@ -24,11 +24,6 @@ const mqttConfig = {
 };
 
 const app = express();
-
-const database = new Database({
-  databaseURL: config.server.databaseURL
-});
-app.set('db', database);
 
 const observer = new Observer(database, mqttConfig);
 app.set('observer', observer);
