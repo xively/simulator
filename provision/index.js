@@ -2,13 +2,13 @@
 
 'use strict';
 
+require('dotenv').load();
+
 var _ = require('lodash');
 var bp = require('./blueprint');
 var Promise = require('bluebird');
 var database = require('../server/database');
 var path = require('path');
-
-require('dotenv').load();
 
 var SERIAL_PREFIX = 'Purify';
 var SERIAL_START = Math.floor(Math.random() * 100000) * 100;

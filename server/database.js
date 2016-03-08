@@ -7,7 +7,7 @@ const config = require('./config');
 
 const knex = createKnex({
   client: 'pg',
-  connection: config.database.pgUri,
+  connection: `${config.database.pgUri}?ssl=true`,
   debug: Boolean(process.env.KNEX_DEBUG)
 });
 
