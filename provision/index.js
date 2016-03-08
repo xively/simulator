@@ -198,7 +198,6 @@ bp.getEnv(process.env)
       return database.insertApplicationConfig(appConfig);
     })
     .then(function() {
-      database.end();
       return $;
     });
   })

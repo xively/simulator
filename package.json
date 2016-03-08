@@ -10,7 +10,8 @@
     "test-server": "NODE_ENV=test mocha --require co-mocha 'server/**/*.spec.js'",
     "test-headless": "grunt test-headless",
     "local-provision": "sh provision/pre-provision.sh && node provision",
-    "clear-sf-data": "node bin/clear-salesforce"
+    "clear-sf-data": "node bin/clear-salesforce",
+    "syncdb": "node syncdb"
   },
   "repository": {
     "type": "git",
@@ -19,9 +20,9 @@
   "author": "",
   "license": "",
   "bugs": {
-    "url": "https://github.com/ionia-corporation/concaria/issues"
+    "url": "https://github.com/xively/concaria/issues"
   },
-  "homepage": "https://github.com/ionia-corporation/concaria#readme",
+  "homepage": "https://github.com/xively/concaria#readme",
   "devDependencies": {
     "angular": "1.4.7",
     "angular-mocks": "1.4.7",
