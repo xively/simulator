@@ -10,18 +10,21 @@ var pg = require('pg-promise')({
 function Database(options) {
   // TODO: Maybe deal with options in a cleaner way.
   var databaseAddress = url.parse(options.databaseURL);
-  var databaseAuth = databaseAddress.auth.split(':');
   var pgOptions = {
-    user: databaseAuth[0],
-    password: databaseAuth[1],
     host: databaseAddress.hostname,
     port: databaseAddress.port,
     database: databaseAddress.path.slice(1),
-    ssl: true,
     connect: function() {
       console.log('Connected to Postgres');
     },
   };
+
+  if (databaseAddress.auth) {
+    var databaseAuth = databaseAddress.auth.split(':');
+    pgOptions.user = databaseAuth[0];
+    pgOptions.password = databaseAuth[1];
+    pgOptions.ssl = true;
+  }
 
   this._client = pg(pgOptions);
   this.connectedClient = this._client.connect();
