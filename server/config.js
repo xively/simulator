@@ -3,7 +3,7 @@
 module.exports = {
   server: {
     port: process.env.PORT || 5000,
-    databaseURL: process.env.DATABASE_URL,
+    databaseURL: process.env.DATABASE_URL || 'postgres://localhost:5432/concaria',
     whitelist: [
       'http://www.airnowapi.org/aq/data',
       'https://timeseries.demo.xively.com/api/v4/data/xi/blue/v1'
