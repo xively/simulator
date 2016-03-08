@@ -1,49 +1,50 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="concaria-manage">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Concaria Webapp</title>
-    <link rel="stylesheet" type="text/css" href="/manage/css/main.css"/>
-    <link rel="apple-touch-icon" sizes="144x144" href="/manage/img/concaria-logo@2x.png" />
-    <% include partials/config %>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Concaria Webapp</title>
+  <link rel="stylesheet" type="text/css" href="/manage/css/main.css" />
+  <link rel="apple-touch-icon" sizes="144x144" href="/manage/img/concaria-logo@2x.png" />
+  <% include partials/config %>
 </head>
+
 <body ng-controller="loginController" ng-init="setDisplay={'display':''};" ng-class="{demo: demoMode}">
-<div id="content-loader" ng-if="!isLoggedIn">
-    <div><div>
+  <div id="content-loader" ng-if="!isLoggedIn">
+    <div>
+      <div>
         <div class="progress">
-            <svg viewBox="-10 -10 220 220">
-                <path class="progress-background"
-                      d="M 0,100 A 100,100 0 1,1 0,100.01"></path>
-                <path class="progress-indicator"
-                      d="M 0,100 A 100,100 0 1,1 0,100.01"
-                      stroke-dasharray="100, 100"></path>
-            </svg>
-            <div class="device-status-filter-life-value" style="display: none;"
-                 ng-style="setDisplay">
-                Login is in progress...
-            </div>
+          <svg viewBox="-10 -10 220 220">
+            <path class="progress-background" d="M 0,100 A 100,100 0 1,1 0,100.01"></path>
+            <path class="progress-indicator" d="M 0,100 A 100,100 0 1,1 0,100.01" stroke-dasharray="100, 100"></path>
+          </svg>
+          <div class="device-status-filter-life-value" style="display: none;" ng-style="setDisplay">
+            Login is in progress...
+          </div>
         </div>
-    </div></div>
-</div>
-<!-- This div displays all of the content of the "manage" app -->
-<div class="left-content" ng-if="isLoggedIn" ng-class="{'width-100': !displayVirtualDevice, 'mobile-width': displayVirtualDevice}">
-  <iphone-frame visible="showIphoneFrame" ng-class="{'demo-mode': demoMode}">
-    <nav-menu is-open="menuOpen"></nav-menu>
-    <div nav-content>
-      <nav-title menu-click="toggleMenu()"></nav-title>
-      <nav-bar></nav-bar>
-      <div ui-view></div>
-      <bold-chat></bold-chat>
+      </div>
     </div>
-  </iphone-frame>
-</div>
-<!-- This div contains the virtual device. It is made visible through interactions on the device detail page. -->
-<div class="right-content" ng-if="isLoggedIn && displayVirtualDevice">
-  <iframe ng-src="{{ virtualDeviceUrl }}" frameborder="0"></iframe>
-</div>
-<script type="text/javascript" src="/manage/bundle.js"></script>
-<% include partials/livereload %>
+  </div>
+  <!-- This div displays all of the content of the "manage" app -->
+  <div class="left-content" ng-if="isLoggedIn" ng-class="{'width-100': !displayVirtualDevice, 'mobile-width': displayVirtualDevice}">
+    <iphone-frame visible="showIphoneFrame" ng-class="{'demo-mode': demoMode}">
+      <nav-menu is-open="menuOpen"></nav-menu>
+      <div nav-content>
+        <nav-title menu-click="toggleMenu()"></nav-title>
+        <nav-bar></nav-bar>
+        <div ui-view></div>
+        <bold-chat></bold-chat>
+      </div>
+    </iphone-frame>
+  </div>
+  <!-- This div contains the virtual device. It is made visible through interactions on the device detail page. -->
+  <div class="right-content" ng-if="isLoggedIn && displayVirtualDevice">
+    <iframe ng-src="{{ virtualDeviceUrl }}" frameborder="0"></iframe>
+  </div>
+  <script type="text/javascript" src="/manage/bundle.js"></script>
+  <% include partials/livereload %>
 </body>
+
 </html>
