@@ -15,10 +15,8 @@ const config = require('./config');
 const Database = require('./database');
 const Observer = require('./observer');
 
-const api = require('./api');
+const routes = require('./routes');
 const proxy = require('./proxy');
-const views = require('./views');
-const health = require('./health');
 
 // This attempts to send over our devices to Salesforce. It
 // does nothing if:
@@ -87,25 +85,11 @@ app.use((req, res, next) => {
   return res.render('loading');
 });
 
-// Api routes
-app.use('/api', api());
-
-// View routes
-app.use('/', views({
-  config: config,
-}));
-
-// Health checker route
-app.use('/diag/selftest', health());
+// Routes
+app.use(routes);
 
 // Proxy route
-app.use('/api/proxy', proxy({
-  whitelist: [
-    'http://www.airnowapi.org/aq/data',
-    'https://timeseries.demo.xively.com/api/v4/data/xi/blue/v1',
-    'http://concaria-sms.herokuapp.com/api'
-  ]
-}));
+app.use('/api/proxy', proxy);
 
 // Serve up favicon
 app.use(favicon(path.join(__dirname, '/favicon.ico')));
