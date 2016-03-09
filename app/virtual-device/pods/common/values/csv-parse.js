@@ -16,7 +16,9 @@ var csvParse = {
   // ,temp,70,
   // ,fan,1,low
   serialize: function(arr) {
-    if (!arr || !arr.length) { return ''; }
+    if (!arr || !arr.length) {
+      return '';
+    }
 
     arr = arr.map(function(child) {
       return child.join(',');

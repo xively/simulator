@@ -13,8 +13,7 @@ module.exports = [
         var computeTitle = function() {
           if ($state.$current.path.length) {
             scope.title = $state.$current.path[0].self.name;
-          }
-          else {
+          } else {
             scope.title = 'Loading ...';
           }
         };

@@ -25,8 +25,7 @@ module.exports = [
         /* global localStorage:false */
         try {
           return fn.apply(null, [localStorage].concat(slice.call(arguments)));
-        }
-        catch (storageError) {
+        } catch (storageError) {
           console.error(errorMessage);
         }
       };
@@ -57,7 +56,9 @@ module.exports = [
           $scope = $rootScope.$new();
           $scope.jwt = null;
           $scope.$watch('jwt', function() {
-            _.remove(jwtWatchers, function(fn) { return typeof fn() !== 'undefined'; });
+            _.remove(jwtWatchers, function(fn) {
+              return typeof fn() !== 'undefined';
+            });
           });
         }
 
@@ -157,7 +158,9 @@ module.exports = [
                 .catch(function(error) {
                   throw new Error(error.statusText, error);
                 })
-                .then(function(response) { return {jwt: response.data.jwt}; });
+                .then(function(response) {
+                  return {jwt: response.data.jwt};
+                });
               })
               .then(function(state) {
                 if ($scope.jwt === _jwt && (!hasStoredToken() || getStoredToken() === _jwt)) {
@@ -172,8 +175,7 @@ module.exports = [
                     $scope.jwt = null;
                     $scope.lastRenew = 0;
                   });
-                }
-                else if ($scope.jwt === _jwt && hasStoredToken()) {
+                } else if ($scope.jwt === _jwt && hasStoredToken()) {
                   // Another renew, possibly in another window, succeeded before we tried to renew.
                   return getStoredToken();
                 }

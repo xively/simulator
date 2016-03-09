@@ -48,8 +48,7 @@ module.exports = [
             // cleanup
             scope.rule.value = null;
             scope.rule.device = 'temp';
-          }
-          else {
+          } else {
             scope.errorvalue = !data.value;
             scope.errordevice = !data.device;
           }

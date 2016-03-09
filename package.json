@@ -6,7 +6,7 @@
     "start": "node server",
     "build": "grunt build",
     "work": "grunt",
-    "test": "npm run server-test && grunt test",
+    "test": "npm run test-server && grunt test",
     "test-server": "NODE_ENV=test mocha --require co-mocha 'server/**/*.spec.js'",
     "test-headless": "grunt test-headless",
     "local-provision": "sh provision/pre-provision.sh && node provision",

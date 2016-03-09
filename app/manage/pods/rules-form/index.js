@@ -98,8 +98,7 @@ rulesFormModule.config([
               if (parentIndex) {
                 if ($scope.conditions[parentIndex].rules.length <= 1) {
                   ruleIndex = parentIndex;
-                }
-                else {
+                } else {
                   conditionArray = $scope.conditions[parentIndex].rules;
                 }
               }
@@ -132,16 +131,13 @@ rulesFormModule.config([
               if (!$scope.rule.name) {
                 $scope.failure = true;
                 $scope.errorMessage = 'You need to add a name.';
-              }
-              else if (!$scope.rule.conditions.rules.length) {
+              } else if (!$scope.rule.conditions.rules.length) {
                 $scope.failure = true;
                 $scope.errorMessage = 'You need at least one condition.';
-              }
-              else if (!$scope.rule.actions.length) {
+              } else if (!$scope.rule.actions.length) {
                 $scope.failure = true;
                 $scope.errorMessage = 'You need at least one action.';
-              }
-              else {
+              } else {
                 var formData = {
                   ruleConfig: angular.toJson($scope.rule, true)
                 };

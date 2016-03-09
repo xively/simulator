@@ -94,8 +94,7 @@ module.exports = [
                   var idx = dataPoint.Latitude + String(dataPoint.Longitude);
                   if (!retIdx) {
                     retIdx = idx;
-                  }
-                  else if (retIdx !== idx) {
+                  } else if (retIdx !== idx) {
                     continue;
                   }
                   retVal.push({

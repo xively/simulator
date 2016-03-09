@@ -10,7 +10,9 @@ var aqiService = ['$rootScope', 'AqiData',
     var poll;
     return {
       init: function() {
-        if (typeof poll !== 'undefined') { return; }
+        if (typeof poll !== 'undefined') {
+          return;
+        }
         this._poll();
       },
 

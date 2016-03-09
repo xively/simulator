@@ -12,7 +12,9 @@ var periodicSensorUpdate = ['mqttSensorPublisher',
     var poll;
     return {
       init: function(channel) {
-        if (typeof poll !== 'undefined') { return; }
+        if (typeof poll !== 'undefined') {
+          return;
+        }
         // Emit an update, then begin polling
         mqttSensorPublisher.publishUpdate(null, channel);
         poll = setInterval(function() {

@@ -16,17 +16,14 @@ function sensorValue(options) {
     // Adjust current value by delta.
     if (current !== null && options.delta) {
       current += options.delta * wiggle;
-    }
     // Adjust current value +/- by wiggle % of total range.
-    else if (current !== null && options.wiggle) {
+    } else if (current !== null && options.wiggle) {
       current += (options.max - options.min) * wiggle * _.sample([1, -1]);
-    }
     // No current value, get the initial value.
-    else if ('initial' in options) {
+    } else if ('initial' in options) {
       current = options.initial;
-    }
     // No current value, get a random value.
-    else {
+    } else {
       current = _.random(options.min, options.max);
     }
     // Ensure current value falls within min and max range.
@@ -204,8 +201,7 @@ deviceSimulatorModule.config([
                 var retval = false;
                 if (intervalId) {
                   stop();
-                }
-                else {
+                } else {
                   start(options);
                   retval = true;
                 }

@@ -32,8 +32,7 @@ exports.useDemoAccount = function($) {
     $.env.XIVELY_BLUEPRINT_HOST = 'blueprint.demo.xively.com';
     $.env.XIVELY_BROKER_HOST = 'broker.demo.xively.com';
     $.env.XIVELY_TIMESERIES_HOST = 'timeseries.demo.xively.com';
-  }
-  catch (err) {
+  } catch (err) {
     // Fail silently.
   }
   return Promise.resolve($);
@@ -116,8 +115,7 @@ exports.blueprintCreator = function(baseOptions) {
         };
         if (typeof optionsBody === 'function') {
           body = optionsBody(body, $) || body;
-        }
-        else if (typeof optionsBody === 'object' && optionsBody) {
+        } else if (typeof optionsBody === 'object' && optionsBody) {
           _.assign(body, optionsBody);
         }
         // Error if specified method doesn't exist.
