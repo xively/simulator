@@ -20,6 +20,10 @@ module.exports = [
           $scope.url = $location.absUrl().replace('?demo=1', '');
           $scope.phone = null;
 
+          if ($scope.url.indexOf('noHeader') === -1) {
+            $scope.url += '?noheader=1';
+          }
+
           // create clipboard ---------------------
           var clipboard = new Clipboard('.copy-btn');
           clipboard.on('success', function(e) {
@@ -52,8 +56,7 @@ module.exports = [
           $scope.removeModal = function() {
             $scope.closeModal()();
           };
-
-        },
+        }
       ],
     };
   },

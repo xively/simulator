@@ -21,7 +21,7 @@
   <share-modal ng-show="displayModal" close-modal="toggleModal"></share-modal>
   <!-- link bar -->
   <div class="link-bar">
-    <a ui-sref="device.list" class="return-link">
+    <a ui-sref="device.list" class="return-link" ng-if="!params.noheader">
       <img src="/manage/img/back-arrow.svg" alt="<">
       Back to devices list
     </a>
@@ -29,11 +29,11 @@
     <a class="share-link" ng-click="toggleModal()">
       <i class="fa fa-share-alt"></i>
     </a>
-    <a class="ne-arrow-link frame-link" ng-click="toggleVirtualDevice()">
+    <a class="ne-arrow-link frame-link" ng-click="toggleVirtualDevice()" ng-if="!params.noheader">
       <img src="/manage/img/icon-ne-arrow-circle.svg" alt="" ng-if="!displayVirtualDevice">
       <img src="/manage/img/icon-ne-arrow-circle-highlight.svg" alt="" ng-if="displayVirtualDevice">
     </a>
-    <a class="ne-arrow-link new-window-link" ng-href="/virtual-device/device/{{device.id}}" target="_blank">
+    <a class="ne-arrow-link new-window-link" ng-href="/virtual-device/device/{{device.id}}" target="_blank" ng-if="!params.noheader">
       <img src="/manage/img/icon-ne-arrow-circle.svg" alt="">
     </a>
   </div>

@@ -9,16 +9,8 @@
   <div class="form-row copy-wrapper">
     <input id="copy-target" value="{{url}}" type="text">
     <button class="copy-btn button primary" data-clipboard-target="#copy-target">
-        <i class="fa fa-clipboard"></i>
+      <i class="fa fa-clipboard"></i>
     </button>
+    <span class="success-text" ng-show="copySuccess">Copied!</span>
   </div>
-  <div class="form-row copy-wrapper">
-    <label>Text the link</label>
-    <input placeholder="555-555-5555" ng-model="phone" type="text">
-    <button class="button primary" ng-click="sendText()">
-        text me
-    </button>
-  </div>
-
-  <span class="message-text" ng-if="messageText">{{messageText}}</span>
 </div>
