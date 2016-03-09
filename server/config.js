@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = {
+const config = {
   database: {
     pgUri: process.env.DATABASE_URL || 'postgres://localhost:5432/concaria'
   },
@@ -60,3 +60,9 @@ module.exports = {
     }
   }
 };
+
+if (process.env.NODE_ENV !== 'test') {
+  config.database.pgUri = `${config.database.pgUri}?ssl=true`;
+}
+
+module.exports = config;
