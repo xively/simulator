@@ -1,5 +1,22 @@
 <device-details-alert></device-details-alert>
-<div class="content-panel container" ng-if="isLoggedIn" launch-simulator="device.id">
+
+<div class="content-loader device" ng-show="isLoggedIn && !isLoaded">
+  <div>
+    <div>
+      <div class="progress">
+        <svg viewBox="-10 -10 220 220">
+          <path class="progress-background" d="M 0,100 A 100,100 0 1,1 0,100.01"></path>
+          <path class="progress-indicator" d="M 0,100 A 100,100 0 1,1 0,100.01" stroke-dasharray="100, 100"></path>
+        </svg>
+        <div class="device-status-filter-life-value" style="display: none;" ng-style="setDisplay">
+          Loading...
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content-panel container" ng-if="isLoggedIn" ng-show="isLoaded" launch-simulator="device.id">
   <!-- share modal -->
   <share-modal ng-show="displayModal" close-modal="toggleModal"></share-modal>
   <!-- link bar -->
