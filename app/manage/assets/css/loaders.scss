@@ -1,14 +1,18 @@
-#content-loader {
+.content-loader {
   display: table;
   width: 100%;
   height: 100%;
 }
 
-#content-loader > div {
+.content-loader.device {
+  margin-top: 100px;
+}
+
+.content-loader > div {
   display: table-row;
 }
 
-#content-loader > div > div {
+.content-loader > div > div {
   display: table-cell;
   vertical-align: middle;
   position: relative;
@@ -22,7 +26,7 @@
 }
 
 #status-accurate-loader .progress,
-#content-loader .progress {
+.content-loader .progress {
   top: calc(50% - 2.5rem - 12.5rem);
   width: 100%;
 }
@@ -120,7 +124,7 @@
 }
 
 #status-accurate-loader .progress svg path,
-#content-loader .progress svg path {
+.content-loader .progress svg path {
   -moz-animation: progress-indicator 800ms infinite;
   -webkit-animation: progress-indicator 800ms infinite;
   -o-animation: progress-indicator 800ms infinite;

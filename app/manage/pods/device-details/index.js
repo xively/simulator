@@ -70,6 +70,7 @@ deviceDetailsModule.config([
               $rootScope.$broadcast('toggleDemo', true);
               $rootScope.$broadcast('toggleVirtualDevice', stateParams.deviceId);
             }
+            $scope.isLoaded = false;
             $scope.email = applicationConfig.emailAddress;
             $scope.units = sensorUnitConfig;
             $scope.device = device;
@@ -302,6 +303,7 @@ deviceDetailsModule.config([
                   item.loaded
                   .then(function() {
                     $scope.$applyAsync(function() {
+                      $scope.isLoaded = true;
                       item.chartData.dataSource.data.push({value: item.value});
                       if (item.chartData.dataSource.data.length > maxDataPoints) {
                         var dataSource = item.chartData.dataSource;

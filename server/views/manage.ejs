@@ -12,7 +12,7 @@
 </head>
 
 <body ng-controller="loginController" ng-init="setDisplay={'display':''};" ng-class="{demo: demoMode}">
-  <div id="content-loader" ng-if="!isLoggedIn">
+  <div class="content-loader" ng-show="!isLoggedIn">
     <div>
       <div>
         <div class="progress">
@@ -28,7 +28,7 @@
     </div>
   </div>
   <!-- This div displays all of the content of the "manage" app -->
-  <div class="left-content" ng-if="isLoggedIn" ng-class="{'width-100': !displayVirtualDevice, 'mobile-width': displayVirtualDevice}">
+  <div class="left-content" ng-show="isLoggedIn" ng-class="{'width-100': !displayVirtualDevice, 'mobile-width': displayVirtualDevice}">
     <iphone-frame visible="showIphoneFrame" ng-class="{'demo-mode': demoMode}">
       <nav-menu is-open="menuOpen"></nav-menu>
       <div nav-content>
@@ -40,7 +40,7 @@
     </iphone-frame>
   </div>
   <!-- This div contains the virtual device. It is made visible through interactions on the device detail page. -->
-  <div class="right-content" ng-if="isLoggedIn && displayVirtualDevice">
+  <div class="right-content" ng-show="isLoggedIn && displayVirtualDevice">
     <iframe ng-src="{{ virtualDeviceUrl }}" frameborder="0"></iframe>
   </div>
   <script type="text/javascript" src="/manage/bundle.js"></script>
