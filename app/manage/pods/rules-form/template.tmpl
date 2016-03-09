@@ -59,7 +59,7 @@
         </label>
       </div>
 
-      <div class="form-row">
+      <!-- <div class="form-row">
         <label for="opportunity">
           <input id="opportunity" type="checkbox" name='opportunity' value='true' ng-model='caseTypes.opportunity.selected'/>
           Create a salesforce opportunity titled:
@@ -73,7 +73,7 @@
           Send email to:
           <input id="email" type="text" class="large-input" name="email" ng-model='caseTypes.email.value'/>
         </label>
-      </div>
+      </div> -->
 
       <div class="errors" ng-show="submitted || form.case.$touched || form.opportunity.$touched || form.emailch.$touched">
         <span ng-show="!rule.actions.length">You need at least one action.</span>
