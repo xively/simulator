@@ -209,8 +209,7 @@ bp.getEnv(process.env)
     console.error('Provision error');
     if (err instanceof Error) {
       console.error(err.stack);
-    }
-    else {
+    } else {
       console.error(JSON.stringify(err, null, 2));
     }
   })

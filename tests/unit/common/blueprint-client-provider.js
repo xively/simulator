@@ -34,7 +34,9 @@ describe('BlueprintClientProvider', function() {
       };
       return wrapper;
     })
-    .then(function(wrapper) { return wrapper.call('devices.all'); })
+    .then(function(wrapper) {
+      return wrapper.call('devices.all');
+    })
     .then(function(accountId) {
       expect(accountId).to.equal('accountId');
     });

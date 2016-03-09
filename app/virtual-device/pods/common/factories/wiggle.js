@@ -13,7 +13,9 @@ var wiggle = ['randomInteger', function(randomInteger) {
   return function(num, max, changeChance) {
     changeChance = changeChance ? changeChance : 0.5;
     // Determine if we should even change the value or not
-    if (!chance(changeChance)) { return false; }
+    if (!chance(changeChance)) {
+      return false;
+    }
     var wiggleAmount = randomInteger(-max, max);
     return num + wiggleAmount;
   };

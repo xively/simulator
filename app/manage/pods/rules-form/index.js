@@ -98,8 +98,7 @@ rulesFormModule.config([
               if (parentIndex) {
                 if ($scope.conditions[parentIndex].rules.length <= 1) {
                   ruleIndex = parentIndex;
-                }
-                else {
+                } else {
                   conditionArray = $scope.conditions[parentIndex].rules;
                 }
               }

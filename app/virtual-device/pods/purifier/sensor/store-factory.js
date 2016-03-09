@@ -19,10 +19,8 @@ var sensorStore = ['$rootScope', '$cacheFactory', 'clamp', 'sensorProps',
       set: function(key, value) {
         if (sensorKeys.indexOf(key) === -1) {
           return false;
-        }
-
         // Only allow numbers
-        else if (typeof value !== 'number') {
+        } else if (typeof value !== 'number') {
           return false;
         }
 

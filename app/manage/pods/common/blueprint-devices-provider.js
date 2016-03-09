@@ -57,7 +57,9 @@ module.exports = [
       'BlueprintClient',
       function(BlueprintClient) {
         return Promise.props({
-          client: BlueprintClient.then(function(client) { return client.client; }),
+          client: BlueprintClient.then(function(client) {
+            return client.client;
+          }),
           config: {
             accountId: options.accountId,
             organizationId: options.organizationId,

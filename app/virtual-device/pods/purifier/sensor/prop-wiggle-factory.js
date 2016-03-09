@@ -10,7 +10,9 @@ var propWiggle = ['wiggle', 'sensorProps', 'sensorStore',
 
     var wiggleProp = function(prop) {
       // The filter is managed by another service
-      if (!sensorProps[prop].wiggle) { return; }
+      if (!sensorProps[prop].wiggle) {
+        return;
+      }
       var currentValue = sensorStore.get(prop);
       var newValue = wiggle(currentValue, 3);
       sensorStore.set(prop, newValue);
@@ -18,7 +20,9 @@ var propWiggle = ['wiggle', 'sensorProps', 'sensorStore',
 
     return {
       init: function() {
-        if (typeof poll !== 'undefined') { return; }
+        if (typeof poll !== 'undefined') {
+          return;
+        }
         poll = setInterval(function() {
           var keys = Object.keys(sensorProps);
           keys.forEach(wiggleProp);

@@ -127,8 +127,7 @@ deviceDetailsModule.config([
                 !ignoreFilterAlerts
               ) {
                 $scope.customData.alert.filter = true;
-              }
-              else if (_.get(device, 'sensor.filter') > 24) {
+              } else if (_.get(device, 'sensor.filter') > 24) {
                 ignoreFilterAlerts = false;
               }
             });
@@ -156,8 +155,7 @@ deviceDetailsModule.config([
               if (fActual > 48) {
                 fActual = Math.round(fActual / 24);
                 $scope.filterLife.measure = 'days';
-              }
-              else {
+              } else {
                 $scope.filterLife.measure = 'hours';
               }
               $scope.filterLife.lifeLeft = fActual;
@@ -172,8 +170,7 @@ deviceDetailsModule.config([
                 !ignoreCOAlerts
               ) {
                 $scope.customData.alert.co = true;
-              }
-              else if (_.get(device, 'sensor.co') <= 100) {
+              } else if (_.get(device, 'sensor.co') <= 100) {
                 ignoreCOAlerts = false;
               }
             });

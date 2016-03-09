@@ -15,11 +15,12 @@ var purifierFanService = [
         mqttService.subscribe(controlChannel, function(message) {
           try {
             message = JSON.parse(message.payloadString);
-          }
-          catch (e) {
+          } catch (e) {
             message = {};
           }
-          if (message.command !== 'speed') { return; }
+          if (message.command !== 'speed') {
+            return;
+          }
           var msgOption = message.option.toLowerCase();
           var newIndex = sensorProps.fan.map.indexOf(msgOption);
           if (sensorStore.set('fan', newIndex)) {
