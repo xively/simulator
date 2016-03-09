@@ -3,11 +3,11 @@
 const fs = require('fs');
 const createKnex = require('knex');
 const moment = require('moment');
-const config = require('./config');
+const config = require('../config');
 
 const knex = createKnex({
   client: 'pg',
-  connection: `${config.database.pgUri}?ssl=true`,
+  connection: config.database.pgUri,
   debug: Boolean(process.env.KNEX_DEBUG)
 });
 
@@ -89,7 +89,7 @@ function updateInventory(verb, inventoryId) {
   const updateQuery = {};
   if (verb === 'sell') {
     updateQuery.sold = true;
-    updateQuery.soldDate = moment.utc().format();
+    updateQuery.soldDate = moment.utc().toDate();
   } else if (verb === 'reserve') {
     updateQuery.reserved = true;
   } else {
@@ -109,6 +109,15 @@ function runScriptFile(fileName) {
   return knex.raw(script);
 }
 
+function truncateTables() {
+  return Promise.all([
+    knex('firmware').del(),
+    knex('inventory').del(),
+    knex('rules').del(),
+    knex('application_config').del()
+  ]);
+}
+
 module.exports = {
   selectApplicationConfig,
   insertApplicationConfig,
@@ -126,5 +135,6 @@ module.exports = {
   insertInventory,
   updateInventory,
 
-  runScriptFile
+  runScriptFile,
+  truncateTables
 };
