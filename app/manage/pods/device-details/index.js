@@ -34,7 +34,7 @@ deviceDetailsModule.config([
   function(stateProvider) {
     stateProvider
       .state('device.details', {
-        url: '/device/:deviceId?{demo:bool}',
+        url: '/device/:deviceId?{demo:bool}&{noheader:bool}',
         template: require('./template.tmpl'),
         controller: [
           '$scope',
@@ -51,7 +51,7 @@ deviceDetailsModule.config([
           resolveArgs({$scopeIndex: 0, indices: [3]}, function(
             $scope,
             $rootScope,
-            stateParams,
+            $stateParams,
             devices,
             deviceMqtt,
             deviceConfig,
@@ -61,15 +61,17 @@ deviceDetailsModule.config([
             sensorUnitConfig,
             applicationConfig
           ) {
-            var device = _.cloneDeep(_.find(devices, 'id', stateParams.deviceId));
+            var device = _.cloneDeep(_.find(devices, 'id', $stateParams.deviceId));
             if (!device) {
-              console.error('device %s not found', stateParams.deviceId);
+              console.error('device %s not found', $stateParams.deviceId);
             }
 
-            if (stateParams.demo) {
+            if ($stateParams.demo) {
               $rootScope.$broadcast('toggleDemo', true);
-              $rootScope.$broadcast('toggleVirtualDevice', stateParams.deviceId);
+              $rootScope.$broadcast('toggleVirtualDevice', $stateParams.deviceId);
             }
+
+            $scope.params = $stateParams;
             $scope.isLoaded = false;
             $scope.email = applicationConfig.emailAddress;
             $scope.units = sensorUnitConfig;
@@ -186,7 +188,7 @@ deviceDetailsModule.config([
             };
 
             $scope.toggleVirtualDevice = function() {
-              $rootScope.$broadcast('toggleVirtualDevice', stateParams.deviceId);
+              $rootScope.$broadcast('toggleVirtualDevice', $stateParams.deviceId);
             };
 
             $scope.changeFanSpeedTo = function(newSpeed) {
@@ -232,7 +234,7 @@ deviceDetailsModule.config([
               });
             });
 
-            TimeSeries.getMostRecentSensorHistory(stateParams.deviceId)
+            TimeSeries.getMostRecentSensorHistory($stateParams.deviceId)
             .then(function(sensorHistory) {
               $scope.$applyAsync(function() {
                 for (var i in deviceConfig.sensorList) {
@@ -277,7 +279,7 @@ deviceDetailsModule.config([
                   return item.loaded;
                 }
                 item.loaded = chartDataTool.loadDataSource({
-                  deviceId: stateParams.deviceId,
+                  deviceId: $stateParams.deviceId,
                   sensor: item.name,
                 })
                 .catch(function() {

@@ -6,6 +6,9 @@ module.exports = [
     return {
       restrict: 'ACE',
       template: require('./template.tmpl'),
+      controller: ['$scope', '$stateParams', function($scope, $stateParams) {
+        $scope.params = $stateParams;
+      }],
       link: function(scope, element) {
         scope.isOpen = false;
 

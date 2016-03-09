@@ -5,6 +5,13 @@ module.exports = [
     return {
       restrict: 'E',
       template: require('./template.tmpl'),
+      controller: [
+        '$scope',
+        '$stateParams',
+        function($scope, $stateParams) {
+          $scope.params = $stateParams;
+        }
+      ]
     };
   },
 ];
