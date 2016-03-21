@@ -52,6 +52,12 @@ module.exports = [
       '$rootScope',
       function($http, $rootScope) {
 
+        // clear local storage to remove old token
+        // super workaround, the login process is a mess
+        if (localStorage) {
+          localStorage.clear();
+        }
+
         if (!$scope) {
           $scope = $rootScope.$new();
           $scope.jwt = null;
