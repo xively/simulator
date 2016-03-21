@@ -26,6 +26,7 @@
   .industrial & {
     height: 500px;
     background-image: url('/virtual-device/img/industrial-outline.png');
+    background-position-y: 135px;
   }
 }
 
@@ -311,27 +312,27 @@
   }
 
   .toggle-dust {
-    top: 105px;
+    top: 140px;
     left: 440px;
   }
 
   .toggle-co {
-    top: 105px;
+    top: 140px;
     right: 315px;
   }
 
   .toggle-humidity {
-    top: 380px;
+    top: 415px;
     left: 265px;
   }
 
   .toggle-temp {
-    top: 380px;
+    top: 415px;
     right: 350px;
   }
 
   .toggle-filter {
-    top: 317px;
+    top: 352px;
     left: 55px;
   }
 }

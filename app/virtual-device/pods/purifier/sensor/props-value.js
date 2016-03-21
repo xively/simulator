@@ -33,6 +33,7 @@ var sensorProps = {
     max: 500,
     initial: 1,
     wiggle: true,
+    malfunction: true,
   },
 
   // Not technically a "sensor," but the rest of the application
