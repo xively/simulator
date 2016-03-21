@@ -22,5 +22,5 @@
     <span class="lower-range-value">{{ model().min }}</span>
     <span class="upper-range-value">{{ model().max }}</span>
   </div>
-  <button class='purifier-filter-btn' ng-if='model().malfunction' >Trigger malfunction</button>
+  <button class='purifier-filter-btn' ng-if='model().malfunction' ng-click="doMalfunction()">Trigger malfunction</button>
 </div>

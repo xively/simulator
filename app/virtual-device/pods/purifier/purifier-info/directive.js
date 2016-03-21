@@ -61,6 +61,10 @@ module.exports = [function() {
       $scope.toggleActive = function() {
         $scope.active = !$scope.active;
       };
+
+      $scope.doMalfunction = function() {
+        alert("Malfunction");
+      };
     }],
   };
 }];
