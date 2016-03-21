@@ -11,7 +11,7 @@
     "test-headless": "grunt test-headless",
     "local-provision": "sh provision/pre-provision.sh && node provision",
     "clear-sf-data": "node bin/clear-salesforce",
-    "syncdb": "node syncdb"
+    "syncdb": "NODE_ENV=test node syncdb"
   },
   "repository": {
     "type": "git",
@@ -49,7 +49,7 @@
     "grunt-webpack": "1.0.11",
     "html-loader": "0.3.0",
     "jquery": "2.1.4",
-    "karma": "0.13.14",
+    "karma": "0.13.19",
     "karma-chai": "0.1.0",
     "karma-chrome-launcher": "0.2.1",
     "karma-mocha": "0.2.0",
