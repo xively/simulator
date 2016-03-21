@@ -6,11 +6,24 @@
 
   <qr-code data="url" class="qr-container"></qr-code>
 
-  <div class="form-row copy-wrapper">
-    <input id="copy-target" value="{{url}}" type="text">
-    <button class="copy-btn button primary" data-clipboard-target="#copy-target">
-        <i class="fa fa-clipboard"></i>
-    </button>
-    <span class="success-text" ng-show="copySuccess">Copied!</span>
-  </div>
+  <form name="shareForm" novalidate="">
+    <div class="form-row copy-wrapper">
+      <input id="copy-target" value="{{url}}" type="text">
+      <button class="copy-btn button primary" data-clipboard-target="#copy-target">
+          <i class="fa fa-clipboard"></i>
+      </button>
+    </div>
+    <div class="form-row copy-wrapper">
+      <label>Text the link</label>
+      <input placeholder="555-555-5555" name="phone" ng-model="phone" type="text" required="">
+      <button class="button primary" ng-click="sendText(shareForm)">
+          text me
+      </button>
+      <div class="errors" ng-show="submitted || shareForm.phone.$touched">
+        <span ng-show="shareForm.phone.$error.required">You need to add a phone number.</span>
+      </div>
+    </div>
+
+    <span class="message-text" ng-if="messageText">{{messageText}}</span>
+  </form>
 </div>
