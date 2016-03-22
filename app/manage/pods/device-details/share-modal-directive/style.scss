@@ -4,7 +4,7 @@
   background-color: #fff;
   padding: 20px;
   position: absolute;
-  height: 400px;
+  min-height: 500px;
   width: 400px;
   display: block;
   box-sizing: border-box;
@@ -13,6 +13,12 @@
   h2 {
     text-align: center;
   }
+
+  .errors {
+    padding: 5px;
+    color: red;
+  }
+
   .remove-modal {
     position: absolute;
     right: 15px;
@@ -31,12 +37,15 @@
       width: 200px;
     }
   }
+  .message-text {
+    color: #43A5BF;
+  }
 }
 
 @media ($mobileMax) {
   .modal {
     left: 0;
-    top: 65px;
+    top: -20px;
     width: 100%;
   }
   .remove-modal {
@@ -48,7 +57,7 @@
 .mobile-width {
   .modal {
     left: 0;
-    top: 65px;
+    top: -20px;
     width: 100%;
   }
   .remove-modal {
