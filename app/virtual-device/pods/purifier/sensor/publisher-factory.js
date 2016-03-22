@@ -20,10 +20,6 @@ var mqttSensorPublisher = [
       publishUpdate: function(props, channel) {
         props = props || [];
         var validProps = Object.keys(sensorProps);
-        // Filter by just those property names that are valid
-        props = props.filter(function(prop) {
-          return validProps.indexOf(prop) !== -1;
-        });
         // If our props are empty, then we're sending a complete update
         if (!props.length) {
           props = validProps;
