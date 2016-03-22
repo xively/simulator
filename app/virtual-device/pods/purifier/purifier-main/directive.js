@@ -14,11 +14,13 @@ module.exports = function() {
       'periodicSensorUpdate',
       'propWiggle',
       'purifierFanService',
-      function($scope, periodicSensorUpdate, propWiggle, purifierFanService) {
+      'mqttService',
+      'sensorProps',
+      function($scope, periodicSensorUpdate, propWiggle, purifierFanService, mqttService, sensorProps) {
         // This is our initially displayed AQI value
         $scope.mode = 'home';
-        $scope.simulationRunning = false;
 
+        $scope.simulationRunning = false;
         $scope.toggleSimulation = function() {
           if ($scope.simulationRunning) {
             propWiggle.stopSimulation();
@@ -30,6 +32,15 @@ module.exports = function() {
             purifierFanService.startSimulation(3000);
           }
           $scope.simulationRunning = !$scope.simulationRunning;
+        };
+
+        $scope.newChannels = $scope.device.channels.filter(function(channel) {
+          var name = channel.channelTemplateName;
+          return !sensorProps[name] && name !== 'sensor' && name !== 'control';
+        });
+
+        $scope.emitUpdate = function emitUpdate(name, value) {
+          mqttService.sendMessage(value, name);
         };
       }]
   };

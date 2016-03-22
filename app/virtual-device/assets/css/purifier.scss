@@ -10,4 +10,41 @@ purifier-main .container {
   position: relative;
   width: 970px;
   margin: 0 auto;
+
+  .sensor-list {
+    position: absolute;
+    top: 750px;
+    width: 680px;
+    left: calc(50% - 300px);
+    margin-bottom: 20px;
+
+    tr {
+      height: 20px;
+    }
+
+    th {
+      padding-bottom: 15px;
+    }
+
+    .channel-name {
+      text-align: left;
+      padding-left: 10px;
+      width: 40%;
+    }
+
+    .channel-control {
+      width: 40%;
+
+      input {
+        position: relative;
+        height: 20px;
+      }
+    }
+
+    .channel-value {
+      width: 20%;
+
+      text-align: center;
+    }
+  }
 }
