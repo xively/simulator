@@ -128,6 +128,10 @@ MqttClientWrapper.prototype.subscribe = function(options) {
   return this;
 };
 
+MqttClientWrapper.prototype.subscribePlain = function(channel, callback) {
+  this.client.subscribe(channel, callback);
+};
+
 // Unsubscribe from a topic.
 MqttClientWrapper.prototype.unsubscribe = function(options) {
   if (!options) {

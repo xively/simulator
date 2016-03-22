@@ -5,6 +5,7 @@ require('angular-ui-router');
 var _ = require('lodash');
 
 var resolveArgs = require('../common/utils/resolve-args');
+var sensorProps = require('../../../virtual-device/pods/purifier/sensor/props-value');
 
 var commonModule = require('../common');
 
@@ -85,6 +86,19 @@ deviceDetailsModule.config([
               },
               latestAqi: null,
             };
+
+            $scope.newChannels = $scope.device.channels.filter(function(channel) {
+              return !sensorProps[channel.channelTemplateName];
+            });
+
+            $scope.newChannels.forEach(function(channel) {
+              channel.value = 'N/A';
+              deviceMqtt.subscribePlain(channel.channel, function(message) {
+                $scope.$applyAsync(function() {
+                  channel.value = message.payloadString;
+                });
+              });
+            });
 
             AqiData.getLatestValue()
             .then(function(latestValue) {

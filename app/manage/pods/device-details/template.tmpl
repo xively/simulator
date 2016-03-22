@@ -161,6 +161,16 @@
                 </div>
               </div>
             </div>
+            <div class="panel-secondary" ng-repeat="channel in ::newChannels">
+              <div class="panel-head">
+                <h3>{{ channel.channelTemplateName }}</h3>
+              </div>
+              <div class="panel-data">
+                <div class="panel-value">
+                  {{ channel.value }}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
