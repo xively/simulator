@@ -9,6 +9,13 @@
     </div>
     <div class="purifier-title-powered-by">Powered by</div>
     <img src="/virtual-device/img/xively-logo-white-2x.png" alt="Xively" class="xively-logo">
+
+    <button class="button simulator-button" ng-class="{'active': simulationRunning}" ng-click="toggleSimulation()">
+      <span ng-switch="simulationRunning">
+        <span ng-switch-when="false">Run simulation</span>
+        <span ng-switch-when="true">Stop simulation</span>
+      </span>
+    </button>
   </div>
   <div class="purifier-aqi" ng-controller="aqiCtrl as ctrl">
     <div class="purifier-aqi-value" ng-bind="aqi"></div>
