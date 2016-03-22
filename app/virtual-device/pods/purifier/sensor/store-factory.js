@@ -17,17 +17,16 @@ var sensorStore = ['$rootScope', '$cacheFactory', 'clamp', 'sensorProps',
       },
 
       set: function(key, value) {
-        if (sensorKeys.indexOf(key) === -1) {
-          return false;
-        // Only allow numbers
-        } else if (typeof value !== 'number') {
+        if (typeof value !== 'number') {
           return false;
         }
 
         // Ensure that the submitted value is within the
         // acceptable range
         var propDef = sensorProps[key];
-        value = clamp(value, propDef.min, propDef.max);
+        if (propDef) {
+          value = clamp(value, propDef.min, propDef.max);
+        }
 
         // Ignore it if it's the same as what we already have
         if (cache.get(key) === value) {
