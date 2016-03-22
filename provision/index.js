@@ -21,6 +21,20 @@ var options = {
   userTemplateName: 'AirSoCleanUsrTmpl' + SERIAL_PREFIX + SERIAL_START,
 };
 
+var LOCATIONS = [{
+  name: 'London',
+  lat: 51.5285582,
+  lon: -0.2416796
+}, {
+  name: 'New York',
+  lat: 40.7055651,
+  lon: -74.1180857
+}, {
+  name: 'San Francisco',
+  lat: 37.7576948,
+  lon: -122.4726194
+}];
+
 console.error('Provision start');
 bp.getEnv(process.env)
   .then(bp.useDemoAccount)
@@ -113,8 +127,10 @@ bp.getEnv(process.env)
     body.name = options.organizationName;
   }))
 
-  .then(bp.createDevices(_(50).range().map(function(n) {
+  .then(bp.createDevices(_(50).range().map(function(n, index) {
     return function(body, $) {
+      var loc = LOCATIONS[index % LOCATIONS.length];
+
       body.deviceTemplateId = $.deviceTemplate.id;
       body.organizationId = $.organization.id;
       body.serialNumber = options.serialPrefix + (options.serialStart + n);
@@ -126,6 +142,9 @@ bp.getEnv(process.env)
       body.powerVersion = '12VDC';
       body.filterType = 'carbonHEPA1023';
       body.firmwareVersion = '2.3.1';
+      body.latitude = loc.lat;
+      body.longitude = loc.lon;
+      body.location = loc.name;
     };
   }).value()))
 
