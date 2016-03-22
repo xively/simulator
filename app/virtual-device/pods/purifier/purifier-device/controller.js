@@ -59,6 +59,11 @@ var purifierDeviceCtrl = [
       $scope[scopeValue] = val.initial;
     });
 
+    $scope.doMalfunction = function(modelKey, newValue){
+      var scopeValue = modelKey + 'Value';
+      $scope[scopeValue] = newValue;
+    };
+
     // Update the sensor data as it changes in the local store
     $scope.$on('device.sensors', function(event, prop, value) {
       $scope.safeApply(function() {

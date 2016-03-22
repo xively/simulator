@@ -62,8 +62,8 @@ module.exports = [function() {
         $scope.active = !$scope.active;
       };
 
-      $scope.doMalfunction = function() {
-        alert("Malfunction");
+      $scope.doMalfunction = function(){
+        $scope.device().doMalfunction($scope.name, -255);
       };
     }],
   };
