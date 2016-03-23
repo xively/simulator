@@ -283,6 +283,19 @@ device-details-alert {
   @include mobile-intent {
     margin-bottom: 1.6rem;
   }
+
+  form {
+    width: 100%;
+    padding: 10px;
+
+    select {
+      width: 100%;
+      padding: 5px;
+      font-size: 16px;
+      border: 1px solid #e7e7e7;
+      height: 34px;
+    }
+  }
 }
 
 .status-ok {

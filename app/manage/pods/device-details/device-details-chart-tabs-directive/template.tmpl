@@ -1,21 +1,28 @@
 <div class="status-detailed">
-  <div class="status-detailed-buttons">
-    <button
-    ng-repeat="chart in tabs"
-    class="sensor-select-button"
-    ng-class="{'sensor-select-button-selected': currentChart === chart.name}"
-    ng-click="switchChart(chart.name)"
-    >
-    {{chart.title}}
+  <div class="status-detailed-buttons" ng-if="data.availableOptions.length > 5">
+    <form name="myForm">
+      <select name="repeatSelect" id="repeatSelect"
+        ng-model="data.selectedOption"
+        ng-change="data.selectedOption.load()"
+        ng-options="chart.title for chart in ::data.availableOptions">
+      </select>
+    </form>
+  </div>
+  <div class="status-detailed-buttons" ng-if="data.availableOptions.length <= 5">
+    <button class="sensor-select-button"
+      ng-repeat="chart in ::data.availableOptions"
+      ng-class="{'sensor-select-button-selected': data.selectedOption === chart}"
+      ng-click="data.selectedOption = chart; data.selectedOption.load()">
+        {{chart.title}}
     </button>
   </div>
   <div
   class="sensor-actual-value"
-  ng-bind-html="currentTab.value|toIntWithUnit:units[currentChart]"
+  ng-bind-html="data.selectedOption.value|toIntWithUnit:units[data.selectedOption]"
   >
   </div>
   <device-details-chart
-  chart-data="currentTab.chartData"
+  chart-data="data.selectedOption.chartData"
   >
   </device-details-chart>
 </div>

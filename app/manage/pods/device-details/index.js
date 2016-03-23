@@ -88,7 +88,8 @@ deviceDetailsModule.config([
             };
 
             $scope.newChannels = $scope.device.channels.filter(function(channel) {
-              return !sensorProps[channel.channelTemplateName];
+              var name = channel.channelTemplateName;
+              return !sensorProps[name] && name !== 'sensor' && name !== 'control';
             });
 
             $scope.newChannels.forEach(function(channel) {
@@ -263,6 +264,16 @@ deviceDetailsModule.config([
               });
             });
 
+            var newTimeSeriesChannel = $scope.newChannels.filter(function(channel) {
+              return channel.persistenceType === 'timeSeries';
+            }).map(function(channel) {
+              var name = channel.channelTemplateName;
+              return {
+                name: name,
+                title: _.capitalize(name)
+              };
+            });
+
             $scope.chartTabs = [
               {
                 name: 'dust',
@@ -284,7 +295,7 @@ deviceDetailsModule.config([
                 name: 'humidity',
                 title: 'Humidity',
               },
-            ].map(function(item) {
+            ].concat(newTimeSeriesChannel).map(function(item) {
               item.value = $scope.device.sensor[item.name];
               item.chartData = chartDataTool.baseChartData({sensor: item.name});
               item.loaded = null;
