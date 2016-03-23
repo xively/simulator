@@ -68,7 +68,7 @@ module.exports = [function() {
       };
 
       $scope.isMalfunction = function(){
-        var result = !$scope.active && $scope.device().device.state === states.MALFUNCTION && $scope.name === 'dust';
+        var result = $scope.device().device.state === states.MALFUNCTION && $scope.name === 'dust';
         return result;
       };
     }],
