@@ -9,7 +9,7 @@ module.exports = [function() {
       name: '@model',
       model: '&',
       labelPosition: '&',
-      device: '&',
+      device: '&'
     },
     transclude: true,
     template: template,
@@ -37,7 +37,8 @@ module.exports = [function() {
       }, 'popover');
     },
 
-    controller: ['$parse', '$scope', function($parse, $scope) {
+    controller: ['$parse', '$scope', 'states', function($parse, $scope, states) {
+      $scope.states = states;
       if ($scope.device && $scope.device()) {
         var valueProperty = $parse($scope.name + 'Value');
         $scope.value = valueProperty($scope.device());
@@ -64,6 +65,11 @@ module.exports = [function() {
 
       $scope.doMalfunction = function(){
         $scope.device().doMalfunction($scope.name, -255);
+      };
+
+      $scope.isMalfunction = function(){
+        var result = !$scope.active && $scope.device().device.state === states.MALFUNCTION && $scope.name === 'dust';
+        return result;
       };
     }],
   };

@@ -5,11 +5,11 @@ var _ = require('lodash');
 var purifierDeviceCtrl = [
   '$scope', 'cycleFan', 'purifierFanService', 'filterDepletion',
   'sensorProps', 'sensorStore', 'mqttSensorPublisher', 'propWiggle',
-  'periodicSensorUpdate', 'deviceLogService',
+  'periodicSensorUpdate', 'deviceLogService', 'states',
   function(
     $scope, cycleFan, purifierFanService, filterDepletion,
     sensorProps, sensorStore, mqttSensorPublisher, propWiggle,
-    periodicSensorUpdate, deviceLogService
+    periodicSensorUpdate, deviceLogService, states
   ) {
 
     // A little hack to ensure that apply hasn't already begun
@@ -43,6 +43,7 @@ var purifierDeviceCtrl = [
       propWiggle.init();
       periodicSensorUpdate.init(sensorChannel);
       purifierFanService.init(controlChannel, sensorChannel);
+      device.state = states.OK;
     }
 
     // The throttled rate of updates as the user slides the device sensors,
@@ -82,8 +83,11 @@ var purifierDeviceCtrl = [
     }
 
     $scope.doMalfunction = function(modelKey, newValue){
+      if ($scope.device.state === states.MALFUNCTION) return;
+
       changeValue(modelKey, newValue);
       sendMalfunctionMessage();
+      $scope.device.state = states.MALFUNCTION;
     };
 
     // Update the sensor data as it changes in the local store

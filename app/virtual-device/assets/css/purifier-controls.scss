@@ -221,6 +221,18 @@
   }
 }
 
+.purifier-device-toggle.malfunction {
+  color: rgb(76,179, 224);
+
+  .purifier-device-toggle-btn:before {
+    background-color: rgb(76,179, 224);
+  }
+
+  .purifier-device-toggle-btn:after {
+    background-color: rgb(76,179, 224);
+  }
+}
+
 .home, .industrial {
   .toggle-no2, .toggle-dust, .toggle-co {
     @include purifier-device-toggle-label-position("center", "bottom");
