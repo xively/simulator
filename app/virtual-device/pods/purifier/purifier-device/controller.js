@@ -5,11 +5,11 @@ var _ = require('lodash');
 var purifierDeviceCtrl = [
   '$scope', 'cycleFan', 'purifierFanService', 'filterDepletion',
   'sensorProps', 'sensorStore', 'mqttSensorPublisher', 'propWiggle',
-  'periodicSensorUpdate',
+  'periodicSensorUpdate', 'deviceLogService',
   function(
     $scope, cycleFan, purifierFanService, filterDepletion,
     sensorProps, sensorStore, mqttSensorPublisher, propWiggle,
-    periodicSensorUpdate
+    periodicSensorUpdate, deviceLogService
   ) {
 
     // A little hack to ensure that apply hasn't already begun
@@ -26,7 +26,7 @@ var purifierDeviceCtrl = [
     };
 
     var device = $scope.device;
-    var controlChannel, sensorChannel, deviceId;
+    var controlChannel, sensorChannel, deviceLogChannel, deviceId;
 
     if (device) {
       deviceId = device.id;
@@ -35,6 +35,9 @@ var purifierDeviceCtrl = [
       }).channel;
       sensorChannel = _.findWhere(device.channels, {
         channelTemplateName: 'sensor',
+      }).channel;
+      deviceLogChannel = _.findWhere(device.channels, {
+        channelTemplateName: 'device-log',
       }).channel;
       filterDepletion.init();
       propWiggle.init();
@@ -59,9 +62,28 @@ var purifierDeviceCtrl = [
       $scope[scopeValue] = val.initial;
     });
 
-    $scope.doMalfunction = function(modelKey, newValue){
+    function changeValue(modelKey, newValue){
       var scopeValue = modelKey + 'Value';
       $scope[scopeValue] = newValue;
+    }
+
+    function sendMalfunctionMessage(){
+      var device = $scope.device;
+      var malfunctionData = {
+        deviceId: device.id,
+        accountId: device.accountId,
+        organizationId: device.organizationId,
+        templateId: '',
+        message: 'Sensor malfunction occured',
+        details: '',
+        tags: ['malfunction'],
+      };
+      deviceLogService.sendMalfunctionMessage(malfunctionData, deviceLogChannel);
+    }
+
+    $scope.doMalfunction = function(modelKey, newValue){
+      changeValue(modelKey, newValue);
+      sendMalfunctionMessage();
     };
 
     // Update the sensor data as it changes in the local store
