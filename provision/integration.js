@@ -4,6 +4,10 @@ var request = Promise.promisify(require('request'));
 var jsforce = require('jsforce');
 
 module.exports = function ($) {
+  if (!process.env.SALESFORCE_USER) {
+    return $;
+  }
+
   return getSalesforceOrgId($)
     .then(mapSfOrgToXiAccount)
     .then(function($) {
@@ -19,7 +23,11 @@ function getSalesforceOrgId($) {
     };
 
     return $;
-  });
+  })
+    .catch(function(err) {
+      console.error('Salesforce Organization ID lookup failed', err);
+      throw err;
+    });
 }
 
 function mapSfOrgToXiAccount($) {
@@ -44,5 +52,9 @@ function mapSfOrgToXiAccount($) {
       }
 
       return $;
+    })
+    .catch(function(err) {
+      console.error('Salesforce Organization mapping failed', err);
+      throw err;
     });
 }
