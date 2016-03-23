@@ -3,20 +3,11 @@ var Promise = require('bluebird');
 var request = Promise.promisify(require('request'));
 var jsforce = require('jsforce');
 
-module.exports = function ($) {
-  if (!process.env.SALESFORCE_USER) {
-    return $;
-  }
-
-  return getSalesforceOrgId($)
-    .then(mapSfOrgToXiAccount)
-    .then(function($) {
-      return $;
-    });
-};
-
 function getSalesforceOrgId($) {
-  return new jsforce.Connection().login(process.env.SALESFORCE_USER, process.env.SALESFORCE_PASSWORD + process.env.SALESFORCE_TOKEN).then(function (result) {
+  return new jsforce.Connection().login(
+    process.env.SALESFORCE_USER,
+    process.env.SALESFORCE_PASSWORD + process.env.SALESFORCE_TOKEN
+  ).then(function(result) {
     $.salesforce = {
       userId: result.id,
       organizationId: result.organizationId
@@ -42,7 +33,7 @@ function mapSfOrgToXiAccount($) {
       accountId: $.env.XIVELY_ACCOUNT_ID
     }
   })
-    .then(function (result) {
+    .then(function(result) {
       if (result.statusCode !== 201) {
         return Promise.reject({
           message: 'Salesforce Organization mapping failed',
@@ -58,3 +49,12 @@ function mapSfOrgToXiAccount($) {
       throw err;
     });
 }
+
+module.exports = function($) {
+  if (!process.env.SALESFORCE_USER) {
+    return $;
+  }
+
+  return getSalesforceOrgId($)
+    .then(mapSfOrgToXiAccount);
+};
