@@ -87,8 +87,21 @@ var purifierDeviceCtrl = [
 
       changeValue(modelKey, newValue);
       sendMalfunctionMessage();
-      $scope.device.state = states.MALFUNCTION;
+      setDeviceState(states.MALFUNCTION);
     };
+
+    function setDeviceState(state) {
+      $scope.device.state = state;
+
+      if (state === states.OK) {
+        periodicSensorUpdate.enable();
+        propWiggle.enable();
+      }
+      else{
+        periodicSensorUpdate.disable();
+        propWiggle.disable();
+      }
+    }
 
     // Update the sensor data as it changes in the local store
     $scope.$on('device.sensors', function(event, prop, value) {

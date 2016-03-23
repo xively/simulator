@@ -7,6 +7,7 @@ var SENSOR_READ_FREQUENCY = 10000;
 // on the sensor MQTT channel
 var periodicSensorUpdate = ['mqttSensorPublisher',
   function(mqttSensorPublisher) {
+    var isEnabled = true;
 
     // Our polling methods manage the creation of our fake sensor data
     var poll;
@@ -16,9 +17,17 @@ var periodicSensorUpdate = ['mqttSensorPublisher',
         // Emit an update, then begin polling
         mqttSensorPublisher.publishUpdate(null, channel);
         poll = setInterval(function() {
-          mqttSensorPublisher.publishUpdate(null, channel);
+          if (isEnabled) {
+            mqttSensorPublisher.publishUpdate(null, channel);
+          }
         }, SENSOR_READ_FREQUENCY);
       },
+      enable: function() {
+        isEnabled = true;
+      },
+      disable: function() {
+        isEnabled = false;
+      }
     };
   }];
 
