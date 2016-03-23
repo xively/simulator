@@ -3,9 +3,7 @@
 const config = require('../config');
 
 function main(req, res) {
-  res.render('server-index', {
-    config
-  });
+  res.redirect(`/manage/#/device/${config.virtualdevice.mqtt.deviceId}?demo=1`);
 }
 
 function virtualDevice(req, res) {
