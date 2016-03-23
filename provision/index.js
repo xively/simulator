@@ -7,6 +7,7 @@ var bp = require('./blueprint');
 var Promise = require('bluebird');
 var Database = require('../server/database');
 var path = require('path');
+var integration = require('./integration');
 
 require('dotenv').load();
 
@@ -25,6 +26,7 @@ console.error('Provision start');
 bp.getEnv(process.env)
   .then(bp.useDemoAccount)
   .then(bp.getJwt)
+  .then(integration)
   .then(bp.getClient)
 
   .then(bp.createDeviceTemplate(function(body, $) {
