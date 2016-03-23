@@ -20,6 +20,7 @@ var options = {
   organizationName: 'Warehouse',
   userTemplateName: 'AirSoCleanUsrTmpl' + SERIAL_PREFIX + SERIAL_START,
 };
+var USER_NAMES = ['Jane Smith', 'Tommy Atkins', 'Bob Thompson'];
 
 console.error('Provision start');
 bp.getEnv(process.env)
@@ -133,11 +134,14 @@ bp.getEnv(process.env)
     body.name = options.userTemplateName;
   }))
 
-  .then(bp.createEndUser(function(body, $) {
-    body.organizationTemplateId = $.organizationTemplate.id;
-    body.organizationId = $.organization.id;
-    body.endUserTemplateId = $.endUserTemplate.id;
-  }))
+  .then(bp.createEndUser(_(3).range().map(function(n) {
+    return function(body, $) {
+      body.organizationTemplateId = $.organizationTemplate.id;
+      body.organizationId = $.organization.id;
+      body.endUserTemplateId = $.endUserTemplate.id;
+      body.name = USER_NAMES[n];
+    };
+  }).value()))
 
   .then(function($) {
     return bp.createMqttCredentials({
@@ -151,13 +155,17 @@ bp.getEnv(process.env)
     })($);
   })
 
-  .then(bp.createMqttCredentials({
-    outputProp: 'mqttUser',
-    body: function(body, $) {
-      body.entityId = $.endUser.id;
-      body.entityType = 'endUser';
-    },
-  }))
+  .then(function($) {
+    return bp.createMqttCredentials({
+      outputProp: 'mqttUser',
+      body: _($.endUser).map(function(endUser) {
+        return function(body, $$) {
+          body.entityId = endUser.id;
+          body.entityType = 'endUser';
+        };
+      }).value(),
+    })($);
+  })
 
   // Store in PostGRES – for the future!
   .then(function($) {
@@ -191,10 +199,11 @@ bp.getEnv(process.env)
       var appConfig = {
         accountId: $.env.XIVELY_ACCOUNT_ID,
         organization: $.organization,
-        mqttUser: $.mqttUser,
-        endUser: $.endUser,
+        mqttUser: $.mqttUser[0],
+        endUser: $.endUser[0],
         device: $.device[0]
       };
+
       return database.insertApplicationConfig(appConfig);
     })
     .then(function() {
