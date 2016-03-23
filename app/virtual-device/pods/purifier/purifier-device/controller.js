@@ -131,6 +131,18 @@ var purifierDeviceCtrl = [
     $scope.onClickReplaceFilter = function() {
       filterDepletion.replaceFilter(deviceId, sensorChannel);
     };
+
+    $scope.isOk = function(){
+      return $scope.device.state === states.OK;
+    };
+
+    $scope.isMalfunction = function(){
+      return $scope.device.state === states.MALFUNCTION;
+    };
+
+    $scope.isResetting = function(){
+      return $scope.device.state === states.RESETTING;
+    };
   }];
 
 module.exports = purifierDeviceCtrl;

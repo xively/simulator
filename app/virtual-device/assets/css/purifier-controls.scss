@@ -348,3 +348,31 @@
     left: 55px;
   }
 }
+
+.purifier-device-operation-ribbon {
+  position: absolute;
+  width: 180px;
+  height: 30px;
+  top: 280px;
+  left: 350px;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  &.ok {
+    background-image: url('/virtual-device/img/filter_ok.png');
+  }
+
+  &.malfunction {
+    background-image: url('/virtual-device/img/sensor_malfunction.png');
+  }
+
+  &.resetting {
+    background-image: url('/virtual-device/img/resetting.png');
+  }
+}
+
+.home{
+  .purifier-device-operation-ribbon {
+    display: none;
+  }
+}

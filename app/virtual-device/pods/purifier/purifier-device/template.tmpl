@@ -32,3 +32,6 @@
 
 <!--() Humidity -->
 <purifier-info model="humidity" device="this">Humidity</purifier-info>
+
+<!-- Device state -->
+<div class="purifier-device-operation-ribbon" ng-class="{'ok': isOk(), 'malfunction': isMalfunction(), 'resetting': isResetting()}"></div>
