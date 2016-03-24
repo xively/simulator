@@ -151,7 +151,9 @@ var purifierDeviceCtrl = [
 
     // When the fan is clicked, we update it by cycling through the fan
     $scope.onClickFan = function() {
-      updateProp('fan', cycleFan());
+      if ($scope.isOk()) {
+        updateProp('fan', cycleFan());
+      }
     };
 
     $scope.toggleBoolean = function(scopeValue) {

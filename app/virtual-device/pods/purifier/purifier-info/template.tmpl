@@ -18,7 +18,8 @@
       max="{{ model().max }}"
       ng-model="value"
       ng-model-options="{ getterSetter: true }"
-      ng-change="change()">
+      ng-change="change()"
+      ng-disabled="!device().isOk()">
     <span class="lower-range-value">{{ model().min }}</span>
     <span class="upper-range-value">{{ model().max }}</span>
   </div>
