@@ -39,15 +39,9 @@ var deviceLogService = [
             sendMalfunctionMessage: function(malfunctionData, channel){
                 sendDeviceLogMessage(malfunctionData, channel, 'error');
             },
-            sendResetCommandReceivedMessage: function(deviceData, channel){
+            sendResetCommandMessage: function(deviceData, channel){
                 sendDeviceLogMessage(deviceData, channel);
-            },
-            sendResettingMessage: function(deviceData, channel){
-                sendDeviceLogMessage(deviceData, channel);
-            },
-            sendRecoveredMessage: function(deviceData, channel){
-                sendDeviceLogMessage(deviceData, channel);
-            },
+            }
         };
 }];
 
