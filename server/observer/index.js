@@ -71,11 +71,11 @@ Observer.prototype._setupRoutes = function() {
     return next();
   });
 
-  this.listener.use('device-log', function (data, next) { //TODO: config
+  this.listener.use('device-log', function(data, next) { // TODO: config
     var measurements = logParser(data);
     that.rules.modify(data.deviceId, measurements);
     return next();
-  })
+  });
 
 };
 

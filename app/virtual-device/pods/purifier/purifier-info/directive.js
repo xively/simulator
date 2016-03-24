@@ -63,21 +63,21 @@ module.exports = [function() {
         $scope.active = !$scope.active;
       };
 
-      $scope.doMalfunction = function(){
+      $scope.doMalfunction = function() {
         $scope.device().doMalfunction($scope.name, -255);
       };
 
-      $scope.isMalfunction = function(){
+      $scope.isMalfunction = function() {
         var result = $scope.device().device.state === states.MALFUNCTION && $scope.name === 'dust';
         return result;
       };
 
-      $scope.isResetting = function(){
+      $scope.isResetting = function() {
         var result = $scope.device().device.state === states.RESETTING && $scope.name === 'dust';
         return result;
       };
 
-      $scope.isRecovered = function(){
+      $scope.isRecovered = function() {
         var result = $scope.device().device.state === states.RECOVERED && $scope.name === 'dust';
         return result;
       };

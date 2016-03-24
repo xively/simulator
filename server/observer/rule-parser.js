@@ -82,11 +82,11 @@ RuleParser.prototype._getSingleRule = function(rule) {
         break;
 
       case '$eq':
-        result = (data == rule.value);
+        result = (data == rule.value);   // eslint-disable-line
         break;
 
       case '$ne':
-        result = (data != rule.value);
+        result = (data != rule.value);  // eslint-disable-line
         break;
 
       case '$gte':

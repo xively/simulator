@@ -69,23 +69,23 @@ var purifierDeviceCtrl = [
       $scope[scopeValue] = val.initial;
     });
 
-    function changeValue(modelKey, newValue){
+    function changeValue(modelKey, newValue) {
       var scopeValue = modelKey + 'Value';
       $scope[scopeValue] = newValue;
     }
 
     /**
      * Create a log message with the actual device data
-     * @param Array<string> tags
-     * @param string message
-     * @returns  object
+     * @param {Array<string>} tags tags
+     * @param {string} message message to send
+     * @returns  {object} log message
      */
-    function createLogMessage(tags, message){
-      var device = $scope.device;
+    function createLogMessage(tags, message) {
+      var logDevice = $scope.device;
       var logMessage = {
-        deviceId: device.id,
-        accountId: device.accountId,
-        organizationId: device.organizationId,
+        deviceId: logDevice.id,
+        accountId: logDevice.accountId,
+        organizationId: logDevice.organizationId,
         templateId: '',
         message: message,
         details: '',
@@ -94,12 +94,12 @@ var purifierDeviceCtrl = [
       return logMessage;
     }
 
-    function sendMalfunctionMessage(){
-      var device = $scope.device;
+    function sendMalfunctionMessage() {
+      var logDevice = $scope.device;
       var malfunctionData = {
-        deviceId: device.id,
-        accountId: device.accountId,
-        organizationId: device.organizationId,
+        deviceId: logDevice.id,
+        accountId: logDevice.accountId,
+        organizationId: logDevice.organizationId,
         templateId: '',
         message: 'Sensor malfunction occured',
         details: '',
@@ -108,16 +108,8 @@ var purifierDeviceCtrl = [
       deviceLogService.sendMalfunctionMessage(malfunctionData, deviceLogChannel);
     }
 
-    $scope.doMalfunction = function(modelKey, newValue){
-      if ($scope.device.state === states.MALFUNCTION) return;
-
-      changeValue(modelKey, newValue);
-      sendMalfunctionMessage();
-      setDeviceState(states.MALFUNCTION);
-    };
-
     function setDeviceState(state) {
-      $scope.safeApply(function(){
+      $scope.safeApply(function() {
         $scope.device.state = state;
       });
 
@@ -125,11 +117,21 @@ var purifierDeviceCtrl = [
         periodicSensorUpdate.enable();
         propWiggle.enable();
       }
-      else{
+      else {
         periodicSensorUpdate.disable();
         propWiggle.disable();
       }
     }
+
+    $scope.doMalfunction = function(modelKey, newValue) {
+      if ($scope.device.state === states.MALFUNCTION) {
+        return;
+      }
+
+      changeValue(modelKey, newValue);
+      sendMalfunctionMessage();
+      setDeviceState(states.MALFUNCTION);
+    };
 
     $scope.$on('device.reset', function() {
       setDeviceState(states.RESETTING);
@@ -143,7 +145,7 @@ var purifierDeviceCtrl = [
         $scope[scopeValue] = val.initial;
       });
 
-      $timeout(function(){setDeviceState(states.OK);}, 1000);
+      $timeout(function() {setDeviceState(states.OK);}, 1000);
     });
 
     // Update the sensor data as it changes in the local store
@@ -199,15 +201,15 @@ var purifierDeviceCtrl = [
       filterDepletion.replaceFilter(deviceId, sensorChannel);
     };
 
-    $scope.isOk = function(){
+    $scope.isOk = function() {
       return $scope.device.state === states.OK || $scope.device.state === states.RECOVERED;
     };
 
-    $scope.isMalfunction = function(){
+    $scope.isMalfunction = function() {
       return $scope.device.state === states.MALFUNCTION;
     };
 
-    $scope.isResetting = function(){
+    $scope.isResetting = function() {
       return $scope.device.state === states.RESETTING;
     };
   }];

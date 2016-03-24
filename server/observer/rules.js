@@ -57,7 +57,7 @@ ConcariaRules.prototype.resetRules = function(newRules) {
 ConcariaRules.prototype.modify = function(deviceId, measurements) {
   var session = this._sessions[deviceId];
   var fact = session.getFacts(AirSoClean3000)[0];
-  measurements.forEach(function (measurement){
+  measurements.forEach(function(measurement) {
     fact.set(measurement.name, measurement.value);
   });
   session.modify(fact);

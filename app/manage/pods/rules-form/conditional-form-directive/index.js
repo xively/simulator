@@ -2,18 +2,18 @@
 var _ = require('lodash');
 
 var sensorOptions = [{id: 'temp', displayName: 'Temperature'},
-  {id: "humidity", displayName: 'Humidity'},
-  {id: "no2", displayName: 'NO2'},
-  {id: "co", displayName: 'CO'},
-  {id: "dust", displayName: 'Dust'},
-  {id: "filter", displayName: 'Filter'},
-  {id: "fan", displayName: 'Fan'}];
+  {id: 'humidity', displayName: 'Humidity'},
+  {id: 'no2', displayName: 'NO2'},
+  {id: 'co', displayName: 'CO'},
+  {id: 'dust', displayName: 'Dust'},
+  {id: 'filter', displayName: 'Filter'},
+  {id: 'fan', displayName: 'Fan'}];
 var logOptions = [{id: 'sourceId', displayName: 'Source Id'},
-  {id: "code", displayName: 'Code'},
-  {id: "message", displayName: 'Message'},
-  {id: "details", displayName: 'Details'},
-  {id: "severity", displayName: 'Severity'},
-  {id: "tags", displayName: 'Tags'}];
+  {id: 'code', displayName: 'Code'},
+  {id: 'message', displayName: 'Message'},
+  {id: 'details', displayName: 'Details'},
+  {id: 'severity', displayName: 'Severity'},
+  {id: 'tags', displayName: 'Tags'}];
 
 module.exports = [
   function() {
@@ -30,7 +30,7 @@ module.exports = [
         parentIndex: '=?'
       },
       link: function(scope, elm, attrs) {
-        scope.getComparator = function (topic) {
+        scope.getComparator = function(topic) {
           scope.comparatorOptions = topic === 'sensor' ? sensorOptions : logOptions;
         };
         scope.disableForm = true;

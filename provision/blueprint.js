@@ -134,7 +134,8 @@ exports.blueprintCreator = function(baseOptions) {
             return res.obj[options.responseProp];
           }
           console.error('Response object:', res.obj);
-          throw new Error('Blueprint (' + options.apiMethod + ') response.obj.' + options.responseProp + ' property missing.');
+          throw new Error('Blueprint (' + options.apiMethod + ') response.obj.' +
+              options.responseProp + ' property missing.');
         })
         .catch(function(err) {
           console.error('Request object:', JSON.stringify(body));
