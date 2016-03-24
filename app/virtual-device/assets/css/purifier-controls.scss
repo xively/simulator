@@ -403,7 +403,7 @@
   background-repeat: no-repeat;
 
   &.ok {
-    background-image: url('/virtual-device/img/filter_ok.png');
+    display: none;
   }
 
   &.malfunction {
