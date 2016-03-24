@@ -117,7 +117,9 @@ var purifierDeviceCtrl = [
     };
 
     function setDeviceState(state) {
-      $scope.device.state = state;
+      $scope.safeApply(function(){
+        $scope.device.state = state;
+      });
 
       if (state === states.OK) {
         periodicSensorUpdate.enable();
