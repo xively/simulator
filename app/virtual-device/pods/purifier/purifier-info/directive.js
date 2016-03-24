@@ -71,6 +71,11 @@ module.exports = [function() {
         var result = $scope.device().device.state === states.MALFUNCTION && $scope.name === 'dust';
         return result;
       };
+      $scope.isResetting = function(){
+        var result = $scope.device().device.state === states.RESETTING && $scope.name === 'dust';
+        return result;
+      };
+
     }],
   };
 }];

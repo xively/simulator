@@ -1,5 +1,5 @@
 <div class="purifier-device-toggle"
-  ng-class="[{'active': active, 'malfunction': isMalfunction()}, 'toggle-' + name]"
+  ng-class="[{'active': active, 'malfunction': isMalfunction(), 'resetting': isResetting()}, 'toggle-' + name]"
   ng-cloak>
   <div class="purifier-device-toggle-btn" ng-click="toggleActive()"></div>
   <div class="purifier-device-toggle-label" title-transclude></div>

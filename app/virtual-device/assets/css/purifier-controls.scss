@@ -233,6 +233,38 @@
   }
 }
 
+
+@keyframes blink{
+  0% {background-color: #4CB3E0;}
+  100% {background-color: rgb(255,72, 51);}
+}
+
+
+@keyframes blink-text{
+  0% {color: #4CB3E0;}
+  100% {color: rgb(255,72, 51);}
+}
+
+
+.purifier-device-toggle.resetting {
+  animation-name: blink-text;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+
+  .purifier-device-toggle-btn:before {
+    animation-name: blink;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+  }
+
+  .purifier-device-toggle-btn:after {
+    animation-name: blink;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+  }
+}
+
+
 .home, .industrial {
   .toggle-no2, .toggle-dust, .toggle-co {
     @include purifier-device-toggle-label-position("center", "bottom");
