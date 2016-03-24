@@ -68,6 +68,26 @@ var purifierDeviceCtrl = [
       $scope[scopeValue] = newValue;
     }
 
+    /**
+     * Create a log message with the actual device data
+     * @param Array<string> tags
+     * @param string message
+     * @returns  object
+     */
+    function createLogMessage(tags, message){
+      var device = $scope.device;
+      var logMessage = {
+        deviceId: device.id,
+        accountId: device.accountId,
+        organizationId: device.organizationId,
+        templateId: '',
+        message: message,
+        details: '',
+        tags: tags
+      };
+      return logMessage;
+    }
+
     function sendMalfunctionMessage(){
       var device = $scope.device;
       var malfunctionData = {
@@ -130,6 +150,13 @@ var purifierDeviceCtrl = [
 
     // When the fan is clicked, we update it by cycling through the fan
     $scope.onClickFan = function() {
+      var fanStates = {
+        0: 'OFF',
+        1: 'LOW',
+        2: 'HIGH'
+      };
+      var currentFanState = fanStates[cycleFan()];
+      deviceLogService.sendInfoMessage(createLogMessage([], 'Fan state is: ' + currentFanState), deviceLogChannel);
       updateProp('fan', cycleFan());
     };
 
@@ -138,10 +165,12 @@ var purifierDeviceCtrl = [
     };
 
     $scope.onClickDepleteFilter = function() {
+      deviceLogService.sendInfoMessage(createLogMessage([], 'Filter depleted'), deviceLogChannel);
       filterDepletion.depleteFilter(deviceId, sensorChannel);
     };
 
     $scope.onClickReplaceFilter = function() {
+      deviceLogService.sendInfoMessage(createLogMessage([], 'Filter replaced'), deviceLogChannel);
       filterDepletion.replaceFilter(deviceId, sensorChannel);
     };
 
