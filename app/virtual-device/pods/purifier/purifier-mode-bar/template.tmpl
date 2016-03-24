@@ -1,2 +1,22 @@
-<button ng-class="{'active': mode === 'home'}" ng-click="onClickHome()">Home Purifier</button>
-<button ng-class="{'active': mode === 'industrial'}" ng-click="onClickIndustrial()">Industrial Purifier</button>
+<div class="mode-bar-content">
+  <div class="align-left">
+    <select class="mode-selector" ng-model="mode">
+      <option value="home">Home Purifier</option>
+      <option value="industrial">Industrial Purifier</option>
+    </select>
+  </div>
+
+  <div class="align-right">
+    <a href="manage/#/rules" target="_blank" class="nav-button">
+      <img src="/manage/img/nav-rules.svg" class="icon">
+    </a>
+    <a href="manage/#/settings" target="_blank" class="nav-button">
+      <img src="/manage/img/nav-settings.svg" class="icon">
+    </a>
+    <a href="https://app.demo.xively.com/" target="_blank" class="nav-button">
+      <div class="xi-logo">
+        <span class="icon-xi-logo"></span>
+      </div>
+    </a>
+  </div>
+</div>
