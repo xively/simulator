@@ -54,10 +54,12 @@ ConcariaRules.prototype.resetRules = function(newRules) {
   }
 };
 
-ConcariaRules.prototype.modify = function(deviceId, device, value) {
+ConcariaRules.prototype.modify = function(deviceId, measurements) {
   var session = this._sessions[deviceId];
   var fact = session.getFacts(AirSoClean3000)[0];
-  fact.set(device, value);
+  measurements.forEach(function (measurement){
+    fact.set(measurement.name, measurement.value);
+  });
   session.modify(fact);
 };
 

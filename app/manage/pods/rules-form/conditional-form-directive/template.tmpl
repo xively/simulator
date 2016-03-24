@@ -10,21 +10,14 @@
 
       <!-- do these have hardcoded values or should they be generated? -->
       <div class="styled-select">
-        <select name='topic' ng-model='rule.topic'>
+        <select name='topic' ng-model='rule.topic' ng-change='getComparator(rule.topic)'>
           <option value='sensor'>Sensor</option>
-          <option value='control'>Control</option>
+          <option value='device_log'>Device Log</option>
         </select>
       </div>
 
       <div class="styled-select">
-        <select name='comparator' ng-model='rule.device'>
-          <option value='temp'>Temperature</option>
-          <option value='humidity'>Humidity</option>
-          <option value='no2'>NO2</option>
-          <option value='co'>CO</option>
-          <option value='dust'>Dust</option>
-          <option value='filter'>Filter</option>
-          <option value='fan'>Fan</option>
+        <select name='sensor' ng-model='rule.device' ng-model='rule.device' ng-options='c.id as c.displayName for c in comparatorOptions'>
         </select>
       </div>
 
@@ -38,6 +31,7 @@
           <option value='$eq'>=</option>
           <option value='$in'>Matches Any</option>
           <option value='$nin'>Matches None</option>
+          <option value='$con'>Contains</option>
         </select>
       </div>
 

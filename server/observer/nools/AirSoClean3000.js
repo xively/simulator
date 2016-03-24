@@ -1,13 +1,15 @@
 'use strict';
 
 var devices = ['temp', 'humidity', 'no2', 'co', 'dust', 'filter', 'fan'];
+var logs = ["sourceId", "code", "message", "details", "severity", "tags"];
 
 var AirSoClean3000 = function(deviceId) {
   this.deviceId = deviceId;
 
   var previous = {};
   var deviceValues = {};
-  devices.forEach(function(device) {
+  var props = devices.concat(logs);
+  props.forEach(function(device) {
     previous[device] = [];
     deviceValues[device] = null;
   });
