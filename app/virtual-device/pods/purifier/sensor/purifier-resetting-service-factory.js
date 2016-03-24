@@ -2,9 +2,9 @@
 
 // An interface between our fan store and our MQTT channels
 var purifierResettingService = [
-    '$rootScope', 'mqttService', 'deviceLogService',
+    '$rootScope', 'mqttService', 'deviceLogService', '$timeout',
     function(
-        $rootScope, mqttService, deviceLogService
+        $rootScope, mqttService, deviceLogService, $timeout
     ) {
         function sendResetNotify(deviceData, deviceLogChannel){
             deviceData.message = 'Factory reset command received';
@@ -18,7 +18,7 @@ var purifierResettingService = [
             deviceData.tags = ['reset', 'resetting'];
             deviceLogService.sendResetCommandMessage(deviceData, deviceLogChannel);
 
-            setTimeout(function(){sendRecoveredNotify(deviceData, deviceLogChannel);}, 5000);
+            $timeout(function(){sendRecoveredNotify(deviceData, deviceLogChannel);}, 5000);
         }
 
         function sendRecoveredNotify(deviceData, deviceLogChannel){
@@ -33,7 +33,6 @@ var purifierResettingService = [
         return {
             init: function(deviceData, controlChannel, deviceLogChannel) {
                 mqttService.subscribe(controlChannel, function(mqttMessage) {
-                    debugger;
                     var parsedMessage = null;
                     try {
                         parsedMessage = JSON.parse(mqttMessage.payloadString);
