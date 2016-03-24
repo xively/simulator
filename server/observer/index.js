@@ -2,7 +2,7 @@
 
 var MqttListener = require('./mqtt-listener');
 var RulesEngine = require('./rules');
-var logParser = requie('./log-parser');
+var logParser = require('./log-parser');
 
 var Observer = function(database, mqttConfig) {
   this.database = database;

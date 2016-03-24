@@ -40,7 +40,7 @@ var purifierResettingService = [
                     catch (e) {
                         parsedMessage = {};
                     }
-                    if (parsedMessage.message.command === 'factory-reset'){
+                    if (parsedMessage.command === 'factory-reset'){
                         sendResetNotify(deviceData, deviceLogChannel);
                     }
                 });
