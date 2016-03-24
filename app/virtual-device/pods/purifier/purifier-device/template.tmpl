@@ -25,8 +25,8 @@
 <purifier-info model="filter" device="this">
   <purifier-info-title>Filter</purifier-info-title>
   <purifier-info-popover>
-    <button class='purifier-filter-btn' ng-click="device().onClickDepleteFilter()" ng-disabled="device().filterValue <= 10 || device().depleting">Deplete filter</button>
-    <button class='purifier-filter-btn' ng-click="device().onClickReplaceFilter()" ng-disabled="device().depleting">Replace filter</button>
+    <button class='purifier-filter-btn' ng-click="device().onClickDepleteFilter()" ng-disabled="!device().isOk() || device().filterValue <= 10 || device().depleting">Deplete filter</button>
+    <button class='purifier-filter-btn' ng-click="device().onClickReplaceFilter()" ng-disabled="!device().isOk() || device().depleting">Replace filter</button>
   </purifier-info-popover>
 </purifier-info>
 

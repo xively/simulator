@@ -14,6 +14,7 @@ var mqttDeviceInfoPublisher = require('./device-info-publisher-factory');
 var mqttSensorPublisher = require('./publisher-factory');
 var purifierFanService = require('./fan-service-factory');
 var periodicSensorUpdate = require('./periodic-update-factory');
+var purifierResettingService = require('./purifier-resetting-service-factory');
 
 // This is the main module. It's for the visualiation of what
 // the device is registering.
@@ -37,5 +38,7 @@ purifierSensorModule.factory('mqttDeviceInfoPublisher',
 purifierSensorModule.factory('mqttSensorPublisher', mqttSensorPublisher);
 purifierSensorModule.factory('purifierFanService', purifierFanService);
 purifierSensorModule.factory('periodicSensorUpdate', periodicSensorUpdate);
+
+purifierSensorModule.factory('purifierResettingService', purifierResettingService);
 
 module.exports = purifierSensorModule;

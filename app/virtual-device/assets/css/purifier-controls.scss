@@ -222,14 +222,26 @@
 }
 
 .purifier-device-toggle.malfunction {
-  color: rgb(255,72, 51);
+  color: rgb(255,72,51);
 
   .purifier-device-toggle-btn:before {
-    background-color: rgb(255,72, 51);
+    background-color: rgb(255,72,51);
   }
 
   .purifier-device-toggle-btn:after {
-    background-color: rgb(255,72, 51);
+    background-color: rgb(255,72,51);
+  }
+}
+
+.purifier-device-toggle.recovered {
+  color: rgb(12,232,14);
+
+  .purifier-device-toggle-btn:before {
+    background-color: rgb(12,232,14);
+  }
+
+  .purifier-device-toggle-btn:after {
+    background-color: rgb(12,232,14);
   }
 }
 

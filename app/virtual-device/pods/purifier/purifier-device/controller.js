@@ -5,11 +5,11 @@ var _ = require('lodash');
 var purifierDeviceCtrl = [
   '$scope', 'cycleFan', 'purifierFanService', 'filterDepletion',
   'sensorProps', 'sensorStore', 'mqttSensorPublisher', 'propWiggle',
-  'periodicSensorUpdate', 'deviceLogService', 'states',
+  'periodicSensorUpdate', 'deviceLogService', 'states', 'purifierResettingService', '$timeout',
   function(
     $scope, cycleFan, purifierFanService, filterDepletion,
     sensorProps, sensorStore, mqttSensorPublisher, propWiggle,
-    periodicSensorUpdate, deviceLogService, states
+    periodicSensorUpdate, deviceLogService, states, purifierResettingService, $timeout
   ) {
 
     // A little hack to ensure that apply hasn't already begun
@@ -43,6 +43,12 @@ var purifierDeviceCtrl = [
       propWiggle.init();
       periodicSensorUpdate.init(sensorChannel);
       purifierFanService.init(controlChannel, sensorChannel);
+      purifierResettingService.init({
+        deviceId: device.id,
+        accountId: device.accountId,
+        organizationId: device.organizationId,
+        templateId: ''
+      }, controlChannel, deviceLogChannel);
       device.state = states.OK;
     }
 
@@ -123,6 +129,21 @@ var purifierDeviceCtrl = [
       }
     }
 
+    $scope.$on('device.reset', function() {
+      setDeviceState(states.RESETTING);
+    });
+
+    $scope.$on('device.recovered', function() {
+      setDeviceState(states.RECOVERED);
+
+      _.each(sensorProps, function(val, key) {
+        var scopeValue = key + 'Value';
+        $scope[scopeValue] = val.initial;
+      });
+
+      $timeout(function(){setDeviceState(states.OK);}, 1000);
+    });
+
     // Update the sensor data as it changes in the local store
     $scope.$on('device.sensors', function(event, prop, value) {
       $scope.safeApply(function() {
@@ -150,14 +171,16 @@ var purifierDeviceCtrl = [
 
     // When the fan is clicked, we update it by cycling through the fan
     $scope.onClickFan = function() {
-      var fanStates = {
-        0: 'OFF',
-        1: 'LOW',
-        2: 'HIGH'
-      };
-      var currentFanState = fanStates[cycleFan()];
-      deviceLogService.sendInfoMessage(createLogMessage([], 'Fan state is: ' + currentFanState), deviceLogChannel);
-      updateProp('fan', cycleFan());
+      if ($scope.isOk()) {
+        var fanStates = {
+          0: 'OFF',
+          1: 'LOW',
+          2: 'HIGH'
+        };
+        var currentFanState = fanStates[cycleFan()];
+        deviceLogService.sendInfoMessage(createLogMessage([], 'Fan state is: ' + currentFanState), deviceLogChannel);
+        updateProp('fan', cycleFan());
+      }
     };
 
     $scope.toggleBoolean = function(scopeValue) {
@@ -175,7 +198,7 @@ var purifierDeviceCtrl = [
     };
 
     $scope.isOk = function(){
-      return $scope.device.state === states.OK;
+      return $scope.device.state === states.OK || $scope.device.state === states.RECOVERED;
     };
 
     $scope.isMalfunction = function(){
