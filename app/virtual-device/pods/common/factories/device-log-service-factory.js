@@ -19,11 +19,8 @@ var deviceLogService = [
                 "templateId": inputData.templateId,
                 "code": code,
                 "message": inputData.message,
-                "details": inputData.details,
                 "severity": severity,
-                "tags": inputData.tags,
                 "details": inputData.details || inputData.message,
-                "severity": inputData.severity || "info",
                 "tags": inputData.tags || [],
                 "guid": uuid.v4(),
                 "entryIndex": 7,
@@ -44,9 +41,6 @@ var deviceLogService = [
             },
             sendResetCommandMessage: function(deviceData, channel){
                 sendDeviceLogMessage(deviceData, channel);
-                malfunctionData.severity = "error";
-                var message = createDeviceLogMessage(malfunctionData);
-                mqttService.sendMessage(JSON.stringify(message), channel);
             },
 
             sendInfoMessage:  function(info,channel){
