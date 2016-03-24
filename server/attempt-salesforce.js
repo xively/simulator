@@ -79,7 +79,7 @@ module.exports = function() {
   };
 
   request.post({
-    url: 'https://id.demo.xively.com/api/v1/auth/login-user',
+    url: 'https://' + process.env.XIVELY_IDM_HOST + '/api/v1/auth/login-user',
     form: postData
   }, function(err, httpResponse, body) {
     if (err) {
@@ -102,7 +102,7 @@ module.exports = function() {
     // processed
     var client = new BlueprintClient({
       authorization: 'Bearer ' + jwt,
-      docsUrl: 'https://blueprint.demo.xively.com/docs',
+      docsUrl: 'https://' + process.env.XIVELY_BLUEPRINT_HOST + '/docs',
     });
 
     client.ready.then(function(c) {

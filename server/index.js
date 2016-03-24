@@ -21,7 +21,7 @@ attemptSalesforce();
 var config = {raw: null, view: null};
 
 var mqttConfig = {
-  host: 'mqtt://' + process.env.XIVELY_BROKER_HOST,
+  host: 'mqtts://' + process.env.XIVELY_BROKER_HOST,
   clientId: process.env.XIVELY_ACCOUNT_BROKER_USER,
   username: process.env.XIVELY_ACCOUNT_BROKER_USER,
   password: process.env.XIVELY_ACCOUNT_BROKER_PASSWORD,
@@ -92,7 +92,7 @@ var proxy = require('./proxy');
 app.use('/api/proxy', parsers, proxy({
   whitelist: [
     'http://www.airnowapi.org/aq/data',
-    'https://timeseries.demo.xively.com/api/v4/data/xi/blue/v1',
+    'https://' + process.env.XIVELY_TIMESERIES_HOST + '/api/v4/data/xi/blue/v1',
     'http://concaria-sms.herokuapp.com/api'
   ],
 }));
