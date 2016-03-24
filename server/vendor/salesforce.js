@@ -26,7 +26,7 @@ Salesforce.prototype.addCases = function(cases) {
     return {
       Subject: cs.subject,
       Description: cs.description,
-      XiDevice_ID__c: cs.deviceId
+      XiDeviceId__c: cs.deviceId
       //Contact: {xively__XI_End_User_ID__c: cs.orgId},
       //Asset: {xively__Device_ID__c: cs.deviceId},
       //xively__XI_Device_ID__c: cs.deviceId
