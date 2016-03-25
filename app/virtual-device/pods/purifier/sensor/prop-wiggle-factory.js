@@ -20,14 +20,24 @@ var propWiggle = ['wiggle', 'sensorProps', 'sensorStore',
 
     return {
       init: function() {
-        if (typeof poll !== 'undefined') {
-          return;
+        this.start();
+      },
+      start: function(interval) {
+        if (poll) {
+          clearInterval(poll);
         }
+
         poll = setInterval(function() {
           var keys = Object.keys(sensorProps);
           keys.forEach(wiggleProp);
-        }, WIGGLE_INTERVAL);
+        }, interval || WIGGLE_INTERVAL);
       },
+      startSimulation: function(interval) {
+        this.start(interval);
+      },
+      stopSimulation: function() {
+        this.start(WIGGLE_INTERVAL);
+      }
     };
   }];
 

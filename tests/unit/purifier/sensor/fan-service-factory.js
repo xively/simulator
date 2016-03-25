@@ -61,7 +61,7 @@ describe('purifierFanService', function() {
 
   it('should be an Object with a `init` method', function() {
     expect(purifierFanService).to.be.an('object');
-    expect(purifierFanService).to.have.all.keys(['init']);
+    expect(purifierFanService).to.have.all.keys(['init', 'startSimulation', 'stopSimulation']);
   });
 
   describe('calling init, then emitting an event', function() {
