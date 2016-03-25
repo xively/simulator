@@ -32,5 +32,3 @@ heroku addons:create heroku-postgresql:hobby-dev
 
 # Write environment vars to .env file
 heroku config -s | tee "$script_dir/../.env"
-
-
