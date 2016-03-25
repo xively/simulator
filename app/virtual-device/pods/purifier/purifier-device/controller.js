@@ -181,9 +181,10 @@ var purifierDeviceCtrl = [
           1: 'LOW',
           2: 'HIGH'
         };
-        var currentFanState = fanStates[cycleFan()];
-        deviceLogService.sendInfoMessage(createLogMessage(['informational'], 'Fan state is: ' + currentFanState), deviceLogChannel);
-        updateProp('fan', cycleFan());
+
+        var currentFanState = cycleFan();
+        deviceLogService.sendInfoMessage(createLogMessage(['informational'], 'Fan state is: ' + fanStates[currentFanState]), deviceLogChannel);
+        updateProp('fan', currentFanState);
       }
     };
 
