@@ -28,6 +28,7 @@
 
 .panel-list {
   display: flex;
+  flex-flow: row wrap;
 
   @include mobile-intent {
     display: block;
@@ -46,8 +47,9 @@
   background-color: #ffffff;
   padding: 1rem;
   overflow: hidden;
-  margin-left: 2rem;
-  width: 33%;
+  margin-top: 20px;
+  margin-left: 5%;
+  width: 30%;
   height: 11.666rem;
   display: block;
   box-sizing: border-box;
@@ -59,7 +61,7 @@
   }
 }
 
-.status-accurate .panel-secondary.panel-secondary-first {
+.panel-secondary:nth-child(3n+1) {
   margin-left: 0;
 }
 
