@@ -4,7 +4,8 @@ var ngModule = angular.mock.module;
 
 describe('purifierDeviceCtrl', function() {
   var fakeProps, $controller, $rootScope, $scope,
-      filterDepletion, mqttSensorPublisher, cycleFan;
+      filterDepletion, mqttSensorPublisher, cycleFan,
+      purifierFanService, purifierResettingService, deviceLogService;
   beforeEach(function() {
     ngModule('purifier');
 
@@ -31,34 +32,65 @@ describe('purifierDeviceCtrl', function() {
 
       $provide.factory('filterDepletion', function() {
         return {
+          init: sinon.stub(),
           depleteFilter: sinon.stub(),
           replaceFilter: sinon.stub(),
         };
       });
 
+      $provide.factory('purifierFanService', function() {
+        return {
+          init: sinon.stub(),
+        };
+      });
+
+      $provide.factory('purifierResettingService', function() {
+        return {
+          init: sinon.stub(),
+        };
+      });
+
       $provide.factory('mqttSensorPublisher', function() {
         return {
-          publishUpdate: sinon.stub(),
+          publishUpdate: sinon.spy(),
         };
       });
 
       $provide.factory('cycleFan', function() {
-        return sinon.stub().returns(1);
+        return sinon.spy(function() {return 1;});
+      });
+
+      $provide.factory('deviceLogService', function() {
+        return {
+          sendInfoMessage: sinon.stub(),
+        };
       });
     });
   });
 
-  beforeEach(inject(function(_$controller_, _$rootScope_, _filterDepletion_, _mqttSensorPublisher_, _cycleFan_) {
+  beforeEach(inject(function(_$controller_, _$rootScope_, _filterDepletion_, _mqttSensorPublisher_, _cycleFan_, _deviceLogService_) {
     $controller = _$controller_;
     $rootScope = _$rootScope_;
     filterDepletion = _filterDepletion_;
     mqttSensorPublisher = _mqttSensorPublisher_;
+    deviceLogService = _deviceLogService_;
     cycleFan = _cycleFan_;
   }));
 
   beforeEach(function() {
     $scope = $rootScope.$new();
+    $scope.device = {
+      channels: [
+        {channelTemplateName: 'control', channel: 'control'},
+        {channelTemplateName: 'sensor', channel: 'sensor'},
+        {channelTemplateName: 'device-log', channel: 'device-log'},
+      ]
+    };
     $controller('purifierDeviceCtrl', {$scope: $scope});
+
+    // resetting spies' call count
+    mqttSensorPublisher.publishUpdate.reset();
+    cycleFan.reset();
   });
 
   describe('depletion', function() {
@@ -99,9 +131,7 @@ describe('purifierDeviceCtrl', function() {
     // are run.
     it('should publish a fan update', function() {
       expect(mqttSensorPublisher.publishUpdate.callCount).to.equal(1);
-      // This is a silly hack to get around 'no-undefined'
-      var x;
-      expect(mqttSensorPublisher.publishUpdate.calledWithExactly(['fan'], x)).to.be.true;
+      expect(mqttSensorPublisher.publishUpdate.calledWithExactly(['fan'], 'sensor')).to.be.true;
     });
   });
 
@@ -112,12 +142,12 @@ describe('purifierDeviceCtrl', function() {
 
     it('should cycle the fan', function() {
       expect(cycleFan.callCount).to.equal(1);
+      expect(deviceLogService.sendInfoMessage.callCount).to.equal(1);
     });
 
     it('should publish a fan update', function() {
       expect(mqttSensorPublisher.publishUpdate.callCount).to.equal(1);
-      var x;
-      expect(mqttSensorPublisher.publishUpdate.calledWithExactly(['fan'], x)).to.be.true;
+      expect(mqttSensorPublisher.publishUpdate.calledWithExactly(['fan'], 'sensor')).to.be.true;
     });
 
     it('should cycle before updating', function() {
@@ -139,11 +169,13 @@ describe('purifierDeviceCtrl', function() {
     it('should delegate to the filterDepletion provider', function() {
       $scope.onClickDepleteFilter();
       expect(filterDepletion.depleteFilter.callCount).to.equal(1);
+      expect(deviceLogService.sendInfoMessage.callCount).to.equal(1);
     });
 
     it('should delegate to the filterDepletion provider', function() {
       $scope.onClickReplaceFilter();
       expect(filterDepletion.replaceFilter.callCount).to.equal(1);
+      expect(deviceLogService.sendInfoMessage.callCount).to.equal(1);
     });
   });
 });
