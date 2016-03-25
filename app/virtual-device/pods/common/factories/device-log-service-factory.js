@@ -6,9 +6,9 @@ var deviceLogService = [
     function createDeviceLogMessage(inputData) {
       var now = Date.now().toString();
       var severity = inputData.severity || 'informational';
-      var code = "400";
+      var code = '400';
       if (severity === 'informational') {
-        code = "200";
+        code = '200';
       }
 
       return {
@@ -23,7 +23,7 @@ var deviceLogService = [
         'details': inputData.details || inputData.message,
         'tags': inputData.tags || [],
         'guid': uuid.v4(),
-        'entryIndex': "7",
+        'entryIndex': '7',
         'serviceTimestamp': now,
         'sourceTimestamp': now
       };
