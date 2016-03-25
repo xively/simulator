@@ -5,10 +5,10 @@ var deviceLogService = [
   function(mqttService, uuid) {
     function createDeviceLogMessage(inputData) {
       var now = Date.now().toString();
-      var severity = inputData.severity || 'info';
-      var code = 400;
-      if (severity === 'info') {
-        code = 200;
+      var severity = inputData.severity || 'informational';
+      var code = "400";
+      if (severity === 'informational') {
+        code = "200";
       }
 
       return {
@@ -16,14 +16,14 @@ var deviceLogService = [
         'sourceType': 'deviceId',
         'accountId': inputData.accountId,
         'organizationId': inputData.organizationId,
-        'templateId': inputData.templateId,
+        'templateId': inputData.templateId || uuid.v4(),
         'code': code,
         'message': inputData.message,
         'severity': severity,
         'details': inputData.details || inputData.message,
         'tags': inputData.tags || [],
         'guid': uuid.v4(),
-        'entryIndex': 7,
+        'entryIndex': "7",
         'serviceTimestamp': now,
         'sourceTimestamp': now
       };
