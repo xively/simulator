@@ -86,9 +86,9 @@ var purifierDeviceCtrl = [
         deviceId: logDevice.id,
         accountId: logDevice.accountId,
         organizationId: logDevice.organizationId,
-        templateId: '',
+        templateId: logDevice.deviceTemplateId,
         message: message,
-        details: '',
+        details: message,
         tags: tags
       };
       return logMessage;
@@ -100,10 +100,10 @@ var purifierDeviceCtrl = [
         deviceId: logDevice.id,
         accountId: logDevice.accountId,
         organizationId: logDevice.organizationId,
-        templateId: '',
+        templateId: logDevice.deviceTemplateId,
         message: 'Sensor malfunction occured',
-        details: '',
-        tags: ['malfunction'],
+        details: 'Sensor malfunction occured',
+        tags: ['malfunction']
       };
       deviceLogService.sendMalfunctionMessage(malfunctionData, deviceLogChannel);
     }
@@ -182,7 +182,7 @@ var purifierDeviceCtrl = [
           2: 'HIGH'
         };
         var currentFanState = fanStates[cycleFan()];
-        deviceLogService.sendInfoMessage(createLogMessage([], 'Fan state is: ' + currentFanState), deviceLogChannel);
+        deviceLogService.sendInfoMessage(createLogMessage(['informational'], 'Fan state is: ' + currentFanState), deviceLogChannel);
         updateProp('fan', cycleFan());
       }
     };
@@ -192,12 +192,12 @@ var purifierDeviceCtrl = [
     };
 
     $scope.onClickDepleteFilter = function() {
-      deviceLogService.sendInfoMessage(createLogMessage([], 'Filter depleted'), deviceLogChannel);
+      deviceLogService.sendInfoMessage(createLogMessage(['informational'], 'Filter depleted'), deviceLogChannel);
       filterDepletion.depleteFilter(deviceId, sensorChannel);
     };
 
     $scope.onClickReplaceFilter = function() {
-      deviceLogService.sendInfoMessage(createLogMessage([], 'Filter replaced'), deviceLogChannel);
+      deviceLogService.sendInfoMessage(createLogMessage(['informational'], 'Filter replaced'), deviceLogChannel);
       filterDepletion.replaceFilter(deviceId, sensorChannel);
     };
 
