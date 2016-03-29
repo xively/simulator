@@ -23,6 +23,7 @@ const config = {
   account: {
     idmHost: process.env.XIVELY_IDM_HOST,
     timeSeriesHost: process.env.XIVELY_TIMESERIES_HOST,
+    habaneroHost: process.env.HABANERO_HOST,
     brokerHost: process.env.XIVELY_BROKER_HOST,
     brokerPort: process.env.XIVELY_BROKER_WS_PORT,
     blueprintHost: process.env.XIVELY_BLUEPRINT_HOST,

@@ -5,7 +5,8 @@ var rulesListModule = angular.module('rules-list', []);
 var _ = require('lodash');
 rulesListModule.config([
   '$stateProvider',
-  function(stateProvider) {
+  'applicationConfig',
+  function(stateProvider, applicationConfig) {
     stateProvider
       .state('rules', {
         url: '/rules',
@@ -15,8 +16,22 @@ rulesListModule.config([
         },
         template: require('./template.tmpl'),
         controller: [
-          '$scope', '$state', '$stateParams', '$timeout', 'RulesData',
-          function($scope, $state, $stateParams, $timeout, rulesFactory) {
+          '$scope', '$location', '$state', '$stateParams', '$timeout', 'RulesData',
+          function($scope, $location, $state, $stateParams, $timeout, rulesFactory) {
+
+
+            var habaneroDomain = _.result(applicationConfig, 'habaneroHost');
+            if (typeof habaneroDomain !== 'undefined' && habaneroDomain !== '') {
+              var gotoHabaneroUrl = $location.protocol() +
+                '://' + $location.host() +
+                ':' + $location.port() + '/gotoHabanero';
+              console.log(gotoHabaneroUrl);
+              $location.url('/manage/#/dashboard');
+              window.open(gotoHabaneroUrl);
+              return;
+            }
+
+
             // State -----------------------------
             $scope.loading = true;
             $scope.rules = [];

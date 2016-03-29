@@ -2,6 +2,8 @@
 
 const config = require('../config');
 
+var habanero = require('../vendor/habanero');
+
 function main(req, res) {
   res.redirect(`/manage/#/device/${config.virtualdevice.mqtt.deviceId}?demo=1`);
 }
@@ -18,8 +20,13 @@ function manage(req, res) {
   });
 }
 
+function gotoHabanero(req, res) {
+  habanero.login(req, res);
+}
+
 module.exports = {
   main,
   virtualDevice,
-  manage
+  manage,
+  gotoHabanero
 };

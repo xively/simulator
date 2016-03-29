@@ -14,6 +14,7 @@ router.get('/isalive', healtCheck);
 router.get('/', viewHandlers.main);
 router.get('/virtual-device', viewHandlers.virtualDevice);
 router.get('/manage', viewHandlers.manage);
+router.get('/gotoHabanero', viewHandlers.gotoHabanero);
 router.use(express.static(path.join(__dirname, '../../public')));
 router.get('/virtual-device/*', viewHandlers.virtualDevice);
 router.get('/manage/*', viewHandlers.manage);

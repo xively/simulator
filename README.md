@@ -127,6 +127,8 @@ After your PR is reviewed, merge your PR into the `staging` branch. Then cut a n
 
 [Deploy the staging branch](https://heroku.com/deploy?template=https://github.com/xively/concaria/tree/staging-build)
 
+[Deploy this branch](https://heroku.com/deploy)
+
 When a staging branch has been QA'd and no regressions are found, then you can merge your Pull Request into master. After you've done that, tag master with the lastest version #. 
 
 ```
