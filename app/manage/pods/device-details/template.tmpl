@@ -1,10 +1,27 @@
 <device-details-alert></device-details-alert>
-<div class="content-panel container" ng-if="isLoggedIn" launch-simulator="device.id">
+
+<div class="content-loader device" ng-show="isLoggedIn && !isLoaded">
+  <div>
+    <div>
+      <div class="progress">
+        <svg viewBox="-10 -10 220 220">
+          <path class="progress-background" d="M 0,100 A 100,100 0 1,1 0,100.01"></path>
+          <path class="progress-indicator" d="M 0,100 A 100,100 0 1,1 0,100.01" stroke-dasharray="100, 100"></path>
+        </svg>
+        <div class="device-status-filter-life-value" style="display: none;" ng-style="setDisplay">
+          Loading...
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content-panel container" ng-if="isLoggedIn" ng-show="isLoaded">
   <!-- share modal -->
   <share-modal ng-show="displayModal" close-modal="toggleModal"></share-modal>
   <!-- link bar -->
   <div class="link-bar">
-    <a ui-sref="device.list" class="return-link">
+    <a ui-sref="device.list" class="return-link" ng-if="!params.noheader">
       <img src="/manage/img/back-arrow.svg" alt="<">
       Back to devices list
     </a>
@@ -12,11 +29,11 @@
     <a class="share-link" ng-click="toggleModal()">
       <i class="fa fa-share-alt"></i>
     </a>
-    <a class="ne-arrow-link frame-link" ng-click="toggleVirtualDevice()">
+    <a class="ne-arrow-link frame-link" ng-click="toggleVirtualDevice()" ng-if="!params.noheader">
       <img src="/manage/img/icon-ne-arrow-circle.svg" alt="" ng-if="!displayVirtualDevice">
       <img src="/manage/img/icon-ne-arrow-circle-highlight.svg" alt="" ng-if="displayVirtualDevice">
     </a>
-    <a class="ne-arrow-link new-window-link" ng-href="/virtual-device/device/{{device.id}}" target="_blank">
+    <a class="ne-arrow-link new-window-link" ng-href="/virtual-device/device/{{device.id}}" target="_blank" ng-if="!params.noheader">
       <img src="/manage/img/icon-ne-arrow-circle.svg" alt="">
     </a>
   </div>
@@ -27,7 +44,12 @@
       <h1>AirSoClean3000</h1>
       <span class="serial">{{device.name}}</span>
       <div class="device-connectivity">
-        <small>{{email}}</small>
+        <div>
+          <small>{{device.endUser}}</small>
+        </div>
+        <div>
+          <small>{{email}}</small>
+        </div>
       </div>
     </div>
     <div class="device-status-content control-panel-section">
@@ -111,7 +133,7 @@
             <h2>Right Now:</h2>
           </div>
           <div class="panel-list">
-            <div class="panel-secondary panel-secondary-first">
+            <div class="panel-secondary">
               <div class="panel-head">
                 <h3>AQI</h3>
                 <img src="/manage/img/icon-check-circle.svg" alt="">
@@ -141,6 +163,16 @@
               <div class="panel-data">
                 <div class="panel-value"
                    ng-bind-html="deviceStatus.sensor.humidity|toIntWithUnit:units['humidity']">
+                </div>
+              </div>
+            </div>
+            <div class="panel-secondary" ng-repeat="channel in ::newChannels">
+              <div class="panel-head">
+                <h3>{{ channel.channelTemplateName }}</h3>
+              </div>
+              <div class="panel-data">
+                <div class="panel-value">
+                  {{ channel.value }}
                 </div>
               </div>
             </div>

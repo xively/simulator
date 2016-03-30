@@ -1,7 +1,5 @@
 'use strict';
 
-var _ = require('lodash');
-
 module.exports = [
   function() {
     return {
@@ -14,16 +12,12 @@ module.exports = [
         '$scope',
         'sensorUnitConfig',
         function($scope, sensorUnitConfig) {
-          $scope.currentChart = 'dust';
           $scope.units = sensorUnitConfig;
-
-          $scope.switchChart = function(newChart) {
-            $scope.currentChart = newChart;
-            $scope.currentTab = _.find($scope.tabs, 'name', newChart);
-            $scope.currentTab.load();
+          $scope.data = {
+            availableOptions: $scope.tabs,
+            selectedOption: $scope.tabs[0]
           };
-
-          $scope.switchChart($scope.currentChart);
+          $scope.data.selectedOption.load();
         },
       ],
     };

@@ -10,12 +10,12 @@ module.exports = function() {
       mode: '=',
     },
     controller: ['$scope', function($scope) {
-      $scope.onClickHome = function() {
-        $scope.mode = 'home';
-      };
+      $scope.navigate = function(destination) {
+        var currentLocation = window.top.location.href;
+        var split = currentLocation.indexOf('#');
+        var baseUrl = currentLocation.slice(0, split);
 
-      $scope.onClickIndustrial = function() {
-        $scope.mode = 'industrial';
+        window.top.location.href = baseUrl + '#/' + destination;
       };
     }],
   };

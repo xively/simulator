@@ -12,9 +12,13 @@ describe('filterDepletion', function() {
           // Our fan is on high, and there's a lot of dust. This simulates
           // an environment where the filter will deplete over time, once `init` is called.
           get: function(val) {
-            if (val === 'fan') { return 2; }
-            else if (val === 'dust') { return 500; }
-            else if (val === 'filter') { return 1000; }
+            if (val === 'fan') {
+              return 2;
+            } else if (val === 'dust') {
+              return 500;
+            } else if (val === 'filter') {
+              return 1000;
+            }
           },
           set: sinon.stub(),
         };

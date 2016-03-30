@@ -15,6 +15,7 @@ var rulesListModule = require('./pods/rules-list');
 var rulesFormModule = require('./pods/rules-form');
 var deviceModule = require('./pods/device');
 var deviceDetailsModule = require('./pods/device-details');
+var settingsModule = require('./pods/settings');
 var navModule = require('./pods/nav');
 
 var concariaWebAppModule = angular.module('concaria-manage', [
@@ -25,6 +26,7 @@ var concariaWebAppModule = angular.module('concaria-manage', [
   rulesFormModule.name,
   deviceModule.name,
   deviceDetailsModule.name,
+  settingsModule.name,
   navModule.name,
 ]);
 

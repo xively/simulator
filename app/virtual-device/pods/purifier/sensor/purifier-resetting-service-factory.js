@@ -9,7 +9,7 @@ var purifierResettingService = [
 
       deviceData.message = 'Device recovered from error';
       deviceData.details = deviceData.message;
-      deviceData.tags = ['reset', 'recovered'];
+      deviceData.tags = ['reset', 'recovery'];
       deviceLogService.sendResetCommandMessage(deviceData, deviceLogChannel);
     }
 
@@ -36,8 +36,7 @@ var purifierResettingService = [
           var parsedMessage = null;
           try {
             parsedMessage = JSON.parse(mqttMessage.payloadString);
-          }
-          catch (e) {
+          } catch (e) {
             parsedMessage = {};
           }
           if (parsedMessage.command === 'factory-reset') {

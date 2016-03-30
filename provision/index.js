@@ -2,14 +2,14 @@
 
 'use strict';
 
+require('dotenv').load();
+
 var _ = require('lodash');
 var bp = require('./blueprint');
 var Promise = require('bluebird');
-var Database = require('../server/database');
+var database = require('../server/database');
 var path = require('path');
 var integration = require('./integration');
-
-require('dotenv').load();
 
 var SERIAL_PREFIX = 'Purify';
 var SERIAL_START = Math.floor(Math.random() * 100000) * 100;
@@ -21,6 +21,21 @@ var options = {
   organizationName: 'Warehouse',
   userTemplateName: 'AirSoCleanUsrTmpl' + SERIAL_PREFIX + SERIAL_START,
 };
+var USER_NAMES = ['Jane Smith', 'Tommy Atkins', 'Bob Thompson'];
+
+var LOCATIONS = [{
+  name: 'London',
+  lat: 51.5285582,
+  lon: -0.2416796
+}, {
+  name: 'New York',
+  lat: 40.7055651,
+  lon: -74.1180857
+}, {
+  name: 'San Francisco',
+  lat: 37.7576948,
+  lon: -122.4726194
+}];
 
 console.error('Provision start');
 bp.getEnv(process.env)
@@ -115,8 +130,10 @@ bp.getEnv(process.env)
     body.name = options.organizationName;
   }))
 
-  .then(bp.createDevices(_(50).range().map(function(n) {
+  .then(bp.createDevices(_(50).range().map(function(n, index) {
     return function(body, $) {
+      var loc = LOCATIONS[index % LOCATIONS.length];
+
       body.deviceTemplateId = $.deviceTemplate.id;
       body.organizationId = $.organization.id;
       body.serialNumber = options.serialPrefix + (options.serialStart + n);
@@ -128,6 +145,9 @@ bp.getEnv(process.env)
       body.powerVersion = '12VDC';
       body.filterType = 'carbonHEPA1023';
       body.firmwareVersion = '2.3.1';
+      body.latitude = loc.lat;
+      body.longitude = loc.lon;
+      body.location = loc.name;
     };
   }).value()))
 
@@ -135,11 +155,14 @@ bp.getEnv(process.env)
     body.name = options.userTemplateName;
   }))
 
-  .then(bp.createEndUser(function(body, $) {
-    body.organizationTemplateId = $.organizationTemplate.id;
-    body.organizationId = $.organization.id;
-    body.endUserTemplateId = $.endUserTemplate.id;
-  }))
+  .then(bp.createEndUser(_(3).range().map(function(n) {
+    return function(body, $) {
+      body.organizationTemplateId = $.organizationTemplate.id;
+      body.organizationId = $.organization.id;
+      body.endUserTemplateId = $.endUserTemplate.id;
+      body.name = USER_NAMES[n];
+    };
+  }).value()))
 
   .then(function($) {
     return bp.createMqttCredentials({
@@ -153,17 +176,20 @@ bp.getEnv(process.env)
     })($);
   })
 
-  .then(bp.createMqttCredentials({
-    outputProp: 'mqttUser',
-    body: function(body, $) {
-      body.entityId = $.endUser.id;
-      body.entityType = 'endUser';
-    },
-  }))
+  .then(function($) {
+    return bp.createMqttCredentials({
+      outputProp: 'mqttUser',
+      body: _($.endUser).map(function(endUser) {
+        return function(body, $$) {
+          body.entityId = endUser.id;
+          body.entityType = 'endUser';
+        };
+      }).value(),
+    })($);
+  })
 
   // Store in PostGRES – for the future!
   .then(function($) {
-    var database = new Database({databaseURL: process.env.DATABASE_URL});
     var tableScript = path.join(__dirname, 'tables.sql');
 
     return database.runScriptFile(tableScript)
@@ -194,14 +220,14 @@ bp.getEnv(process.env)
       var appConfig = {
         accountId: $.env.XIVELY_ACCOUNT_ID,
         organization: $.organization,
-        mqttUser: $.mqttUser,
-        endUser: $.endUser,
+        mqttUser: $.mqttUser[0],
+        endUser: $.endUser[0],
         device: $.device[0]
       };
+
       return database.insertApplicationConfig(appConfig);
     })
     .then(function() {
-      database.end();
       return $;
     });
   })
@@ -213,8 +239,7 @@ bp.getEnv(process.env)
     console.error('Provision error');
     if (err instanceof Error) {
       console.error(err.stack);
-    }
-    else {
+    } else {
       console.error(JSON.stringify(err, null, 2));
     }
   })

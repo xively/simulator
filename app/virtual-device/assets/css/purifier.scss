@@ -10,4 +10,63 @@ purifier-main .container {
   position: relative;
   width: 970px;
   margin: 0 auto;
+
+  .sensor-list {
+    position: absolute;
+    top: 750px;
+    width: 680px;
+    left: calc(50% - 300px);
+    margin-bottom: 20px;
+
+    tr {
+      height: 20px;
+    }
+
+    th {
+      padding-bottom: 15px;
+    }
+
+    .channel-name {
+      text-align: left;
+      padding-left: 10px;
+      width: 40%;
+    }
+
+    .channel-control {
+      width: 40%;
+
+      input {
+        position: relative;
+        height: 20px;
+      }
+    }
+
+    .channel-value {
+      width: 20%;
+
+      text-align: center;
+    }
+  }
+}
+
+button {
+  font-family: Arial, Helvetica, sans-serif;
+  cursor: pointer;
+  min-width: 130px;
+  font-size: 14px;
+  color: #7683A8;
+  border: 1px solid #57607E;
+  background: transparent;
+  border-radius: 5px;
+  padding: 6px 5px;
+  margin: 0 5px;
+  &:hover {
+    color: #97A3C3;
+    border-color: #697392;
+  }
+  &.active {
+    color: #fff;
+    border: 0;
+    background: #8284A7;
+  }
 }

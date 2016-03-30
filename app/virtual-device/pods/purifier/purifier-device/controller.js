@@ -19,8 +19,7 @@ var purifierDeviceCtrl = [
         if (fn && (typeof fn === 'function')) {
           fn();
         }
-      }
-      else {
+      } else {
         this.$apply(fn);
       }
     };
@@ -116,8 +115,7 @@ var purifierDeviceCtrl = [
       if (state === states.OK) {
         periodicSensorUpdate.enable();
         propWiggle.enable();
-      }
-      else {
+      } else {
         periodicSensorUpdate.disable();
         propWiggle.disable();
       }
@@ -145,7 +143,9 @@ var purifierDeviceCtrl = [
         $scope[scopeValue] = val.initial;
       });
 
-      $timeout(function() {setDeviceState(states.OK);}, 1000);
+      $timeout(function() {
+        setDeviceState(states.OK);
+      }, 1000);
     });
 
     // Update the sensor data as it changes in the local store
@@ -160,7 +160,9 @@ var purifierDeviceCtrl = [
     function updateProp(key, value) {
       // Coerce to a number, then bail if this yields a NaN
       value = parseInt(value, 10);
-      if (isNaN(value)) { return; }
+      if (isNaN(value)) {
+        return;
+      }
 
       // Update our internal store
       if (sensorStore.set(key, value)) {

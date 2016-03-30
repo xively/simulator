@@ -4,7 +4,6 @@ try {
   module.exports = JSON.parse(
     document.getElementById('env-json').text
   ).account;
-}
-catch (e) {
+} catch (e) {
   console.warn('<script id="env-json" /> missing.');
 }

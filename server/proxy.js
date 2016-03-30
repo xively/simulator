@@ -1,26 +1,22 @@
 'use strict';
 
-var request = require('request');
+const request = require('request');
+const config = require('./config');
 
-module.exports = function(options) {
-  var whitelist = options.whitelist;
-  return function(req, res, next) {
-    var url = req.query.url;
-    var whitelistCheck = whitelist.some(function(white) {
-      return url.indexOf(white) === 0;
-    });
+module.exports = function(req, res, next) {
+  const url = req.query.url;
 
-    if (whitelistCheck) {
-      request({
-        uri: url,
-        method: req.method,
-        form: JSON.parse(req.query.data || '{}'),
-        headers: JSON.parse(req.query.headers || '{}'),
-      })
-      .pipe(res);
-    }
-    else {
-      return next();
-    }
-  };
+  const isWhitelisted = config.server.whitelist.some((whiteListedUrl) => url.indexOf(whiteListedUrl) === 0);
+
+  if (isWhitelisted) {
+    request({
+      uri: url,
+      method: req.method,
+      qs: req.query.data ? JSON.parse(req.query.data) : {},
+      headers: req.query.headers ? JSON.parse(req.query.headers) : {}
+    })
+    .pipe(res);
+  } else {
+    return next();
+  }
 };

@@ -29,8 +29,7 @@ Observer.prototype._startRules = function() {
       var row = rows[0];
       that.rules.addDevice(row.deviceId);
       that.listener.addDevice(row.deviceId);
-    }
-    else {
+    } else {
       console.log('No devices to connect');
     }
   })

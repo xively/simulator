@@ -36,4 +36,9 @@ commonModule.factory('Sms', require('./sms-factory'));
 
 commonModule.value('aqiCategories', require('./utils/aqi-categories-value'));
 
+/*
+  Constants
+ */
+commonModule.constant('CONFIG', require('./utils/config-constant'));
+
 module.exports = commonModule;

@@ -23,7 +23,9 @@ var resolveArgs = function(options, fn) {
     var args = slice(arguments);
     var argsIndices = options.indices;
     return Promise
-    .all(argsIndices.map(function(index) { return args[index]; }))
+    .all(argsIndices.map(function(index) {
+      return args[index];
+    }))
     .then(function(resolvedArgs) {
       argsIndices.forEach(function(targetIndex, index) {
         args[targetIndex] = resolvedArgs[index];
@@ -33,7 +35,9 @@ var resolveArgs = function(options, fn) {
         scope = args[options.$scopeIndex];
       }
       if (scope) {
-        return scope.$apply(function() { return fn.apply(null, args); });
+        return scope.$apply(function() {
+          return fn.apply(null, args);
+        });
       }
       return fn.apply(null, args);
     });

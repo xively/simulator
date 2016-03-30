@@ -28,12 +28,11 @@ exports.useDemoAccount = function($) {
     $.env.XIVELY_APP_TOKEN = account.appToken;
     $.env.XIVELY_ACCOUNT_USER_NAME = account.username;
     $.env.XIVELY_ACCOUNT_USER_PASSWORD = account.password;
-    $.env.XIVELY_IDM_HOST = 'id.demo.xively.com';
-    $.env.XIVELY_BLUEPRINT_HOST = 'blueprint.demo.xively.com';
-    $.env.XIVELY_BROKER_HOST = 'broker.demo.xively.com';
-    $.env.XIVELY_TIMESERIES_HOST = 'timeseries.demo.xively.com';
-  }
-  catch (err) {
+    $.env.XIVELY_IDM_HOST = process.env.XIVELY_IDM_HOST;
+    $.env.XIVELY_BLUEPRINT_HOST = process.env.XIVELY_BLUEPRINT_HOST;
+    $.env.XIVELY_BROKER_HOST = process.env.XIVELY_BROKER_HOST;
+    $.env.XIVELY_TIMESERIES_HOST = process.env.XIVELY_TIMESERIES_HOST;
+  } catch (err) {
     // Fail silently.
   }
   return Promise.resolve($);
@@ -116,8 +115,7 @@ exports.blueprintCreator = function(baseOptions) {
         };
         if (typeof optionsBody === 'function') {
           body = optionsBody(body, $) || body;
-        }
-        else if (typeof optionsBody === 'object' && optionsBody) {
+        } else if (typeof optionsBody === 'object' && optionsBody) {
           _.assign(body, optionsBody);
         }
         // Error if specified method doesn't exist.

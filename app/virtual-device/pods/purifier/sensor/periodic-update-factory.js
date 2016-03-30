@@ -11,16 +11,31 @@ var periodicSensorUpdate = ['mqttSensorPublisher',
 
     // Our polling methods manage the creation of our fake sensor data
     var poll;
+    var _channel;
     return {
       init: function(channel) {
-        if (typeof poll !== 'undefined') { return; }
-        // Emit an update, then begin polling
-        mqttSensorPublisher.publishUpdate(null, channel);
+        _channel = channel;
+        this.start();
+      },
+      start: function(interval) {
+        if (poll) {
+          clearInterval(poll);
+        }
+
+        if (isEnabled) {
+          mqttSensorPublisher.publishUpdate(null, _channel);
+        }
         poll = setInterval(function() {
           if (isEnabled) {
-            mqttSensorPublisher.publishUpdate(null, channel);
+            mqttSensorPublisher.publishUpdate(null, _channel);
           }
-        }, SENSOR_READ_FREQUENCY);
+        }, interval || SENSOR_READ_FREQUENCY);
+      },
+      startSimulation: function(interval) {
+        this.start(interval);
+      },
+      stopSimulation: function() {
+        this.start(SENSOR_READ_FREQUENCY);
       },
       enable: function() {
         isEnabled = true;

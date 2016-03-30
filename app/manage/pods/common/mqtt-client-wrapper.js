@@ -6,7 +6,9 @@ var MqttClient = require('../../../vendor/xively-mqtt-client');
 // TODO: remove once upstreamed into the client.
 (function(Client) {
   Client.prototype._send = function(topic, msg) {
-    if (!this.isConnected()) { return; }
+    if (!this.isConnected()) {
+      return;
+    }
     if (typeof msg === 'string') {
       msg = {payloadString: msg};
     }
@@ -60,14 +62,11 @@ MqttClientWrapper.prototype._handleMessage = function(topic, message) {
     function fn() {
       if (topicObj.raw) {
         topicObj.callback(data);
-      }
-      else if (topicObj.command) {
+      } else if (topicObj.command) {
         topicObj.callback(data.option, data.command);
-      }
-      else if (topicObj.sensor) {
+      } else if (topicObj.sensor) {
         topicObj.callback(data[topicObj.sensor], topicObj.sensor);
-      }
-      else {
+      } else {
         _.each(data, topicObj.callback);
       }
     }
@@ -81,9 +80,8 @@ MqttClientWrapper.prototype._handleMessage = function(topic, message) {
       // method.
       if (topicObj.$scope) {
         topicObj.$scope.$apply(fn);
-      }
-      // Otherwise, just run the callback.
-      else {
+      } else {
+        // Otherwise, just run the callback.
         fn();
       }
     }
@@ -106,11 +104,12 @@ MqttClientWrapper.prototype._topicObjProps = [
 // matches. The "group" option is an optional arbitrary string that may be
 // matched when unsubscribing (like a jQuery event "namespace").
 MqttClientWrapper.prototype.subscribe = function(options) {
-  if (!options) { options = {}; }
+  if (!options) {
+    options = {};
+  }
   if (!options.topic) {
     throw new TypeError('MqttClientWrapper#subscribe: topic required.');
-  }
-  else if (!options.callback) {
+  } else if (!options.callback) {
     throw new TypeError('MqttClientWrapper#subscribe: callback required.');
   }
   // If no callbacks have been bound for this topic, create an array for it and
@@ -129,9 +128,15 @@ MqttClientWrapper.prototype.subscribe = function(options) {
   return this;
 };
 
+MqttClientWrapper.prototype.subscribePlain = function(channel, callback) {
+  this.client.subscribe(channel, callback);
+};
+
 // Unsubscribe from a topic.
 MqttClientWrapper.prototype.unsubscribe = function(options) {
-  if (!options) { options = {}; }
+  if (!options) {
+    options = {};
+  }
   if (!options.topic) {
     throw new TypeError('MqttClientWrapper#unsubscribe: topic required.');
   }
@@ -161,8 +166,7 @@ MqttClientWrapper.prototype.sendCommand = function(deviceTopic, command) {
   var topic;
   if (typeof deviceTopic === 'string') {
     topic = deviceTopic;
-  }
-  else {
+  } else {
     topic = _.find(deviceTopic.channels, 'channelTemplateName', 'control').channel;
   }
 
@@ -181,9 +185,8 @@ MqttClientWrapper.prototype.sendSensorData = function(topic, sensor, value) {
   if (arguments.length === 2) {
     sendOptions.retained = true;
     sensors = sensor;
-  }
-  // Otherwise, don't retain the data.
-  else {
+  } else {
+    // Otherwise, don't retain the data.
     sensors = {};
     sensors[sensor] = value;
   }

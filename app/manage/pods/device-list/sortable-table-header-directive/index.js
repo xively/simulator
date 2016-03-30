@@ -19,9 +19,8 @@ module.exports = [
           // A different header was previously selected.
           if (scope.sortBy !== scope.sortProp) {
             params.sortBy = scope.sortProp;
-          }
-          // The same header was clicked again.
-          else {
+          } else {
+            // The same header was clicked again.
             params.sortDesc = !scope.sortDesc;
           }
           scope.sortChange({params: params});

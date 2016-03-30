@@ -12,8 +12,8 @@ module.exports = function(grunt) {
     virtualDevice: {
       expand: true,
       cwd: 'app/virtual-device/assets/',
-      dest: 'public/virtual-device/',
       src: 'img/*',
+      dest: 'public/virtual-device/'
     },
 
     landing: {
@@ -28,6 +28,13 @@ module.exports = function(grunt) {
       cwd: './node_modules/font-awesome/',
       src: 'fonts/*',
       dest: 'public/manage/'
+    },
+
+    vdFonts: {
+      expand: true,
+      cwd: 'app/virtual-device/assets/',
+      src: 'fonts/*',
+      dest: 'public/virtual-device/'
     }
   });
 

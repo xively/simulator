@@ -5,7 +5,7 @@ var ngModule = angular.mock.module;
 describe('purifierDeviceCtrl', function() {
   var fakeProps, $controller, $rootScope, $scope,
       filterDepletion, mqttSensorPublisher, cycleFan,
-      purifierFanService, purifierResettingService, deviceLogService;
+      deviceLogService;
   beforeEach(function() {
     ngModule('purifier');
 
@@ -57,7 +57,9 @@ describe('purifierDeviceCtrl', function() {
       });
 
       $provide.factory('cycleFan', function() {
-        return sinon.spy(function() {return 1;});
+        return sinon.spy(function() {
+          return 1;
+        });
       });
 
       $provide.factory('deviceLogService', function() {

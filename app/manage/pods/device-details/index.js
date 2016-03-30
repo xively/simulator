@@ -5,6 +5,7 @@ require('angular-ui-router');
 var _ = require('lodash');
 
 var resolveArgs = require('../common/utils/resolve-args');
+var sensorProps = require('../../../virtual-device/pods/purifier/sensor/props-value');
 
 var commonModule = require('../common');
 
@@ -34,7 +35,7 @@ deviceDetailsModule.config([
   function(stateProvider) {
     stateProvider
       .state('device.details', {
-        url: '/device/:deviceId?{demo:bool}',
+        url: '/device/:deviceId?{demo:bool}&{noheader:bool}',
         template: require('./template.tmpl'),
         controller: [
           '$scope',
@@ -51,7 +52,7 @@ deviceDetailsModule.config([
           resolveArgs({$scopeIndex: 0, indices: [3]}, function(
             $scope,
             $rootScope,
-            stateParams,
+            $stateParams,
             devices,
             deviceMqtt,
             deviceConfig,
@@ -61,15 +62,18 @@ deviceDetailsModule.config([
             sensorUnitConfig,
             applicationConfig
           ) {
-            var device = _.cloneDeep(_.find(devices, 'id', stateParams.deviceId));
+            var device = _.cloneDeep(_.find(devices, 'id', $stateParams.deviceId));
             if (!device) {
-              console.error('device %s not found', stateParams.deviceId);
+              console.error('device %s not found', $stateParams.deviceId);
             }
 
-            if (stateParams.demo) {
+            if ($stateParams.demo) {
               $rootScope.$broadcast('toggleDemo', true);
-              $rootScope.$broadcast('toggleVirtualDevice', stateParams.deviceId);
+              $rootScope.$broadcast('toggleVirtualDevice', $stateParams.deviceId);
             }
+
+            $scope.params = $stateParams;
+            $scope.isLoaded = false;
             $scope.email = applicationConfig.emailAddress;
             $scope.units = sensorUnitConfig;
             $scope.device = device;
@@ -82,6 +86,20 @@ deviceDetailsModule.config([
               },
               latestAqi: null,
             };
+
+            $scope.newChannels = $scope.device.channels.filter(function(channel) {
+              var name = channel.channelTemplateName;
+              return !sensorProps[name] && name !== 'sensor' && name !== 'control';
+            });
+
+            $scope.newChannels.forEach(function(channel) {
+              channel.value = 'N/A';
+              deviceMqtt.subscribePlain(channel.channel, function(message) {
+                $scope.$applyAsync(function() {
+                  channel.value = message.payloadString;
+                });
+              });
+            });
 
             AqiData.getLatestValue()
             .then(function(latestValue) {
@@ -126,8 +144,7 @@ deviceDetailsModule.config([
                 !ignoreFilterAlerts
               ) {
                 $scope.customData.alert.filter = true;
-              }
-              else if (_.get(device, 'sensor.filter') > 24) {
+              } else if (_.get(device, 'sensor.filter') > 24) {
                 ignoreFilterAlerts = false;
               }
             });
@@ -155,8 +172,7 @@ deviceDetailsModule.config([
               if (fActual > 48) {
                 fActual = Math.round(fActual / 24);
                 $scope.filterLife.measure = 'days';
-              }
-              else {
+              } else {
                 $scope.filterLife.measure = 'hours';
               }
               $scope.filterLife.lifeLeft = fActual;
@@ -171,8 +187,7 @@ deviceDetailsModule.config([
                 !ignoreCOAlerts
               ) {
                 $scope.customData.alert.co = true;
-              }
-              else if (_.get(device, 'sensor.co') <= 100) {
+              } else if (_.get(device, 'sensor.co') <= 100) {
                 ignoreCOAlerts = false;
               }
             });
@@ -188,7 +203,7 @@ deviceDetailsModule.config([
             };
 
             $scope.toggleVirtualDevice = function() {
-              $rootScope.$broadcast('toggleVirtualDevice', stateParams.deviceId);
+              $rootScope.$broadcast('toggleVirtualDevice', $stateParams.deviceId);
             };
 
             $scope.changeFanSpeedTo = function(newSpeed) {
@@ -234,7 +249,7 @@ deviceDetailsModule.config([
               });
             });
 
-            TimeSeries.getMostRecentSensorHistory(stateParams.deviceId)
+            TimeSeries.getMostRecentSensorHistory($stateParams.deviceId)
             .then(function(sensorHistory) {
               $scope.$applyAsync(function() {
                 for (var i in deviceConfig.sensorList) {
@@ -247,6 +262,16 @@ deviceDetailsModule.config([
                 }
                 device.deviceConnected = true;
               });
+            });
+
+            var newTimeSeriesChannel = $scope.newChannels.filter(function(channel) {
+              return channel.persistenceType === 'timeSeries';
+            }).map(function(channel) {
+              var name = channel.channelTemplateName;
+              return {
+                name: name,
+                title: _.capitalize(name)
+              };
             });
 
             $scope.chartTabs = [
@@ -270,7 +295,7 @@ deviceDetailsModule.config([
                 name: 'humidity',
                 title: 'Humidity',
               },
-            ].map(function(item) {
+            ].concat(newTimeSeriesChannel).map(function(item) {
               item.value = $scope.device.sensor[item.name];
               item.chartData = chartDataTool.baseChartData({sensor: item.name});
               item.loaded = null;
@@ -279,7 +304,7 @@ deviceDetailsModule.config([
                   return item.loaded;
                 }
                 item.loaded = chartDataTool.loadDataSource({
-                  deviceId: stateParams.deviceId,
+                  deviceId: $stateParams.deviceId,
                   sensor: item.name,
                 })
                 .catch(function() {
@@ -302,6 +327,7 @@ deviceDetailsModule.config([
                   item.loaded
                   .then(function() {
                     $scope.$applyAsync(function() {
+                      $scope.isLoaded = true;
                       item.chartData.dataSource.data.push({value: item.value});
                       if (item.chartData.dataSource.data.length > maxDataPoints) {
                         var dataSource = item.chartData.dataSource;

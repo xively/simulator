@@ -38,10 +38,18 @@ describe('MqttClientWrapper', function() {
     describe('subscribe', function() {
       it('should throw if required options are missing', function() {
         var mqttClient = this.mqttClient;
-        expect(function() { mqttClient.subscribe(); }).to.throw(TypeError);
-        expect(function() { mqttClient.subscribe({topic: 'foo'}); }).to.throw(TypeError);
-        expect(function() { mqttClient.subscribe({callback: function() {}}); }).to.throw(TypeError);
-        expect(function() { mqttClient.subscribe({topic: 'foo', callback: function() {}}); }).to.not.throw(Error);
+        expect(function() {
+          mqttClient.subscribe();
+        }).to.throw(TypeError);
+        expect(function() {
+          mqttClient.subscribe({topic: 'foo'});
+        }).to.throw(TypeError);
+        expect(function() {
+          mqttClient.subscribe({callback: function() {}
+        }); }).to.throw(TypeError);
+        expect(function() {
+          mqttClient.subscribe({topic: 'foo', callback: function() {}
+        }); }).to.not.throw(Error);
       });
 
       it('understands sensor payload', function() {
@@ -52,11 +60,9 @@ describe('MqttClientWrapper', function() {
           callback: function(value, sensor) {
             if (sensor === 'fan') {
               expect(value).to.equal(0);
-            }
-            else if (sensor === 'filter') {
+            } else if (sensor === 'filter') {
               expect(value).to.equal(100);
-            }
-            else {
+            } else {
               expect(false, 'sensor to be fan or filter').to.be.ok;
             }
           },
@@ -77,8 +83,12 @@ describe('MqttClientWrapper', function() {
     describe('unsubscribe', function() {
       it('should throw if required options are missing', function() {
         var mqttClient = this.mqttClient;
-        expect(function() { mqttClient.unsubscribe(); }).to.throw(TypeError);
-        expect(function() { mqttClient.unsubscribe({topic: 'foo'}); }).to.not.throw(Error);
+        expect(function() {
+          mqttClient.unsubscribe();
+        }).to.throw(TypeError);
+        expect(function() {
+          mqttClient.unsubscribe({topic: 'foo'});
+        }).to.not.throw(Error);
       });
     });
 
