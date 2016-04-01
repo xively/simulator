@@ -203,6 +203,13 @@ exports.createOrganization = exports.blueprintCreator({
   responseProp: 'organization',
 });
 
+// Create and get an account user and yould a new state object with an
+// "accountUser" property added.
+exports.createAccountUser = exports.blueprintCreator({
+  apiMethod: 'accountUsers',
+  responseProp: 'accountUsers'
+});
+
 // Create and get an end user template and yield a new state object with an
 // "endUserTemplate" property added.
 exports.createEndUserTemplate = exports.blueprintCreator({
