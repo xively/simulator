@@ -3,11 +3,11 @@
 var _ = require('lodash');
 
 var purifierDeviceCtrl = [
-  '$scope', 'cycleFan', 'purifierFanService', 'filterDepletion',
+  '$scope', 'cycleFan', 'controlChannelSubscription', 'purifierFanService', 'filterDepletion',
   'sensorProps', 'sensorStore', 'mqttSensorPublisher', 'propWiggle',
   'periodicSensorUpdate', 'deviceLogService', 'states', 'purifierResettingService', '$timeout',
   function(
-    $scope, cycleFan, purifierFanService, filterDepletion,
+    $scope, cycleFan, controlChannelSubscription, purifierFanService, filterDepletion,
     sensorProps, sensorStore, mqttSensorPublisher, propWiggle,
     periodicSensorUpdate, deviceLogService, states, purifierResettingService, $timeout
   ) {
@@ -38,16 +38,17 @@ var purifierDeviceCtrl = [
       deviceLogChannel = _.findWhere(device.channels, {
         channelTemplateName: 'device-log',
       }).channel;
+      controlChannelSubscription.init(controlChannel);
       filterDepletion.init();
       propWiggle.init();
       periodicSensorUpdate.init(sensorChannel);
-      purifierFanService.init(controlChannel, sensorChannel);
+      purifierFanService.init(sensorChannel);
       purifierResettingService.init({
         deviceId: device.id,
         accountId: device.accountId,
         organizationId: device.organizationId,
         templateId: ''
-      }, controlChannel, deviceLogChannel);
+      }, deviceLogChannel);
       device.state = states.OK;
     }
 

@@ -30,6 +30,12 @@ describe('purifierDeviceCtrl', function() {
         };
       });
 
+      $provide.factory('controlChannelSubscription', function() {
+        return {
+          init: sinon.stub()
+        };
+      });
+
       $provide.factory('filterDepletion', function() {
         return {
           init: sinon.stub(),
