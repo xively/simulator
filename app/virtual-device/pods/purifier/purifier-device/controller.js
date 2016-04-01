@@ -109,7 +109,7 @@ var purifierDeviceCtrl = [
     }
 
     function setDeviceState(state) {
-      $scope.safeApply(function() {
+      $scope.$applyAsync(function() {
         $scope.device.state = state;
       });
 
