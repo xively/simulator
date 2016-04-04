@@ -16,7 +16,7 @@ const routes = require('./routes');
 const proxy = require('./proxy');
 
 const mqttConfig = {
-  host: `mqtt://${config.account.brokerHost}`,
+  host: `mqtts://${config.account.brokerHost}`,
   clientId: config.account.device.mqtt.username,
   username: config.account.device.mqtt.username,
   password: config.account.device.mqtt.password,

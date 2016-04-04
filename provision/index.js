@@ -9,6 +9,7 @@ var bp = require('./blueprint');
 var Promise = require('bluebird');
 var database = require('../server/database');
 var path = require('path');
+var integration = require('./integration');
 
 var SERIAL_PREFIX = 'Purify';
 var SERIAL_START = Math.floor(Math.random() * 100000) * 100;
@@ -40,7 +41,14 @@ console.error('Provision start');
 bp.getEnv(process.env)
   .then(bp.useDemoAccount)
   .then(bp.getJwt)
+  .then(integration)
   .then(bp.getClient)
+
+  .then(bp.createAccountUser(function(body, $) {
+    body.createIdmUser = true;
+    body.idmUserEmail = process.env.SALESFORCE_USER;
+    body.accountId = $.env.XIVELY_ACCOUNT_ID;
+  }))
 
   .then(bp.createDeviceTemplate(function(body, $) {
     body.name = options.deviceTemplateName;
@@ -155,6 +163,7 @@ bp.getEnv(process.env)
 
   .then(bp.createEndUser(_(3).range().map(function(n) {
     return function(body, $) {
+      body.accountId = $.env.XIVELY_ACCOUNT_ID;
       body.organizationTemplateId = $.organizationTemplate.id;
       body.organizationId = $.organization.id;
       body.endUserTemplateId = $.endUserTemplate.id;
@@ -236,6 +245,7 @@ bp.getEnv(process.env)
   .catch(function(err) {
     console.error('Provision error');
     if (err instanceof Error) {
+      console.log(err);
       console.error(err.stack);
     } else {
       console.error(JSON.stringify(err, null, 2));

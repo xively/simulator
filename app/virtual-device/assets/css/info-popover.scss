@@ -139,8 +139,8 @@
     padding: 35px 0;
   }
   .purifier-filter-popover-line {
-    height: 120px;
-    top: 343px;
+    height: 95px;
+    top: 378px;
     left: 75px;
   }
 }
@@ -175,6 +175,7 @@
   .purifier-dust-popover {
     top: -50px;
     left: 269px;
+    height: 175px;  // increased height for the malfunction button
   }
   .purifier-dust-popover-line {
     top: 74px;
@@ -187,9 +188,10 @@
   .purifier-dust-popover {
     top: -50px;
     left: 430px;
+    height: 175px;  // increased height for the malfunction button
   }
   .purifier-dust-popover-line {
-    top: 80px;
+    top: 115px;
     left: 460px;
     height: 45px;
   }
@@ -217,7 +219,7 @@
   .purifier-co-popover-line {
     top: 80px;
     right: 337px;
-    height: 45px;
+    height: 80px;
   }
 }
 
@@ -237,11 +239,11 @@
 
 .industrial {
   .purifier-temp-popover {
-    top: 441px;
+    top: 476px;
     right: 295px;
   }
   .purifier-temp-popover-line {
-    top: 400px;
+    top: 435px;
     right: 372px;
     height: 43px;
   }
@@ -262,11 +264,11 @@
 
 .industrial {
   .purifier-humidity-popover {
-    top: 441px;
+    top: 476px;
     left: 265px;
   }
   .purifier-humidity-popover-line {
-    top: 400px;
+    top: 435px;
     left: 285px;
     height: 43px;
   }

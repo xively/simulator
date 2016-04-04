@@ -28,10 +28,10 @@ exports.useDemoAccount = function($) {
     $.env.XIVELY_APP_TOKEN = account.appToken;
     $.env.XIVELY_ACCOUNT_USER_NAME = account.username;
     $.env.XIVELY_ACCOUNT_USER_PASSWORD = account.password;
-    $.env.XIVELY_IDM_HOST = 'id.demo.xively.com';
-    $.env.XIVELY_BLUEPRINT_HOST = 'blueprint.demo.xively.com';
-    $.env.XIVELY_BROKER_HOST = 'broker.demo.xively.com';
-    $.env.XIVELY_TIMESERIES_HOST = 'timeseries.demo.xively.com';
+    $.env.XIVELY_IDM_HOST = process.env.XIVELY_IDM_HOST;
+    $.env.XIVELY_BLUEPRINT_HOST = process.env.XIVELY_BLUEPRINT_HOST;
+    $.env.XIVELY_BROKER_HOST = process.env.XIVELY_BROKER_HOST;
+    $.env.XIVELY_TIMESERIES_HOST = process.env.XIVELY_TIMESERIES_HOST;
   } catch (err) {
     // Fail silently.
   }
@@ -132,7 +132,8 @@ exports.blueprintCreator = function(baseOptions) {
             return res.obj[options.responseProp];
           }
           console.error('Response object:', res.obj);
-          throw new Error('Blueprint (' + options.apiMethod + ') response.obj.' + options.responseProp + ' property missing.');
+          throw new Error('Blueprint (' + options.apiMethod + ') response.obj.' +
+              options.responseProp + ' property missing.');
         })
         .catch(function(err) {
           console.error('Request object:', JSON.stringify(body));
@@ -200,6 +201,13 @@ exports.createOrganizationTemplate = exports.blueprintCreator({
 exports.createOrganization = exports.blueprintCreator({
   apiMethod: 'organizations',
   responseProp: 'organization',
+});
+
+// Create and get an account user and yould a new state object with an
+// "accountUser" property added.
+exports.createAccountUser = exports.blueprintCreator({
+  apiMethod: 'accountUsers',
+  responseProp: 'accountUser'
 });
 
 // Create and get an end user template and yield a new state object with an

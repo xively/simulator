@@ -1,6 +1,7 @@
 'use strict';
 var sf = require('jsforce');
 
+
 var Salesforce = function(options) {
   // If you do authentication here, no need to worry about renewing
   // This constructor function will be run every time new salesforce stuff has to be done
@@ -22,14 +23,18 @@ var Salesforce = function(options) {
 
 Salesforce.prototype.addCases = function(cases) {
   // Transform data format
+  var deviceIdFieldName = process.env.XIVELY_DEVICE_ID_FIELD_NAME || 'XiDeviceId__c';
   var sfCases = cases.map(function(cs) {
-    return {
+    var result = {
       Subject: cs.subject,
-      Description: cs.description,
-      Contact: {xively__XI_End_User_ID__c: cs.orgId},
-      Asset: {xively__Device_ID__c: cs.deviceId},
-      xively__XI_Device_ID__c: cs.deviceId
+      Description: cs.description
+      //Contact: {xively__XI_End_User_ID__c: cs.orgId},
+      //Asset: {xively__Device_ID__c: cs.deviceId},
+      //xively__XI_Device_ID__c: cs.deviceId
     };
+
+    result[deviceIdFieldName] = cs.deviceId;
+    return result;
   });
 
   // Assign intermediate var to hold scope

@@ -19,6 +19,7 @@ describe('filterDepletion', function() {
             } else if (val === 'filter') {
               return 1000;
             }
+            throw new Error('Unsupported val: ' + val);
           },
           set: sinon.stub(),
         };

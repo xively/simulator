@@ -39,7 +39,7 @@ const options = config.salesforce;
 // to hook the application up with Salesforce, so we just return.
 if (!(options.user && options.pass && options.token)) {
   console.warn('Skipping Salesforce provisioning.',
-    'To set up this application with Salesforce, follow the instructions in the README.');
+      'To set up this application with Salesforce, follow the instructions in the README.');
 } else {
   // Create a new Salesforce client. This also attempts to connect immediately.
   // The current API of the salesforce wrapper requires that we catch connection
@@ -72,7 +72,7 @@ if (!(options.user && options.pass && options.token)) {
   };
 
   request.post({
-    url: 'https://id.demo.xively.com/api/v1/auth/login-user',
+    url: `https://${process.env.XIVELY_IDM_HOST}/api/v1/auth/login-user`,
     form: postData
   }, (err, httpResponse, body) => {
     if (err) {
@@ -94,7 +94,7 @@ if (!(options.user && options.pass && options.token)) {
     // processed
     new BlueprintClient({
       authorization: `Bearer ${jwt}`,
-      docsUrl: 'https://blueprint.demo.xively.com/docs',
+      docsUrl: `https://${process.env.XIVELY_BLUEPRINT_HOST}/docs`,
     }).ready.then((client) => {
       client.setAccountId(postData.accountId);
       client.apis.devices.all({
