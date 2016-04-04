@@ -18,6 +18,7 @@ var purifierFanService = [
           var msgOption = message.option.toLowerCase();
           var newIndex = sensorProps.fan.map.indexOf(msgOption);
           if (sensorStore.set('fan', newIndex)) {
+            $rootScope.$broadcast('log-fan-state', newIndex);
             mqttSensorPublisher.publishUpdate(['fan'], sensorChannel);
           }
         });
