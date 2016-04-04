@@ -19,6 +19,7 @@ describe('purifierDeviceCtrl', function() {
         initial: 0,
         max: 3,
         min: 0,
+        map: ['off', 'low', 'high'],
       },
     };
     ngModule(function($provide) {
