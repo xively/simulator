@@ -41,7 +41,7 @@ console.error('Provision start');
 bp.getEnv(process.env)
   .then(bp.useDemoAccount)
   .then(bp.getJwt)
-  //.then(integration)
+  .then(integration)
   .then(bp.getClient)
 
   .then(bp.createAccountUser(function(body, $) {
