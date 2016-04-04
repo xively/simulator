@@ -157,6 +157,7 @@ bp.getEnv(process.env)
 
   .then(bp.createEndUser(_(3).range().map(function(n) {
     return function(body, $) {
+      body.accountId = $.env.XIVELY_ACCOUNT_ID;
       body.organizationTemplateId = $.organizationTemplate.id;
       body.organizationId = $.organization.id;
       body.endUserTemplateId = $.endUserTemplate.id;
