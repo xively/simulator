@@ -12,20 +12,20 @@ var deviceLogService = [
       }
 
       return {
-        'sourceId': inputData.deviceId,
-        'sourceType': 'deviceId',
-        'accountId': inputData.accountId,
-        'organizationId': inputData.organizationId,
-        'templateId': inputData.templateId || uuid.v4(),
-        'code': code,
-        'message': inputData.message,
-        'severity': severity,
-        'details': inputData.details || inputData.message,
-        'tags': inputData.tags || [],
-        'guid': uuid.v4(),
-        'entryIndex': '7',
-        'serviceTimestamp': now,
-        'sourceTimestamp': now
+        sourceId: inputData.deviceId,
+        sourceType: 'deviceId',
+        accountId: inputData.accountId,
+        organizationId: inputData.organizationId,
+        templateId: inputData.templateId || uuid.v4(),
+        code: code,
+        message: inputData.message,
+        severity: severity,
+        details: inputData.details || inputData.message,
+        tags: inputData.tags || [],
+        guid: uuid.v4(),
+        entryIndex: '7',
+        serviceTimestamp: now,
+        sourceTimestamp: now
       };
     }
 

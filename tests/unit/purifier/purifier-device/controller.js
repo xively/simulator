@@ -19,6 +19,7 @@ describe('purifierDeviceCtrl', function() {
         initial: 0,
         max: 3,
         min: 0,
+        map: ['off', 'low', 'high'],
       },
     };
     ngModule(function($provide) {
@@ -27,6 +28,12 @@ describe('purifierDeviceCtrl', function() {
       $provide.factory('sensorStore', function() {
         return {
           set: sinon.stub().returns(true),
+        };
+      });
+
+      $provide.factory('controlChannelSubscription', function() {
+        return {
+          init: sinon.stub()
         };
       });
 

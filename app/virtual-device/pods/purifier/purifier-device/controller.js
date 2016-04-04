@@ -3,11 +3,11 @@
 var _ = require('lodash');
 
 var purifierDeviceCtrl = [
-  '$scope', 'cycleFan', 'purifierFanService', 'filterDepletion',
+  '$scope', 'cycleFan', 'controlChannelSubscription', 'purifierFanService', 'filterDepletion',
   'sensorProps', 'sensorStore', 'mqttSensorPublisher', 'propWiggle',
   'periodicSensorUpdate', 'deviceLogService', 'states', 'purifierResettingService', '$timeout',
   function(
-    $scope, cycleFan, purifierFanService, filterDepletion,
+    $scope, cycleFan, controlChannelSubscription, purifierFanService, filterDepletion,
     sensorProps, sensorStore, mqttSensorPublisher, propWiggle,
     periodicSensorUpdate, deviceLogService, states, purifierResettingService, $timeout
   ) {
@@ -38,16 +38,17 @@ var purifierDeviceCtrl = [
       deviceLogChannel = _.findWhere(device.channels, {
         channelTemplateName: 'device-log',
       }).channel;
+      controlChannelSubscription.init(controlChannel);
       filterDepletion.init();
       propWiggle.init();
       periodicSensorUpdate.init(sensorChannel);
-      purifierFanService.init(controlChannel, sensorChannel);
+      purifierFanService.init(sensorChannel);
       purifierResettingService.init({
         deviceId: device.id,
         accountId: device.accountId,
         organizationId: device.organizationId,
         templateId: ''
-      }, controlChannel, deviceLogChannel);
+      }, deviceLogChannel);
       device.state = states.OK;
     }
 
@@ -93,6 +94,20 @@ var purifierDeviceCtrl = [
       return logMessage;
     }
 
+    function sendFanStateLogMessage(currentFanState) {
+      var fanStates = sensorProps.fan.map;
+
+      if (currentFanState >= fanStates.length) {
+        throw new Error('Current fan state is not valid: ' + currentFanState);
+      }
+
+      deviceLogService.sendInfoMessage(createLogMessage(['informational'], 'Fan state is: ' + fanStates[currentFanState].toUpperCase()), deviceLogChannel);
+    }
+
+    $scope.$on('log-fan-state', function(event, currentFanState) {
+      sendFanStateLogMessage(currentFanState);
+    });
+
     function sendMalfunctionMessage() {
       var logDevice = $scope.device;
       var malfunctionData = {
@@ -108,7 +123,7 @@ var purifierDeviceCtrl = [
     }
 
     function setDeviceState(state) {
-      $scope.safeApply(function() {
+      $scope.$applyAsync(function() {
         $scope.device.state = state;
       });
 
@@ -178,14 +193,8 @@ var purifierDeviceCtrl = [
     // When the fan is clicked, we update it by cycling through the fan
     $scope.onClickFan = function() {
       if ($scope.isOk()) {
-        var fanStates = {
-          0: 'OFF',
-          1: 'LOW',
-          2: 'HIGH'
-        };
-
         var currentFanState = cycleFan();
-        deviceLogService.sendInfoMessage(createLogMessage(['informational'], 'Fan state is: ' + fanStates[currentFanState]), deviceLogChannel);
+        sendFanStateLogMessage(currentFanState);
         updateProp('fan', currentFanState);
       }
     };

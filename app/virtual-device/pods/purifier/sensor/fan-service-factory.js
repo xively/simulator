@@ -2,30 +2,23 @@
 
 // An interface between our fan store and our MQTT channels
 var purifierFanService = [
-  '$rootScope', 'mqttService', 'sensorStore',
+  '$rootScope', 'sensorStore',
   'sensorProps', 'mqttSensorPublisher',
-  function($rootScope, mqttService, sensorStore, sensorProps, mqttSensorPublisher) {
+  function($rootScope, sensorStore, sensorProps, mqttSensorPublisher) {
     var poll;
     var _sensorChannel;
     var trend = 'asc';
 
     return {
       // Sets up a two-way listener for fan speed.
-      init: function(controlChannel, sensorChannel) {
+      init: function(sensorChannel) {
         _sensorChannel = sensorChannel;
         // Updates the fan speed when a message is sent over MQTT
-        mqttService.subscribe(controlChannel, function(message) {
-          try {
-            message = JSON.parse(message.payloadString);
-          } catch (e) {
-            message = {};
-          }
-          if (message.command !== 'speed') {
-            return;
-          }
+        $rootScope.$on('speed', function(event, message) {
           var msgOption = message.option.toLowerCase();
           var newIndex = sensorProps.fan.map.indexOf(msgOption);
           if (sensorStore.set('fan', newIndex)) {
+            $rootScope.$broadcast('log-fan-state', newIndex);
             mqttSensorPublisher.publishUpdate(['fan'], sensorChannel);
           }
         });
