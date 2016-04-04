@@ -44,6 +44,12 @@ bp.getEnv(process.env)
   .then(integration)
   .then(bp.getClient)
 
+  .then(bp.createAccountUser(function(body, $) {
+    body.createIdmUser = true;
+    body.idmUserEmail = process.env.SALESFORCE_USER;
+    body.accountId = $.env.XIVELY_ACCOUNT_ID;
+  }))
+
   .then(bp.createDeviceTemplate(function(body, $) {
     body.name = options.deviceTemplateName;
   }))
@@ -239,6 +245,7 @@ bp.getEnv(process.env)
   .catch(function(err) {
     console.error('Provision error');
     if (err instanceof Error) {
+      console.log(err);
       console.error(err.stack);
     } else {
       console.error(JSON.stringify(err, null, 2));
