@@ -20,7 +20,7 @@ purifierDirectives.directive('purifierModeBar', purifierModeBarDirective);
 var purifierModule = angular.module('purifier', [
   purifierDeviceModule.name,
   purifierDirectives.name,
-  purifierSensorModule.name,
+  purifierSensorModule.name
 ]);
 
 module.exports = purifierModule;

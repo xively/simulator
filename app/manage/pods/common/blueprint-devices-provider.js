@@ -45,6 +45,18 @@ var getOrganization = function(state) {
   }));
 };
 
+var getEndUsers = function(state) {
+  var result = state.client.apis.endUsers.all({
+    accountId: state.config.accountId
+  })
+  .then(function(res) {
+    return res.obj.endUsers.results;
+  });
+
+  return Promise.props(_.assign({}, state, {
+    endUsers: result
+  }));
+};
 
 module.exports = [
   function BlueprintDevices() {
@@ -57,7 +69,9 @@ module.exports = [
       'BlueprintClient',
       function(BlueprintClient) {
         return Promise.props({
-          client: BlueprintClient.then(function(client) { return client.client; }),
+          client: BlueprintClient.then(function(client) {
+            return client.client;
+          }),
           config: {
             accountId: options.accountId,
             organizationId: options.organizationId,
@@ -66,13 +80,18 @@ module.exports = [
         .then(getDevices)
         .then(getDeviceTemplates)
         .then(getOrganization)
+        .then(getEndUsers)
         .then(function(state) {
+          if (state.endUsers[0].name.indexOf('SampleUsr') > -1) {
+            state.endUsers.shift();
+          }
           var templateMap = {};
           _.forEach(state.deviceTemplates, function(template) {
             templateMap[template.id] = template;
           });
-          return _.map(state.devices, function(device) {
+          return _.map(state.devices, function(device, index) {
             device.organizationName = state.organization.name;
+            device.endUser = state.endUsers[index % state.endUsers.length].name;
             device.templateName = templateMap[device.deviceTemplateId].name;
             return device;
           });

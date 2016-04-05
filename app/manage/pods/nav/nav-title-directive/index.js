@@ -9,12 +9,14 @@ module.exports = [
         menuClick: '&',
       },
       template: require('./template.tmpl'),
+      controller: ['$scope', '$stateParams', function($scope, $stateParams) {
+        $scope.params = $stateParams;
+      }],
       link: function(scope, element) {
         var computeTitle = function() {
           if ($state.$current.path.length) {
             scope.title = $state.$current.path[0].self.name;
-          }
-          else {
+          } else {
             scope.title = 'Loading ...';
           }
         };

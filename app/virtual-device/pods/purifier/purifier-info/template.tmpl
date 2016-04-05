@@ -1,5 +1,5 @@
 <div class="purifier-device-toggle"
-  ng-class="[{'active': active}, 'toggle-' + name]"
+  ng-class="[{'active': active, 'malfunction': isMalfunction(), 'resetting': isResetting(), 'recovered': isRecovered()}, 'toggle-' + name]"
   ng-cloak>
   <div class="purifier-device-toggle-btn" ng-click="toggleActive()"></div>
   <div class="purifier-device-toggle-label" title-transclude></div>
@@ -18,8 +18,10 @@
       max="{{ model().max }}"
       ng-model="value"
       ng-model-options="{ getterSetter: true }"
-      ng-change="change()">
+      ng-change="change()"
+      ng-disabled="!device().isOk()">
     <span class="lower-range-value">{{ model().min }}</span>
     <span class="upper-range-value">{{ model().max }}</span>
   </div>
+  <button class='purifier-filter-btn' ng-if='model().malfunction' ng-click="doMalfunction()">Trigger malfunction</button>
 </div>

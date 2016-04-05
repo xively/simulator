@@ -8,7 +8,7 @@ describe('BlueprintClientProvider', function() {
   beforeEach(ngModule('manage-common', function(_BlueprintClientProvider_) {
     BlueprintClientProvider = _BlueprintClientProvider_;
     BlueprintClientProvider.options({
-      host: 'blueprint.demo.xively.com',
+      host: process.env.XIVELY_BLUEPRINT_HOST,
       accountId: 'accountId',
     });
   }));
@@ -34,7 +34,9 @@ describe('BlueprintClientProvider', function() {
       };
       return wrapper;
     })
-    .then(function(wrapper) { return wrapper.call('devices.all'); })
+    .then(function(wrapper) {
+      return wrapper.call('devices.all');
+    })
     .then(function(accountId) {
       expect(accountId).to.equal('accountId');
     });

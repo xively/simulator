@@ -31,8 +31,9 @@ var sensorProps = {
   dust: {
     min: 0,
     max: 500,
-    initial: 1,
+    initial: 100,
     wiggle: true,
+    malfunction: true,
   },
 
   // Not technically a "sensor," but the rest of the application

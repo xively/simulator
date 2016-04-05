@@ -38,7 +38,7 @@ deviceListModule.config([
               {title: 'Name', sortBy: 'name', classSuffix: 'name'},
               {title: 'Type', sortBy: 'templateName', classSuffix: 'type'},
               {title: 'Provisioning Status', sortBy: 'provisioningState', classSuffix: 'provisioning'},
-              {title: 'Location', sortBy: 'organizationName', classSuffix: 'location'},
+              {title: 'Location', sortBy: 'location', classSuffix: 'location'},
               {title: 'Connection Status', sortBy: 'connectionStatus', classSuffix: 'connection'},
               {title: 'State', sortBy: 'sensor.fanRaw', classSuffix: 'state'},
               {title: 'Alert', sortBy: 'sensor.filterRaw', classSuffix: 'alert'},

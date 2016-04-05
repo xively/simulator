@@ -21,12 +21,12 @@ describe('LoginProvider', function() {
   beforeEach(ngModule('manage-common', function(_LoginProvider_) {
     LoginProvider = _LoginProvider_;
     LoginProvider.options({
-      host: 'id.demo.xively.com',
+      host: process.env.XIVELY_IDM_HOST,
     });
   }));
 
   beforeEach(inject(function($httpBackend) {
-    $httpBackend.whenPOST('https://id.demo.xively.com/api/auth/login')
+    $httpBackend.whenPOST('https://' + process.env.XIVELY_IDM_HOST + '/api/auth/login')
     .respond(function(method, url, data, headers, params) {
       if (data.emailAddress === 'e@mail.com' && data.password === 'password') {
         return {
@@ -35,7 +35,7 @@ describe('LoginProvider', function() {
       }
       return 400;
     });
-    $httpBackend.whenPOST('https://id.demo.xively.com/api/sessions/renew-session')
+    $httpBackend.whenPOST('https://' + process.env.XIVELY_IDM_HOST + '/api/sessions/renew-session')
     .respond(function(method, url, data, headers, params) {
       if (data.jwt === 'jwt') {
         return {

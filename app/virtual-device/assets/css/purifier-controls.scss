@@ -26,6 +26,7 @@
   .industrial & {
     height: 500px;
     background-image: url('/virtual-device/img/industrial-outline.png');
+    background-position: 0 135px;
   }
 }
 
@@ -220,6 +221,62 @@
   }
 }
 
+.purifier-device-toggle.malfunction {
+  color: rgb(255,72,51);
+
+  .purifier-device-toggle-btn:before {
+    background-color: rgb(255,72,51);
+  }
+
+  .purifier-device-toggle-btn:after {
+    background-color: rgb(255,72,51);
+  }
+}
+
+.purifier-device-toggle.recovered {
+  color: rgb(12,232,14);
+
+  .purifier-device-toggle-btn:before {
+    background-color: rgb(12,232,14);
+  }
+
+  .purifier-device-toggle-btn:after {
+    background-color: rgb(12,232,14);
+  }
+}
+
+
+@keyframes blink{
+  0% {background-color: rgb(76,179,224);}
+  100% {background-color: rgb(255,72, 51);}
+}
+
+
+@keyframes blink-text{
+  0% {color: rgb(76,179,224);}
+  100% {color: rgb(255,72, 51);}
+}
+
+
+.purifier-device-toggle.resetting {
+  animation-name: blink-text;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+
+  .purifier-device-toggle-btn:before {
+    animation-name: blink;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+  }
+
+  .purifier-device-toggle-btn:after {
+    animation-name: blink;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+  }
+}
+
+
 .home, .industrial {
   .toggle-no2, .toggle-dust, .toggle-co {
     @include purifier-device-toggle-label-position("center", "bottom");
@@ -311,27 +368,55 @@
   }
 
   .toggle-dust {
-    top: 105px;
+    top: 140px;
     left: 440px;
   }
 
   .toggle-co {
-    top: 105px;
+    top: 140px;
     right: 315px;
   }
 
   .toggle-humidity {
-    top: 380px;
+    top: 415px;
     left: 265px;
   }
 
   .toggle-temp {
-    top: 380px;
+    top: 415px;
     right: 350px;
   }
 
   .toggle-filter {
-    top: 317px;
+    top: 352px;
     left: 55px;
+  }
+}
+
+.purifier-device-operation-ribbon {
+  position: absolute;
+  width: 180px;
+  height: 30px;
+  top: 280px;
+  left: 350px;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  &.ok {
+    background-image: url('/virtual-device/img/display_ok.png');
+  }
+
+  &.malfunction {
+    background-image: url('/virtual-device/img/sensor_malfunction.png');
+  }
+
+  &.resetting {
+    background-image: url('/virtual-device/img/resetting.png');
+  }
+}
+
+.home{
+  .purifier-device-operation-ribbon {
+    display: none;
   }
 }

@@ -9,10 +9,34 @@
     </div>
     <div class="purifier-title-powered-by">Powered by</div>
     <img src="/virtual-device/img/xively-logo-white-2x.png" alt="Xively" class="xively-logo">
+
+    <button class="button simulator-button" ng-class="{'active': simulationRunning}" ng-click="toggleSimulation()">
+      <span ng-switch="simulationRunning">
+        <span ng-switch-when="false">Run simulation</span>
+        <span ng-switch-when="true">Stop simulation</span>
+      </span>
+    </button>
   </div>
   <div class="purifier-aqi" ng-controller="aqiCtrl as ctrl">
     <div class="purifier-aqi-value" ng-bind="aqi"></div>
     <div class="purifier-aqi-label">AQI</div>
   </div>
   <purifier-controls class="purifier-controls"></purifier-controls>
+  <table class="sensor-list">
+    <tr>
+      <th class="channel-name">Channel name</th>
+      <th class="channel-control">Control</th>
+      <th class="channel-value">Value</th>
+    </tr>
+    <tr ng-repeat="channel in ::newChannels">
+      <td class="channel-name">{{ channel.channelTemplateName }}</td>
+      <td class="channel-control">
+        <input type="range" min="0" max="100"
+          ng-model="channel.value"
+          ng-init="channel.value = 0"
+          ng-change="emitUpdate(channel.channel, channel.value)">
+      </td>
+      <td class="channel-value">{{ channel.value }}</td>
+    </tr>
+  </table>
 </div>

@@ -42,8 +42,7 @@ rulesListModule.config([
               $scope.alertType = 'success';
               if ($stateParams.action === 'Create') {
                 $scope.message = $stateParams.newRule + ' has been created.';
-              }
-              else {
+              } else {
                 $scope.message = $stateParams.newRule + ' has been edited.';
               }
 

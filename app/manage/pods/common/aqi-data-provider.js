@@ -91,11 +91,13 @@ module.exports = [
                 var retIdx = null;
                 for (var i = 0, l = data.length; i < l; i++) {
                   var dataPoint = data[i];
+                  if (dataPoint.AQI === -999) {
+                    dataPoint.AQI = 0;
+                  }
                   var idx = dataPoint.Latitude + String(dataPoint.Longitude);
                   if (!retIdx) {
                     retIdx = idx;
-                  }
-                  else if (retIdx !== idx) {
+                  } else if (retIdx !== idx) {
                     continue;
                   }
                   retVal.push({

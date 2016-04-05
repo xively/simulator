@@ -59,8 +59,7 @@ module.exports = [
                   }
                   params.body = JSON.stringify(params.body);
                 }
-              }
-              else if (!params.accountId) {
+              } else if (!params.accountId) {
                 params.accountId = clientOptions.accountId;
               }
 

@@ -13,12 +13,20 @@ describe('resolve-args', function() {
   it('calls function wrapped with $scope or $scopeIndex', function() {
     var $scope = $rootScope.$new();
     var watchTriggered = 0;
-    $scope.$watch('value', function() { watchTriggered++; });
+    $scope.$watch('value', function() {
+      watchTriggered++;
+    });
 
     return Promise.all([
-      resolveArgs({$scope: $scope, indices: []}, function() { $scope.value = 'a'; })(),
-      resolveArgs({$scopeIndex: 0, indices: []}, function(scope) { scope.value = 'b'; })($scope),
-      resolveArgs({indices: []}, function() { $scope.value = 'c'; })(),
+      resolveArgs({$scope: $scope, indices: []}, function() {
+        $scope.value = 'a';
+      })(),
+      resolveArgs({$scopeIndex: 0, indices: []}, function(scope) {
+        scope.value = 'b';
+      })($scope),
+      resolveArgs({indices: []}, function() {
+        $scope.value = 'c';
+      })(),
     ])
     .then(function() {
       expect(watchTriggered).to.equal(2);

@@ -7,10 +7,13 @@ var propWiggle = ['wiggle', 'sensorProps', 'sensorStore',
     // The rate at which we update the values
     var WIGGLE_INTERVAL = 10000;
     var poll;
+    var isEnabled = true;
 
     var wiggleProp = function(prop) {
       // The filter is managed by another service
-      if (!sensorProps[prop].wiggle) { return; }
+      if (!sensorProps[prop].wiggle) {
+        return;
+      }
       var currentValue = sensorStore.get(prop);
       var newValue = wiggle(currentValue, 3);
       sensorStore.set(prop, newValue);
@@ -18,12 +21,32 @@ var propWiggle = ['wiggle', 'sensorProps', 'sensorStore',
 
     return {
       init: function() {
-        if (typeof poll !== 'undefined') { return; }
-        poll = setInterval(function() {
-          var keys = Object.keys(sensorProps);
-          keys.forEach(wiggleProp);
-        }, WIGGLE_INTERVAL);
+        this.start();
       },
+      start: function(interval) {
+        if (poll) {
+          clearInterval(poll);
+        }
+
+        poll = setInterval(function() {
+          if (isEnabled) {
+            var keys = Object.keys(sensorProps);
+            keys.forEach(wiggleProp);
+          }
+        }, interval || WIGGLE_INTERVAL);
+      },
+      startSimulation: function(interval) {
+        this.start(interval);
+      },
+      stopSimulation: function() {
+        this.start(WIGGLE_INTERVAL);
+      },
+      enable: function() {
+        isEnabled = true;
+      },
+      disable: function() {
+        isEnabled = false;
+      }
     };
   }];
 

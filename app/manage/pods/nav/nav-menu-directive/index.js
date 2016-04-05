@@ -6,6 +6,9 @@ module.exports = [
     return {
       restrict: 'ACE',
       template: require('./template.tmpl'),
+      controller: ['$scope', '$stateParams', function($scope, $stateParams) {
+        $scope.params = $stateParams;
+      }],
       link: function(scope, element) {
         scope.isOpen = false;
 
@@ -13,24 +16,14 @@ module.exports = [
           scope.$apply('isOpen = false;');
         });
 
-        element.css('transition', 'none');
-        function enableTransition() {
-          element.css('transition', '');
-        }
         function setPosition() {
-          element.css('margin-left', scope.isOpen ? '' : -element.outerWidth());
+          element.css('margin-left', scope.isOpen ? 0 : -element.outerWidth());
         }
-        var initialized = false;
-        scope.$watch('isOpen', function() {
-          if (initialized) {
+
+        scope.$watch('isOpen', function(oldValue, newValue) {
+          if (oldValue !== newValue) {
             setPosition();
-            return;
           }
-          $timeout(function() {
-            setPosition();
-            $timeout(enableTransition);
-            initialized = true;
-          });
         });
       },
     };

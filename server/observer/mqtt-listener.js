@@ -79,8 +79,7 @@ MqttListener.prototype.use = function(channel, callback) {
     }
 
     this._callbacks[channel].push(callback);
-  }
-  else {
+  } else {
     // throw error
   }
 };
@@ -110,8 +109,7 @@ MqttListener.prototype._subscribeAll = function() {
       // If we have nothing else to subscribe to
       that._subscriberState = 'finished';
       console.log('subscribed to %s channels', that._topics.length);
-    }
-    else {
+    } else {
       var topic = that._toSubscribe[0];
       console.log('subscribing to to', topic);
       that._client.subscribe(topic, function(error, granted) {
@@ -120,7 +118,7 @@ MqttListener.prototype._subscribeAll = function() {
           console.error(error);
         }
 
-        if (granted.qos === 128) {
+        if (granted[0].qos === 128) {
           // TODO: Remove topic from list of topics if denied?
           // throw new Error('Subscription denied for '+topic);
           console.error('subscription denied for ' + topic);
@@ -198,13 +196,11 @@ MqttListener.prototype._onMessage = function(topic, message) {
         // If we have a callback to run..
         try {
           that._callbacks[channel][currentIndex](data, next);
-        }
-        catch (error) {
+        } catch (error) {
           console.log(error.stack);
           return next();
         }
-      }
-      else {
+      } else {
         // we already ran our last callback, so we..
         // cleanup memory?
       }

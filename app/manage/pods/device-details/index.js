@@ -5,6 +5,7 @@ require('angular-ui-router');
 var _ = require('lodash');
 
 var resolveArgs = require('../common/utils/resolve-args');
+var sensorProps = require('../../../virtual-device/pods/purifier/sensor/props-value');
 
 var commonModule = require('../common');
 
@@ -34,7 +35,7 @@ deviceDetailsModule.config([
   function(stateProvider) {
     stateProvider
       .state('device.details', {
-        url: '/device/:deviceId?{demo:bool}',
+        url: '/device/:deviceId?{demo:bool}&{noheader:bool}',
         template: require('./template.tmpl'),
         controller: [
           '$scope',
@@ -51,7 +52,7 @@ deviceDetailsModule.config([
           resolveArgs({$scopeIndex: 0, indices: [3]}, function(
             $scope,
             $rootScope,
-            stateParams,
+            $stateParams,
             devices,
             deviceMqtt,
             deviceConfig,
@@ -61,15 +62,19 @@ deviceDetailsModule.config([
             sensorUnitConfig,
             applicationConfig
           ) {
-            var device = _.cloneDeep(_.find(devices, 'id', stateParams.deviceId));
+            var malfunction = 'malfunction', resetting = 'resetting', recovery = 'recovery', propName = 'channelTemplateName';
+            var device = _.cloneDeep(_.find(devices, 'id', $stateParams.deviceId));
             if (!device) {
-              console.error('device %s not found', stateParams.deviceId);
+              console.error('device %s not found', $stateParams.deviceId);
             }
 
-            if (stateParams.demo) {
+            if ($stateParams.demo) {
               $rootScope.$broadcast('toggleDemo', true);
-              $rootScope.$broadcast('toggleVirtualDevice', stateParams.deviceId);
+              $rootScope.$broadcast('toggleVirtualDevice', $stateParams.deviceId);
             }
+
+            $scope.params = $stateParams;
+            $scope.isLoaded = false;
             $scope.email = applicationConfig.emailAddress;
             $scope.units = sensorUnitConfig;
             $scope.device = device;
@@ -81,7 +86,27 @@ deviceDetailsModule.config([
                 co: false,
               },
               latestAqi: null,
+              dust: {
+                state: null,
+              },
+              disabled: {
+                buttons: false
+              }
             };
+
+            $scope.newChannels = $scope.device.channels.filter(function(channel) {
+              var name = channel.channelTemplateName;
+              return !sensorProps[name] && name !== 'sensor' && name !== 'control';
+            });
+
+            $scope.newChannels.forEach(function(channel) {
+              channel.value = 'N/A';
+              deviceMqtt.subscribePlain(channel.channel, function(message) {
+                $scope.$applyAsync(function() {
+                  channel.value = message.payloadString;
+                });
+              });
+            });
 
             AqiData.getLatestValue()
             .then(function(latestValue) {
@@ -91,8 +116,9 @@ deviceDetailsModule.config([
               });
             });
 
-            var controlChannel = _.find(device.channels, 'channelTemplateName', 'control').channel;
-            var sensorChannel = _.find(device.channels, 'channelTemplateName', 'sensor').channel;
+            var controlChannel = _.find(device.channels, propName, 'control').channel;
+            var sensorChannel = _.find(device.channels, propName, 'sensor').channel;
+            var logChannel = _.find(device.channels, propName, 'device-log').channel;
 
             device.deviceConnected = false;
 
@@ -106,7 +132,34 @@ deviceDetailsModule.config([
               callback: function(value, sensor) {
                 device.deviceConnected = true;
                 device.sensor[sensor] = value;
-              },
+              }
+            });
+
+            function changeState(tags) {
+              var state, disabled;
+              if (_.includes(tags, malfunction)) {
+                state = malfunction;
+                disabled = true;
+              } else if (_.includes(tags, resetting)) {
+                state = resetting;
+                disabled = true;
+              } else if (_.includes(tags, recovery)) {
+                state = recovery;
+                disabled = false;
+              }
+              $scope.customData.dust.state = state;
+              $scope.customData.disabled.buttons = disabled;
+            }
+
+            deviceMqtt.subscribe({
+              topic: logChannel,
+              group: 'device-log',
+              $scope: $scope,
+              callback: function(value, prop) {
+                if (prop === 'tags' && _.isArray(value)) {
+                  changeState(value);
+                }
+              }
             });
 
             // These variables keep track of if the user has dismissed an
@@ -122,12 +175,10 @@ deviceDetailsModule.config([
               if (
                 device.sensor &&
                 typeof device.sensor.filter !== 'undefined' &&
-                device.sensor.filter <= 24 &&
-                !ignoreFilterAlerts
+                device.sensor.filter <= 24 && !ignoreFilterAlerts
               ) {
                 $scope.customData.alert.filter = true;
-              }
-              else if (_.get(device, 'sensor.filter') > 24) {
+              } else if (_.get(device, 'sensor.filter') > 24) {
                 ignoreFilterAlerts = false;
               }
             });
@@ -155,8 +206,7 @@ deviceDetailsModule.config([
               if (fActual > 48) {
                 fActual = Math.round(fActual / 24);
                 $scope.filterLife.measure = 'days';
-              }
-              else {
+              } else {
                 $scope.filterLife.measure = 'hours';
               }
               $scope.filterLife.lifeLeft = fActual;
@@ -167,12 +217,10 @@ deviceDetailsModule.config([
               if (
                 device.sensor &&
                 typeof device.sensor.co !== 'undefined' &&
-                device.sensor.co > 100 &&
-                !ignoreCOAlerts
+                device.sensor.co > 100 && !ignoreCOAlerts
               ) {
                 $scope.customData.alert.co = true;
-              }
-              else if (_.get(device, 'sensor.co') <= 100) {
+              } else if (_.get(device, 'sensor.co') <= 100) {
                 ignoreCOAlerts = false;
               }
             });
@@ -187,8 +235,12 @@ deviceDetailsModule.config([
               $scope.customData.alert.co = false;
             };
 
+            $scope.clearStateNotification = function() {
+              $scope.customData.dust.state = null;
+            };
+
             $scope.toggleVirtualDevice = function() {
-              $rootScope.$broadcast('toggleVirtualDevice', stateParams.deviceId);
+              $rootScope.$broadcast('toggleVirtualDevice', $stateParams.deviceId);
             };
 
             $scope.changeFanSpeedTo = function(newSpeed) {
@@ -232,9 +284,11 @@ deviceDetailsModule.config([
                 topic: sensorChannel,
                 group: 'device-detail',
               });
+              deviceMqtt.unsubscribe({topic: logChannel});
+              deviceMqtt.unsubscribe({topic: controlChannel});
             });
 
-            TimeSeries.getMostRecentSensorHistory(stateParams.deviceId)
+            TimeSeries.getMostRecentSensorHistory($stateParams.deviceId)
             .then(function(sensorHistory) {
               $scope.$applyAsync(function() {
                 for (var i in deviceConfig.sensorList) {
@@ -247,6 +301,16 @@ deviceDetailsModule.config([
                 }
                 device.deviceConnected = true;
               });
+            });
+
+            var newTimeSeriesChannel = $scope.newChannels.filter(function(channel) {
+              return channel.persistenceType === 'timeSeries';
+            }).map(function(channel) {
+              var name = channel.channelTemplateName;
+              return {
+                name: name,
+                title: _.capitalize(name)
+              };
             });
 
             $scope.chartTabs = [
@@ -270,7 +334,7 @@ deviceDetailsModule.config([
                 name: 'humidity',
                 title: 'Humidity',
               },
-            ].map(function(item) {
+            ].concat(newTimeSeriesChannel).map(function(item) {
               item.value = $scope.device.sensor[item.name];
               item.chartData = chartDataTool.baseChartData({sensor: item.name});
               item.loaded = null;
@@ -279,7 +343,7 @@ deviceDetailsModule.config([
                   return item.loaded;
                 }
                 item.loaded = chartDataTool.loadDataSource({
-                  deviceId: stateParams.deviceId,
+                  deviceId: $stateParams.deviceId,
                   sensor: item.name,
                 })
                 .catch(function() {
@@ -302,6 +366,7 @@ deviceDetailsModule.config([
                   item.loaded
                   .then(function() {
                     $scope.$applyAsync(function() {
+                      $scope.isLoaded = true;
                       item.chartData.dataSource.data.push({value: item.value});
                       if (item.chartData.dataSource.data.length > maxDataPoints) {
                         var dataSource = item.chartData.dataSource;
