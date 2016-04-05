@@ -165,13 +165,11 @@ device-details-alert {
   }
 }
 
-.sensor-alert.alert {
+.sensor-alert.base {
   font-size: 16px;
-  background-color: #ff4833;
   padding: 1em 1.4em;
   text-align: center;
   margin: 0 auto;
-  color: #ffffff;
   box-sizing: border-box;
   border-radius: 0;
 
@@ -215,6 +213,24 @@ device-details-alert {
       right: 12px;
     }
   }
+}
+
+.sensor-alert.warning {
+  @extend .sensor-alert.base;
+  background-color: #ff4833;
+  color: #ffffff;
+}
+
+.sensor-alert.info {
+  @extend .sensor-alert.base;
+  background-color: #ff8e23;
+  color: #ffffff;
+}
+
+.sensor-alert.backagain {
+  @extend .sensor-alert.base;
+  background-color: #20ff00;
+  color: #ffffff;
 }
 
 .status-detailed-buttons {
