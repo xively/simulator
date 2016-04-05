@@ -62,6 +62,7 @@ deviceDetailsModule.config([
             sensorUnitConfig,
             applicationConfig
           ) {
+            var malfunction = 'malfunction', resetting = 'resetting', recovery = 'recovery', propName = 'channelTemplateName';
             var device = _.cloneDeep(_.find(devices, 'id', $stateParams.deviceId));
             if (!device) {
               console.error('device %s not found', $stateParams.deviceId);
@@ -85,6 +86,12 @@ deviceDetailsModule.config([
                 co: false,
               },
               latestAqi: null,
+              dust: {
+                state: null,
+              },
+              disabled: {
+                buttons: false
+              }
             };
 
             $scope.newChannels = $scope.device.channels.filter(function(channel) {
@@ -109,8 +116,9 @@ deviceDetailsModule.config([
               });
             });
 
-            var controlChannel = _.find(device.channels, 'channelTemplateName', 'control').channel;
-            var sensorChannel = _.find(device.channels, 'channelTemplateName', 'sensor').channel;
+            var controlChannel = _.find(device.channels, propName, 'control').channel;
+            var sensorChannel = _.find(device.channels, propName, 'sensor').channel;
+            var logChannel = _.find(device.channels, propName, 'device-log').channel;
 
             device.deviceConnected = false;
 
@@ -124,7 +132,34 @@ deviceDetailsModule.config([
               callback: function(value, sensor) {
                 device.deviceConnected = true;
                 device.sensor[sensor] = value;
-              },
+              }
+            });
+
+            function changeState(tags) {
+              var state, disabled;
+              if (_.includes(tags, malfunction)) {
+                state = malfunction;
+                disabled = true;
+              } else if (_.includes(tags, resetting)) {
+                state = resetting;
+                disabled = true;
+              } else if (_.includes(tags, recovery)) {
+                state = recovery;
+                disabled = false;
+              }
+              $scope.customData.dust.state = state;
+              $scope.customData.disabled.buttons = disabled;
+            }
+
+            deviceMqtt.subscribe({
+              topic: logChannel,
+              group: 'device-log',
+              $scope: $scope,
+              callback: function(value, prop) {
+                if (prop === 'tags' && _.isArray(value)) {
+                  changeState(value);
+                }
+              }
             });
 
             // These variables keep track of if the user has dismissed an
@@ -140,8 +175,7 @@ deviceDetailsModule.config([
               if (
                 device.sensor &&
                 typeof device.sensor.filter !== 'undefined' &&
-                device.sensor.filter <= 24 &&
-                !ignoreFilterAlerts
+                device.sensor.filter <= 24 && !ignoreFilterAlerts
               ) {
                 $scope.customData.alert.filter = true;
               } else if (_.get(device, 'sensor.filter') > 24) {
@@ -183,8 +217,7 @@ deviceDetailsModule.config([
               if (
                 device.sensor &&
                 typeof device.sensor.co !== 'undefined' &&
-                device.sensor.co > 100 &&
-                !ignoreCOAlerts
+                device.sensor.co > 100 && !ignoreCOAlerts
               ) {
                 $scope.customData.alert.co = true;
               } else if (_.get(device, 'sensor.co') <= 100) {
@@ -200,6 +233,10 @@ deviceDetailsModule.config([
             $scope.clearCOAlert = function() {
               ignoreCOAlerts = true;
               $scope.customData.alert.co = false;
+            };
+
+            $scope.clearStateNotification = function() {
+              $scope.customData.dust.state = null;
             };
 
             $scope.toggleVirtualDevice = function() {
@@ -247,6 +284,8 @@ deviceDetailsModule.config([
                 topic: sensorChannel,
                 group: 'device-detail',
               });
+              deviceMqtt.unsubscribe({topic: logChannel});
+              deviceMqtt.unsubscribe({topic: controlChannel});
             });
 
             TimeSeries.getMostRecentSensorHistory($stateParams.deviceId)

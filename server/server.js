@@ -20,14 +20,15 @@ const mqttConfig = {
   clientId: config.account.device.mqtt.username,
   username: config.account.device.mqtt.username,
   password: config.account.device.mqtt.password,
-  accountId: config.account.accountId
+  accountId: config.account.accountId,
 };
 
+
+function registerObserver(app, deviceId) {
+  app.set('observer', new Observer(database, mqttConfig, deviceId));
+}
+
 const app = express();
-
-const observer = new Observer(database, mqttConfig);
-app.set('observer', observer);
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: false
@@ -37,6 +38,7 @@ app.use(cookieParser());
 let configLoading = true;
 if (process.env.NODE_ENV === 'test') {
   configLoading = false;
+  registerObserver(app, 'test');
 } else {
   database.selectApplicationConfig(config.account.accountId).then(function(data) {
     const appConfig = data[0];
@@ -58,7 +60,7 @@ if (process.env.NODE_ENV === 'test') {
         }
       }
     });
-
+    registerObserver(app, appConfig.device.id);
     configLoading = false;
   }).catch((error) => {
     console.error(error);

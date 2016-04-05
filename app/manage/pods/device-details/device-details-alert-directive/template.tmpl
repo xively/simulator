@@ -1,28 +1,69 @@
 <div class="alert-container">
-  <div class="sensor-alerts">
-    <div class="sensor-alert sensor-alert-filter alert error" ng-if="customData.alert.filter">
-      <div class="remove-alert" ng-click="clearFilterAlert()">
-        <i class="fa fa-times"></i>
-      </div>
-      <div class="alert-title">
-        <i class="fa fa-warning"></i>
-        This device’s filter is low.
-      </div>
-      <div class="alert-text">
-        The filter should be replaced to ensure optimal air quality.
-      </div>
+    <div class="sensor-alerts">
+        <!-- Filter alert -->
+        <div class="sensor-alert alert warning error" ng-if="customData.alert.filter">
+            <div class="remove-alert" ng-click="clearFilterAlert()">
+                <i class="fa fa-times"></i>
+            </div>
+            <div class="alert-title">
+                <i class="fa fa-warning"></i>
+                This device’s filter is low.
+            </div>
+            <div class="alert-text">
+                The filter should be replaced to ensure optimal air quality.
+            </div>
+        </div>
+        <!-- CO sensor alert -->
+        <div class="sensor-alert alert warning error" ng-if="customData.alert.co">
+            <div class="remove-alert" ng-click="clearCOAlert()">
+                <i class="fa fa-times"></i>
+            </div>
+            <div class="alert-title">
+                <i class="fa fa-warning"></i>
+                Dangerous levels of carbon monoxide detected.
+            </div>
+            <div class="alert-text">
+                Ventilate and vacate the room as quickly as possible!
+            </div>
+        </div>
+        <!-- Malfunction alert -->
+        <div class="sensor-alert alert warning error" ng-if="customData.dust.state == 'malfunction'">
+            <div class="remove-alert" ng-click="clearStateNotification()">
+                <i class="fa fa-times"></i>
+            </div>
+            <div class="alert-title">
+                <i class="fa fa-warning"></i>
+                Your air filter has reported a dust sensor malfunction.
+            </div>
+            <div class="alert-text">
+                Please stand by, our agents are already aware of the issue and will have a look at it very soon.
+            </div>
+        </div>
+        <!-- Resetting warning -->
+        <div class="sensor-alert alert info error" ng-if="customData.dust.state == 'resetting'">
+            <div class="remove-alert" ng-click="clearStateNotification()">
+                <i class="fa fa-times"></i>
+            </div>
+            <div class="alert-title">
+                <i class="fa fa-warning"></i>
+                This device is being reset, please wait.
+            </div>
+            <div class="alert-text">
+                One of our agent initiated a remote reset of your air filter. You don’t need to do anything.
+            </div>
+        </div>
+        <!-- Work again info -->
+        <div class="sensor-alert alert backagain error" ng-if="customData.dust.state == 'recovery'">
+            <div class="remove-alert" ng-click="clearStateNotification()">
+                <i class="fa fa-times"></i>
+            </div>
+            <div class="alert-title">
+                <i class="fa fa-warning"></i>
+                Your air filter has recovered from an error.
+            </div>
+            <div class="alert-text">
+                We have reset your device and the dust sensor is working fine again.
+            </div>
+        </div>
     </div>
-    <div class="sensor-alert sensor-alert-co alert error" ng-if="customData.alert.co">
-      <div class="remove-alert" ng-click="clearCOAlert()">
-        <i class="fa fa-times"></i>
-      </div>
-      <div class="alert-title">
-        <i class="fa fa-warning"></i>
-        Dangerous levels of carbon monoxide detected.
-      </div>
-      <div class="alert-text">
-        Ventilate and vacate the room as quickly as possible!
-      </div>
-    </div>
-  </div>
 </div>
