@@ -62,7 +62,7 @@ deviceDetailsModule.config([
             sensorUnitConfig,
             applicationConfig
           ) {
-            const malfunction = 'malfunction', resetting = 'resetting', recovery = 'recovery', propName = 'channelTemplateName';
+            var malfunction = 'malfunction', resetting = 'resetting', recovery = 'recovery', propName = 'channelTemplateName';
             var device = _.cloneDeep(_.find(devices, 'id', $stateParams.deviceId));
             if (!device) {
               console.error('device %s not found', $stateParams.deviceId);
@@ -135,12 +135,28 @@ deviceDetailsModule.config([
               }
             });
 
+            function changeState(tags) {
+              var state, disabled;
+              if (_.includes(tags, malfunction)) {
+                state = malfunction;
+                disabled = true;
+              } else if (_.includes(tags, resetting)) {
+                state = resetting;
+                disabled = true;
+              } else if (_.includes(tags, recovery)) {
+                state = recovery;
+                disabled = false;
+              }
+              $scope.customData.dust.state = state;
+              $scope.customData.disabled.buttons = disabled;
+            }
+
             deviceMqtt.subscribe({
               topic: logChannel,
               group: 'device-log',
               $scope: $scope,
-              callback: function (value, prop) {
-                if (prop === "tags" && _.isArray(value)) {
+              callback: function(value, prop) {
+                if (prop === 'tags' && _.isArray(value)) {
                   changeState(value);
                 }
               }
@@ -209,22 +225,6 @@ deviceDetailsModule.config([
               }
             });
 
-            function changeState(tags) {
-              var state, disabled;
-              if (_.includes(tags, malfunction)) {
-                state = malfunction;
-                disabled = true;
-              } else if (_.includes(tags, resetting)) {
-                state = resetting;
-                disabled = true;
-              } else if (_.includes(tags, recovery)) {
-                state = recovery;
-                disabled = false;
-              }
-              $scope.customData.dust.state = state;
-              $scope.customData.disabled.buttons = disabled;
-            };
-
             $scope.clearFilterAlert = function() {
               ignoreFilterAlerts = true;
               $scope.customData.alert.filter = false;
@@ -235,7 +235,7 @@ deviceDetailsModule.config([
               $scope.customData.alert.co = false;
             };
 
-            $scope.clearStateNotification = function(){
+            $scope.clearStateNotification = function() {
               $scope.customData.dust.state = null;
             };
 
