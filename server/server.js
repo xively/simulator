@@ -20,14 +20,15 @@ const mqttConfig = {
   clientId: config.account.device.mqtt.username,
   username: config.account.device.mqtt.username,
   password: config.account.device.mqtt.password,
-  accountId: config.account.accountId
+  accountId: config.account.accountId,
 };
 
+
+function registerObserver(app) {
+  app.set('observer', new Observer(database, mqttConfig, config.virtualdevice.mqtt.deviceId));
+}
+
 const app = express();
-
-const observer = new Observer(database, mqttConfig);
-app.set('observer', observer);
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: false
@@ -58,7 +59,7 @@ if (process.env.NODE_ENV === 'test') {
         }
       }
     });
-
+    registerObserver(app);
     configLoading = false;
   }).catch((error) => {
     console.error(error);

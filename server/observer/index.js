@@ -3,10 +3,12 @@
 var MqttListener = require('./mqtt-listener');
 var RulesEngine = require('./rules');
 var logParser = require('./log-parser');
+var _ = require('lodash');
 
-var Observer = function(database, mqttConfig) {
+var Observer = function(database, mqttConfig, deviceId) {
   this.database = database;
   this.listener = new MqttListener(mqttConfig);
+  this.deviceId = deviceId;
 
   this._startRules();
 };
@@ -26,9 +28,13 @@ Observer.prototype._startRules = function() {
   })
   .then(function(rows) {
     if (rows.length > 0) {
-      var row = rows[0];
-      that.rules.addDevice(row.deviceId);
-      that.listener.addDevice(row.deviceId);
+      var row = _.find(rows, (item) => item.deviceId === that.deviceId);
+      if (row) {
+        that.rules.addDevice(row.deviceId);
+        that.listener.addDevice(row.deviceId);
+      } else {
+        console.log('No device were found at id: ' + that.deviceId);
+      }
     } else {
       console.log('No devices to connect');
     }
