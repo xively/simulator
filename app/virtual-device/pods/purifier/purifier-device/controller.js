@@ -155,7 +155,7 @@ var purifierDeviceCtrl = [
 
       _.each(sensorProps, function(val, key) {
         var scopeValue = key + 'Value';
-        $scope[scopeValue] = val.initial;
+        $scope[scopeValue] = sensorStore.get(key);
       });
 
       $timeout(function() {
