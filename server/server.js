@@ -24,8 +24,8 @@ const mqttConfig = {
 };
 
 
-function registerObserver(app) {
-  app.set('observer', new Observer(database, mqttConfig, config.virtualdevice.mqtt.deviceId));
+function registerObserver(app, deviceId) {
+  app.set('observer', new Observer(database, mqttConfig, deviceId));
 }
 
 const app = express();
@@ -38,6 +38,7 @@ app.use(cookieParser());
 let configLoading = true;
 if (process.env.NODE_ENV === 'test') {
   configLoading = false;
+  registerObserver(app, 'test');
 } else {
   database.selectApplicationConfig(config.account.accountId).then(function(data) {
     const appConfig = data[0];
@@ -59,7 +60,7 @@ if (process.env.NODE_ENV === 'test') {
         }
       }
     });
-    registerObserver(app);
+    registerObserver(app, appConfig.device.id);
     configLoading = false;
   }).catch((error) => {
     console.error(error);
