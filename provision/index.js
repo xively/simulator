@@ -99,7 +99,7 @@ bp.getEnv(process.env)
       body.entityId = $.deviceTemplate.id;
       body.entityType = 'deviceTemplate';
       body.name = 'humidity';
-      body.persistenceType = 'timeSeries';
+      body.persistenceType = 'simple';
     },
     function(body, $) {
       body.entityId = $.deviceTemplate.id;

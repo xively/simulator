@@ -137,8 +137,8 @@ exports.blueprintCreator = function(baseOptions) {
         })
         .catch(function(err) {
           console.error('Request object:', JSON.stringify(body));
-          console.error('Error object:', err.obj.error);
-          throw new Error('Blueprint (' + options.apiMethod + ') server error: ' + err.obj.error.message);
+          console.error('Error object:', err);
+          throw new Error('Blueprint (' + options.apiMethod + ') server error: ' + err);
         });
       }
       // Add creation response into specified property of result object.
