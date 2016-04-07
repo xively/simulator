@@ -45,8 +45,10 @@ bp.getEnv(process.env)
   .then(bp.getClient)
 
   .then(bp.createAccountUser(function(body, $) {
-    body.createIdmUser = true;
-    body.idmUserEmail = process.env.SALESFORCE_USER;
+    if (process.env.SALESFORCE_USER) {
+      body.createIdmUser = true;
+      body.idmUserEmail = process.env.SALESFORCE_USER;
+    }
     body.accountId = $.env.XIVELY_ACCOUNT_ID;
   }))
 
