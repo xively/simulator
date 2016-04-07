@@ -13,11 +13,13 @@ module.exports = function() {
   var client = _.memoize(function(host, port, user, pass, useSSL, clientId) {
     var newClient = MqttClient
       .get({
-        host: host, port: port,
-        user: user, pass: pass,
+        host: host,
+        port: port,
+        user: user,
+        pass: pass,
         useSSL: useSSL,
         clientId: generateUniqueId(),
-        debug: true,
+        debug: true
       });
     newClient.connect();
     return newClient;

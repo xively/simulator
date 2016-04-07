@@ -17,12 +17,14 @@ WITH (
 CREATE TABLE firmware
 (
   id integer NOT NULL,
-  serial character(13),
-  "mqttUser" character(36),
-  "mqttPassword" character(44),
+  "serialNumber" text,
+  "deviceId" text,
   "associationCode" text,
-  "organizationId" character(36),
-  "deviceId" character(36),
+  "organizationId" text,
+  "accountId" text,
+  "entityId" text,
+  "entityType" text,
+  secret text,
   CONSTRAINT firmware_pkey PRIMARY KEY (id),
   CONSTRAINT firmware_id_fkey FOREIGN KEY (id)
       REFERENCES inventory (id) MATCH SIMPLE
