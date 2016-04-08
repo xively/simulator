@@ -92,7 +92,7 @@ describe('purifierDeviceCtrl', function() {
       channels: [
         {channelTemplateName: 'control', channel: 'control'},
         {channelTemplateName: 'sensor', channel: 'sensor'},
-        {channelTemplateName: 'device-log', channel: 'device-log'},
+        {channel: '_log'},
       ]
     };
     $controller('purifierDeviceCtrl', {$scope: $scope});
