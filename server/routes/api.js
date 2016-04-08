@@ -31,7 +31,7 @@ function getRuleById(req, res) {
 function createRule(req, res) {
   var observer = req.app.get('observer');
 
-  database.insertRule(req.body.ruleConfig)
+  database.insertRule(req.body)
     .then((rows) => {
       res.json(rows.length ? rows[0] : []);
       observer.resetRules();
@@ -55,7 +55,7 @@ function removeRule(req, res) {
 function updateRule(req, res) {
   var observer = req.app.get('observer');
 
-  database.updateRule(req.params.id, req.body.ruleConfig)
+  database.updateRule(req.params.id, req.body)
     .then((rows) => {
       if (rows.length) {
         res.json(rows[0]);
