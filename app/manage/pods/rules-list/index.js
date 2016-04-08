@@ -2,7 +2,6 @@
 
 var angular = require('angular');
 var rulesListModule = angular.module('rules-list', []);
-var _ = require('lodash');
 rulesListModule.config([
   '$stateProvider',
   function(stateProvider) {
@@ -52,10 +51,7 @@ rulesListModule.config([
             rulesFactory.getRules().then(function(resp) {
               $scope.loading = false;
 
-              $scope.rules = _.map(resp.data, function(rule) {
-                rule.ruleConfig = JSON.parse(rule.ruleConfig);
-                return rule;
-              });
+              $scope.rules = resp.data;
             });
 
             // link to rule edit form -----------------------------
