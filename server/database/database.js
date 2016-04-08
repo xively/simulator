@@ -62,12 +62,9 @@ function insertRule(ruleConfig) {
 }
 
 function updateRule(id, ruleConfig) {
-  const updateQuery = {
-    ruleConfig: JSON.stringify(ruleConfig)
-  };
   return knex('rules')
     .where('id', id)
-    .update(updateQuery)
+    .update(ruleConfig)
     .returning('*');
 }
 

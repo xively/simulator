@@ -132,7 +132,7 @@ describe('Database', () => {
       const ruleConfig = {
         config: 'updated config'
       };
-      const rule = yield database.updateRule(ruleData[0].id, ruleConfig);
+      const rule = yield database.updateRule(ruleData[0].id, {ruleConfig});
 
       expect(rule[0].ruleConfig).to.eql(ruleConfig);
     });
