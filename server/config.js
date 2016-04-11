@@ -41,7 +41,7 @@ const config = {
       channelnamemap: {
         control: 'control',
         sensor: 'sensor',
-        deviceinfo: 'device-log'
+        deviceinfo: '_log'
       }
     }
   },
