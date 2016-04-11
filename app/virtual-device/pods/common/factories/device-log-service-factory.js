@@ -4,10 +4,11 @@ var deviceLogService = [
   'mqttService', 'uuid',
   function(mqttService, uuid) {
     function createDeviceLogMessage(inputData) {
+      var informational = 'informational';
       var now = Date.now().toString();
-      var severity = inputData.severity || 'informational';
+      var severity = inputData.severity || informational;
       var code = '400';
-      if (severity === 'informational') {
+      if (severity === informational) {
         code = '200';
       }
 
@@ -44,7 +45,6 @@ var deviceLogService = [
       },
 
       sendInfoMessage: function(info, channel) {
-        info.severity = 'info';
         var message = createDeviceLogMessage(info);
         mqttService.sendMessage(JSON.stringify(message), channel);
       }
