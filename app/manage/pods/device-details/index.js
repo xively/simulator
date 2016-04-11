@@ -119,7 +119,7 @@ deviceDetailsModule.config([
 
             var controlChannel = _.find(device.channels, propName, 'control').channel;
             var sensorChannel = _.find(device.channels, propName, 'sensor').channel;
-            var logChannel = utils.getLogChannel(device.accountId);
+            var logChannel = utils.getLogChannel(device);
 
             device.deviceConnected = false;
 
