@@ -45,8 +45,10 @@ bp.getEnv(process.env)
   .then(bp.getClient)
 
   .then(bp.createAccountUser(function(body, $) {
-    body.createIdmUser = true;
-    body.idmUserEmail = process.env.SALESFORCE_USER;
+    if (process.env.SALESFORCE_USER) {
+      body.createIdmUser = true;
+      body.idmUserEmail = process.env.SALESFORCE_USER;
+    }
     body.accountId = $.env.XIVELY_ACCOUNT_ID;
   }))
 
@@ -93,7 +95,7 @@ bp.getEnv(process.env)
       body.entityId = $.deviceTemplate.id;
       body.entityType = 'deviceTemplate';
       body.name = 'humidity';
-      body.persistenceType = 'timeSeries';
+      body.persistenceType = 'simple';
     },
     function(body, $) {
       body.entityId = $.deviceTemplate.id;

@@ -19,7 +19,7 @@ Observer.prototype._startRules = function() {
   this.database.selectRules()
   .then(function(rows) {
     var rulesList = rows.map(function(row) {
-      return JSON.parse(row.ruleConfig);
+      return row.ruleConfig;
     });
 
     that.rules = new RulesEngine(rulesList);
@@ -90,7 +90,7 @@ Observer.prototype.resetRules = function() {
   return this.database.selectRules()
   .then(function(rows) {
     var rulesList = rows.map(function(row) {
-      return JSON.parse(row.ruleConfig);
+      return row.ruleConfig;
     });
 
     that.rules.resetRules(rulesList);

@@ -67,7 +67,7 @@ rulesFormModule.config([
 
               rulesFactory.getRule($stateParams.ruleId)
                 .then(function(resp) {
-                  $scope.rule = JSON.parse(resp.data.ruleConfig);
+                  $scope.rule = resp.data.ruleConfig;
                   $scope.conditions = $scope.rule.conditions.rules;
                   $scope.loading = false;
                   var ruleActions = $scope.rule.actions;
@@ -134,7 +134,7 @@ rulesFormModule.config([
                 $scope.rule.actions.length &&
                 $scope.rule.conditions.rules.length) {
                 var formData = {
-                  ruleConfig: angular.toJson($scope.rule, true)
+                  ruleConfig: $scope.rule
                 };
                 rulesFactory.insertUpdateRule(formData, $stateParams.ruleId)
                 .then(function() {

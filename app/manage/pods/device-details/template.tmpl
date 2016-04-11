@@ -61,9 +61,6 @@
          ng-show="deviceStatus.deviceConnected !== true">
         <div>This device is <span class="status-ok">disconnected</span></div>
       </div>
-      <div class="device-status-description">
-        <div class="fan-state-label">Fan State:</div>
-      </div>
       <div class="device-fan-speed-toggle-value clearfix">
         <button ng-disabled="customData.disabled.buttons"
             ng-class="{'device-fan-speed-selected': deviceStatus.fanSpeed == 'off'}"
@@ -104,9 +101,6 @@
         <span>
           {{filterLife.lifeLeft}} {{filterLife.measure}}
         </span>
-      </div>
-      <div class="control-panel-link">
-        <button>Help</button>
       </div>
     </div>
   </div>
