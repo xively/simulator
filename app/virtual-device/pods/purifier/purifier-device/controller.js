@@ -119,7 +119,7 @@ var purifierDeviceCtrl = [
         details: 'Sensor malfunction occured',
         tags: ['malfunction']
       };
-      deviceLogService.sendMalfunctionMessage(malfunctionData, deviceLogChannel);
+      deviceLogService.sendErrorMessage(malfunctionData, deviceLogChannel);
     }
 
     function setDeviceState(state) {

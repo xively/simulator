@@ -37,16 +37,11 @@ var deviceLogService = [
     }
 
     return {
-      sendMalfunctionMessage: function(malfunctionData, channel) {
-        sendDeviceLogMessage(malfunctionData, channel, 'error');
+      sendErrorMessage: function(errorData, channel) {
+        sendDeviceLogMessage(errorData, channel, 'error');
       },
-      sendResetCommandMessage: function(deviceData, channel) {
-        sendDeviceLogMessage(deviceData, channel);
-      },
-
-      sendInfoMessage: function(info, channel) {
-        var message = createDeviceLogMessage(info);
-        mqttService.sendMessage(JSON.stringify(message), channel);
+      sendInfoMessage: function(infoData, channel) {
+        sendDeviceLogMessage(infoData, channel);
       }
     };
   }];

@@ -10,20 +10,20 @@ var purifierResettingService = [
       deviceData.message = 'Device recovered from error';
       deviceData.details = deviceData.message;
       deviceData.tags = ['reset', 'recovery'];
-      deviceLogService.sendResetCommandMessage(deviceData, deviceLogChannel);
+      deviceLogService.sendInfoMessage(deviceData, deviceLogChannel);
     }
 
     function sendResetNotify(deviceData, deviceLogChannel) {
       deviceData.message = 'Factory reset command received';
       deviceData.details = deviceData.message;
       deviceData.tags = ['reset', 'received'];
-      deviceLogService.sendResetCommandMessage(deviceData, deviceLogChannel);
+      deviceLogService.sendInfoMessage(deviceData, deviceLogChannel);
 
       $rootScope.$broadcast('device.reset', null, null);
       deviceData.message = 'Device is being reset';
       deviceData.details = deviceData.message;
       deviceData.tags = ['reset', 'resetting'];
-      deviceLogService.sendResetCommandMessage(deviceData, deviceLogChannel);
+      deviceLogService.sendInfoMessage(deviceData, deviceLogChannel);
 
       $timeout(function() {
         sendRecoveredNotify(deviceData, deviceLogChannel);
