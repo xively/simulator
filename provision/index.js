@@ -88,12 +88,6 @@ bp.getEnv(process.env)
     function(body, $) {
       body.entityId = $.deviceTemplate.id;
       body.entityType = 'deviceTemplate';
-      body.name = 'device-log';
-      body.persistenceType = 'timeSeries';
-    },
-    function(body, $) {
-      body.entityId = $.deviceTemplate.id;
-      body.entityType = 'deviceTemplate';
       body.name = 'temp';
       body.persistenceType = 'timeSeries';
     },

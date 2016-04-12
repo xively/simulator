@@ -3,6 +3,7 @@
 var MqttListener = require('./mqtt-listener');
 var RulesEngine = require('./rules');
 var logParser = require('./log-parser');
+var config = require('../config');
 var _ = require('lodash');
 
 var Observer = function(database, mqttConfig, deviceId) {
@@ -52,7 +53,7 @@ Observer.prototype._setupRoutes = function() {
   var that = this;
   // Parse the xively timeseries format message
   // TODO: This parser becomes part of mqtt-listener
-  this.listener.use('sensor', function(data, next) {
+  this.listener.use(config.account.device.channelnamemap.sensor, function(data, next) {
     // Each message can have multiple sensor readings, separated by line
     var lines = data.message.split(/\n/);
     var measurements = [];
@@ -76,7 +77,7 @@ Observer.prototype._setupRoutes = function() {
     return next();
   });
 
-  this.listener.use('device-log', function(data, next) { // TODO: config
+  this.listener.use(config.account.device.channelnamemap.deviceinfo, function(data, next) {
     var measurements = logParser(data);
     that.rules.modify(data.deviceId, measurements);
     return next();

@@ -4,6 +4,7 @@ var angular = require('angular');
 require('angular-ui-router');
 var _ = require('lodash');
 
+var utils = require('../../../utils');
 var resolveArgs = require('../common/utils/resolve-args');
 var sensorProps = require('../../../virtual-device/pods/purifier/sensor/props-value');
 
@@ -118,7 +119,7 @@ deviceDetailsModule.config([
 
             var controlChannel = _.find(device.channels, propName, 'control').channel;
             var sensorChannel = _.find(device.channels, propName, 'sensor').channel;
-            var logChannel = _.find(device.channels, propName, 'device-log').channel;
+            var logChannel = utils.getLogChannel(device);
 
             device.deviceConnected = false;
 

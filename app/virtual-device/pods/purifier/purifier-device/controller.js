@@ -1,7 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
-
+var utils = require('../../../../utils');
 var purifierDeviceCtrl = [
   '$scope', 'cycleFan', 'controlChannelSubscription', 'purifierFanService', 'filterDepletion',
   'sensorProps', 'sensorStore', 'mqttSensorPublisher', 'propWiggle',
@@ -35,9 +35,7 @@ var purifierDeviceCtrl = [
       sensorChannel = _.findWhere(device.channels, {
         channelTemplateName: 'sensor',
       }).channel;
-      deviceLogChannel = _.findWhere(device.channels, {
-        channelTemplateName: 'device-log',
-      }).channel;
+      deviceLogChannel = utils.getLogChannel(device);
       controlChannelSubscription.init(controlChannel);
       filterDepletion.init();
       propWiggle.init();
