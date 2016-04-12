@@ -23,7 +23,7 @@ var Salesforce = function(options) {
 
 Salesforce.prototype.addCases = function(cases) {
   // Transform data format
-  var deviceIdFieldName = process.env.XIVELY_DEVICE_ID_FIELD_NAME || 'xively_dev__XI_Device_ID__c';
+  var deviceIdFieldName = process.env.XIVELY_DEVICE_ID_FIELD_NAME || 'xively__XI_Device_ID__c';
   var sfCases = cases.map(function(cs) {
     var result = {
       Subject: cs.subject,
