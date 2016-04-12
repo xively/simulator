@@ -1,19 +1,19 @@
-'use strict';
+'use strict'
 
-const request = require('super-request');
-const expect = require('chai').expect;
-const server = require('../server');
+const request = require('super-request')
+const expect = require('chai').expect
+const server = require('../app')
 
 describe('Healt check endpoint', () => {
   describe('GET /isalive', () => {
-    it('should return a firmware', function *() {
+    it('should return a firmware', function * () {
       const resp = yield request(server.listen())
         .get('/isalive')
         .json(true)
         .expect(200)
-        .end();
+        .end()
 
-      expect(resp.body).to.eql('YESOK');
-    });
-  });
-});
+      expect(resp.body).to.eql('YESOK')
+    })
+  })
+})

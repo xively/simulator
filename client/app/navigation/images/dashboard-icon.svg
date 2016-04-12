@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 32.3 32.3" enable-background="new 0 0 32.3 32.3" xml:space="preserve">
+<g id="XMLID_467_" opacity="0.75">
+	<g id="XMLID_500_">
+		<g id="XMLID_501_">
+
+				<circle id="XMLID_502_" fill="none" stroke-width="1.0103" stroke-linecap="round" stroke-miterlimit="10" cx="16.1" cy="16.1" r="15.6"/>
+		</g>
+	</g>
+	<g id="XMLID_494_">
+		<path id="XMLID_495_" fill="none" stroke-width="1.3595" stroke-linecap="round" stroke-miterlimit="10" d="
+			M25.7,16.1c0-5.3-4.3-9.5-9.5-9.5s-9.5,4.3-9.5,9.5"/>
+	</g>
+	<g id="XMLID_489_">
+		<g id="XMLID_491_">
+			<defs>
+				<circle id="XMLID_493_" cx="16.3" cy="20.5" r="3.1"/>
+			</defs>
+			<clipPath id="XMLID_2_">
+				<use xlink:href="#XMLID_493_"  overflow="visible"/>
+			</clipPath>
+
+				<use xlink:href="#XMLID_493_"  overflow="visible" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke-width="1.3595" stroke-linecap="round" stroke-miterlimit="10"/>
+		</g>
+	</g>
+	<g id="XMLID_486_">
+
+			<line id="XMLID_487_" fill="none" stroke-width="1.3595" stroke-linecap="round" stroke-miterlimit="10" x1="18.4" y1="18.6" x2="21.1" y2="15.8"/>
+	</g>
+</g>
+</svg>

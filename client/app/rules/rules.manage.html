@@ -1,0 +1,50 @@
+<div class="container">
+  <header>
+    <h1 class="title">{{rulesManage.title}}</h1>
+  </header>
+
+  <div class="content">
+    <form>
+      <input class="wide-input" type="text" placeholder="Name" ng-model="rulesManage.rule.name"/>
+
+      <div>
+        <h2 class="subtitle">Conditions</h2>
+        <condition-list conditions="rulesManage.rule.conditions" templates="rulesManage.templates"></condition-list>
+      </div>
+
+      <div>
+        <h2 class="subtitle">Actions</h2>
+        <div class="actions">
+          <div class="form-row">
+            <label for="case">
+              <input id="case" type="checkbox" ng-model="rulesManage.rule.actions.salesforceCase.enabled"/>
+              <span>Create a salesforce case titled:</span>
+              <input type="text" class="wide-input" ng-model="rulesManage.rule.actions.salesforceCase.value"/>
+            </label>
+          </div>
+
+          <!-- <div class="form-row">
+            <label for="opportunity">
+              <input id="opportunity" type="checkbox" name='opportunity' value='true' ng-model='caseTypes.opportunity.selected'/>
+              Create a salesforce opportunity titled:
+              <input id="emailName" type="text" class="large-input" name="opportunityName" ng-model='caseTypes.opportunity.value'/>
+            </label>
+          </div>
+
+          <div class="form-row">
+            <label for="emailch">
+              <input id="emailch" type="checkbox" name='emailch' value='true' ng-model='caseTypes.email.selected'/>
+              Send email to:
+              <input id="email" type="text" class="large-input" name="email" ng-model='caseTypes.email.value'/>
+            </label>
+          </div> -->
+        </div>
+      </div>
+
+      <div>
+        <button class="button primary" type="submit" ng-click="rulesManage.save()">Save</button>
+        <button class="button" ui-sref="rules.list">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>

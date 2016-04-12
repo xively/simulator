@@ -1,22 +1,34 @@
-'use strict';
+'use strict'
 
-const request = require('request');
-const config = require('./config');
+const logger = require('winston')
+const request = require('request')
+const config = require('../config/server')
 
-module.exports = function(req, res, next) {
-  const url = req.query.url;
+function parseParameter (param) {
+  let parsedParameter = {}
 
-  const isWhitelisted = config.server.whitelist.some((whiteListedUrl) => url.indexOf(whiteListedUrl) === 0);
+  try {
+    parsedParameter = JSON.parse(param)
+  } catch (e) {
+    logger.debug('#parseParameter', e)
+  }
+
+  return parsedParameter
+}
+
+module.exports = function (req, res, next) {
+  const url = req.query.url
+
+  const isWhitelisted = config.server.whitelist.some((whiteListedUrl) => url.startsWith(whiteListedUrl))
 
   if (isWhitelisted) {
     request({
       uri: url,
       method: req.method,
-      qs: req.query.data ? JSON.parse(req.query.data) : {},
-      headers: req.query.headers ? JSON.parse(req.query.headers) : {}
-    })
-    .pipe(res);
+      qs: parseParameter(req.query.data),
+      headers: parseParameter(req.query.headers)
+    }).pipe(res)
   } else {
-    return next();
+    next()
   }
-};
+}

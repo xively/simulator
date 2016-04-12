@@ -1,0 +1,37 @@
+@import '../style/variables.less';
+
+.device {
+  position: relative;
+
+  .link-bar {
+    margin-top: 20px;
+    padding-left: 10px;
+    font-size: 0.9em;
+    font-weight: 400;
+
+    span {
+      color: @light-blue;
+    }
+
+    .icons {
+      display: inline-block;
+      float: right;
+
+      .share {
+        fill: @dark-gray;
+        cursor: pointer;
+      }
+
+      .arrow-circle {
+        @media (max-width: @mobile-max-width) {
+          display: none;
+        }
+      }
+
+      svg {
+        height: 20px;
+        margin-right: 10px;
+      }
+    }
+  }
+}

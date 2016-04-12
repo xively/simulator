@@ -2,13 +2,9 @@
 # production. For more, see: https://devcenter.heroku.com/articles/slug-compiler
 
 # folders
-app
-eslint
-grunt
-tests
+client
 
 # root files
-Gruntfile.js
 karma.conf.js
 webpack.config.js
 README.md

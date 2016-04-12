@@ -1,0 +1,114 @@
+@import '../style/variables.less';
+
+@tooltip-button-color: rgb(245, 190, 60);
+@tooltip-button-color-active: @light-blue;
+@tooltip-button-size: 18px;
+@tooltip-box-size: 140px;
+
+tooltip, .tooltip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  user-select: none;
+}
+
+.tooltip-box {
+  z-index: 101;
+  position: absolute;
+  width: @tooltip-box-size;
+  min-height: @tooltip-box-size;
+  top: -(@tooltip-box-size / 2);
+  left: -(@tooltip-box-size / 2);
+  background: @navy-blue;
+  border-radius: @tooltip-box-size / 10;
+  box-shadow: 0 0 4px 4px fade(@light-blue, 60%);
+
+  .tooltip-value {
+    width: 100%;
+    margin-top: 30px;
+    font-size: 1.4em;
+    text-align: center;
+    color: @light-gray;
+  }
+
+  .tooltip-range-input {
+    margin-top: 40px;
+    width: @tooltip-box-size - 20px;
+    margin-left: 10px;
+    height: 3px;
+    background: fade(@light-blue, 80%);
+    appearance: none;
+    outline: none;
+  }
+
+  .tooltip-range {
+    margin-top: 4px;
+    color: @light-blue;
+    font-size: 0.7em;
+    padding: 0 10px;
+
+    .tooltip-range-max, .tooltip-range-min {
+      float: left;
+      width: 50%;
+    }
+
+    .tooltip-range-max {
+      text-align: right;
+    }
+  }
+
+  .action-buttons {
+    width: 100%;
+    text-align: center;
+    color: @light-gray;
+
+    .action-button {
+      width: @tooltip-box-size - 40px;
+      margin: 20px auto;
+      padding: 5px;
+      border-radius: @tooltip-box-size / 10;
+      box-shadow: 0 0 4px 4px fade(@light-blue, 60%);
+      cursor: pointer;
+
+      &:hover {
+        box-shadow: 0 0 4px 4px fade(@light-blue, 40%);
+      }
+    }
+  }
+}
+
+.tooltip-line {
+  z-index: 100;
+  position: absolute;
+  stroke: fade(@light-blue, 60%);
+  stroke-width: 3px;
+  top: -2px;
+}
+
+.tooltip-button {
+  z-index: 102;
+  width: @tooltip-button-size;
+  height: @tooltip-button-size;
+  margin-left: -(@tooltip-button-size / 2);
+  margin-top: -(@tooltip-button-size / 2);
+  border-radius: @tooltip-button-size / 2;
+  background: radial-gradient(@tooltip-button-color, fade(@tooltip-button-color, 30%) 40%);
+  cursor: pointer;
+
+  .active & {
+    background: radial-gradient(@tooltip-button-color-active, fade(@tooltip-button-color-active, 30%) 40%);
+  }
+}
+
+.tooltip-label {
+  position: absolute;
+  text-transform: uppercase;
+  font-size: 0.7em;
+  font-weight: 600;
+  color: @tooltip-button-color;
+  cursor: pointer;
+
+  .active & {
+    color: @tooltip-button-color-active;
+  }
+}

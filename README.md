@@ -16,9 +16,9 @@ repository, and run the following from the command line:
 ```sh
 # You only need to run the following two commands once
 npm install
-npm run local-provision
+npm run provision
 # This must be run each time you want to work on the project
-npm run work
+npm run dev
 ```
 
 Navigate to <http://localhost:5000/> in your browser to access the app. The application will automatically refresh as you make changes to the source code.
@@ -32,12 +32,12 @@ git clone git@github.com:my-github-user/concaria.git
 cd concaria
 git checkout -b my-changes
 # make your changes
-grunt work
+npm run dev
 # test your changes
 git add .
 git commit
 git checkout -b my-changes-heroku
-grunt build
+npm run build
 # public is normally ignored in git
 git add public --force
 git commit -m "Build"
@@ -60,13 +60,19 @@ git push origin my-changes-heroku
 
 There are a handful of npm scripts to aid in development.
 
-- `npm run work` – run a development version of the app with Watch and LiveReload
-- `npm run build` – build a production version of the app
-- `npm run start` – start the production Node server
-- `npm test` – run the unit test in actual browsers
-- `npm run test-headless` – run the unit tests in a headless browser
-- `npm run local-provision` – configure the app to run locally
-- `npm run clear-sf-data` – delete all of your Contacts and Assets from Salesforce
+- `build` – build the client app to the `public`
+- `build:watch` – build the client app to the `public` and watch for changes
+- `clean` – delete the `public` folder
+- `dev` – run a development version of the app and watch for changes
+- `lint` – lint JavaScript files
+- `local-provision` – configure the app to run locally
+- `start` – start the Node server
+- `start:watch` – start the Node server and restart on file changes
+- `syncdb` – sync database, create tables
+- `test` – run all tests
+- `test-client` – run client tests
+- `test-client:watch` – run client tests and watch for changes
+- `test-server` – run server tests
 
 ### Configuration
 
@@ -121,13 +127,13 @@ a `.env` file.
 #### Staging and Release notes
 
 Pull Requests are not to be merged into master without first being confirmed by QA.
-After your PR is reviewed, merge your PR into the `staging` branch. Then cut a new build release into `staging-build`. 
+After your PR is reviewed, merge your PR into the `staging` branch. Then cut a new build release into `staging-build`.
 
-(**NOTE:** You will have to run `grunt build` & add the public folder by force `git add public --force`)
+(**NOTE:** You will have to run `npm run build` & add the public folder by force `git add public --force`)
 
 [Deploy the staging branch](https://heroku.com/deploy?template=https://github.com/xively/concaria/tree/staging-build)
 
-When a staging branch has been QA'd and no regressions are found, then you can merge your Pull Request into master. After you've done that, tag master with the lastest version #. 
+When a staging branch has been QA'd and no regressions are found, then you can merge your Pull Request into master. After you've done that, tag master with the lastest version #.
 
 ```
 git tag -a v1.1 -m "write a note about what this version includes"
@@ -155,7 +161,7 @@ Tags are like branches, so you can also do that with any branch. For example if 
 - Heroku &amp; Heroku CLI
   - heroku account with creditcard attached to account
 
-- Node >0.12
+- Node >4
   - [http://nodejs.org](http://nodejs.org) (All Platforms)
   - `brew install node` via [Homebrew](http://brew.sh/) (OSX)
   - `apt-get/yum install node` (Linux)

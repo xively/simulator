@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 'use strict';
 
 // TODO: Think about how this would scale across dynos?
@@ -118,7 +120,7 @@ MqttListener.prototype._subscribeAll = function() {
           console.error(error);
         }
 
-        if (granted[0].qos === 128) {
+        if (granted && granted.qos === 128) {
           // TODO: Remove topic from list of topics if denied?
           // throw new Error('Subscription denied for '+topic);
           console.error('subscription denied for ' + topic);

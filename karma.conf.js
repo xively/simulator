@@ -1,64 +1,67 @@
-var _ = require('lodash');
+var webpackConfig = require('./webpack.config')
+var _ = require('lodash')
 
-module.exports = function(config) {
+webpackConfig = _.merge(webpackConfig, {
+  devtool: 'inline-source-map',
+  cache: true,
+  module: {
+    postLoaders: [{
+      test: /\.js$/,
+      exclude: /(spec|vendor|node_modules)/,
+      loader: 'istanbul-instrumenter'
+    }]
+  }
+})
+
+webpackConfig.entry = undefined
+webpackConfig.plugins = []
+
+module.exports = function (config) {
   config.set({
-
-    // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: './',
-
-    // frameworks to use
-    // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'sinon', 'chai'],
-
-    // Configure mocha
-    client: {
-      mocha: {
-        reporter: 'html', // change Karma's debug.html to the mocha web reporter
-        ui: 'bdd'
-      }
-    },
-
-    // list of files / patterns to load in the browser
+    basePath: './client/app',
     files: [
-      'tests/setup/index.js',
-      'node_modules/angular-mocks/angular-mocks.js',
-      'tests/unit/**/*.js'
+      '../../node_modules/babel-polyfill/dist/polyfill.js',
+      'test.webpack.js',
+      './**/*spec.js'
     ],
 
+    exclude: [
+      '*.html'
+    ],
+
+    // frameworks to use
+    frameworks: ['mocha', 'sinon-chai'],
+
     preprocessors: {
-      'tests/**/*.js': ['webpack']
+      'test.webpack.js': ['webpack', 'sourcemap'],
+      './**/*spec.js': ['webpack', 'sourcemap']
     },
 
-    webpack: (function() {
-      var config = require('./webpack.config');
-      return _.omit(config, ['entry', 'output']);
-    })(),
+    reporters: ['spec', 'coverage'],
 
-    // test results reporter to use
-    // possible values: 'dots', 'progress'
-    // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    coverageReporter: {
+      type: 'html',
+      dir: '../../coverage/'
+    },
 
-    // web server port
-    port: 9876,
+    webpack: webpackConfig,
 
-    // enable / disable colors in the output (reporters and logs)
-    colors: true,
+    webpackMiddleware: {
+      noInfo: true
+    },
 
-    // level of logging
-    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_INFO,
+    plugins: [
+      require('istanbul-instrumenter-loader'),
+      require('karma-webpack'),
+      require('karma-mocha'),
+      require('karma-sinon'),
+      require('karma-sinon-chai'),
+      require('karma-coverage'),
+      require('karma-phantomjs-launcher'),
+      require('karma-spec-reporter'),
+      require('karma-sourcemap-loader')
+    ],
 
-    // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
-
-    // start these browsers
-    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
-    // browsers: ['PhantomJS', 'Chrome', 'Firefox'],
-
-    // Continuous Integration mode
-    // if true, Karma captures browsers, runs the tests and exits
-    singleRun: true
-  });
-};
+    browsers: ['PhantomJS']
+  })
+}

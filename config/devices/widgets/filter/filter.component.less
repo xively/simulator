@@ -1,0 +1,34 @@
+@white: #ffffff;
+@green: #84c441;
+
+.filter {
+  text-align: center;
+
+  .filter-status {
+    position: relative;
+    width: 200px;
+    margin: 0 auto;
+
+    svg {
+      .progress-indicator {
+        fill: @white;
+        stroke: @green;
+        stroke-width: 10;
+        stroke-linecap: round;
+      }
+    }
+
+    .filter-status-days {
+      position: absolute;
+      width: 100%;
+      top: 60px;
+      font-size: 3em;
+      font-weight: 300;
+
+      .label {
+        font-size: 0.3em;
+        color: #d6d6d6;
+      }
+    }
+  }
+}

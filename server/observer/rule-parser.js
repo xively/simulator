@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 'use strict';
 
 // Nools representation of AirSoClean3000
@@ -65,12 +67,7 @@ RuleParser.prototype._getSingleRule = function(rule) {
 
   return [AirSoClean3000, 'a', function(facts) {
     // try/catch?
-    var data = parseInt(facts.a.deviceValues[rule.device], 10) || facts.a.deviceValues[rule.device] || '';
-    if (typeof data === 'string') {
-      data = data.toUpperCase();
-    }
-
-    rule.value = rule.value.toUpperCase();
+    var data = parseInt(facts.a.deviceValues[rule.device], 10);
     var values = rule.value.split(',').map(function(value) {
       return parseInt(value, 10);
     });
@@ -87,11 +84,11 @@ RuleParser.prototype._getSingleRule = function(rule) {
         break;
 
       case '$eq':
-        result = (data == rule.value);   // eslint-disable-line
+        result = (data === rule.value);
         break;
 
       case '$ne':
-        result = (data != rule.value);  // eslint-disable-line
+        result = (data !== rule.value);
         break;
 
       case '$gte':
@@ -108,10 +105,6 @@ RuleParser.prototype._getSingleRule = function(rule) {
 
       case '$gt':
         result = (data > rule.value);
-        break;
-
-      case '$con':
-        result = (data.indexOf(rule.value) > -1);
         break;
     }
     return result;

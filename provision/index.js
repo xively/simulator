@@ -1,252 +1,127 @@
-/* eslint no-process-exit: 0 */
+'use strict'
 
-'use strict';
+require('dotenv').config()
 
-require('dotenv').load();
+const path = require('path')
+const bp = require('./blueprint')
+const database = require('../server/database')
+const config = require('../config/provision')
 
-var _ = require('lodash');
-var bp = require('./blueprint');
-var Promise = require('bluebird');
-var database = require('../server/database');
-var path = require('path');
-var integration = require('./integration');
-
-var SERIAL_PREFIX = 'Purify';
-var SERIAL_START = Math.floor(Math.random() * 100000) * 100;
-var options = {
-  serialPrefix: SERIAL_PREFIX,
-  serialStart: SERIAL_START,
-  deviceTemplateName: 'AirSoClean3000',
-  organizationTemplateName: 'AirSoCleanOrgTmpl' + SERIAL_PREFIX + SERIAL_START,
-  organizationName: 'Warehouse',
-  userTemplateName: 'AirSoCleanUsrTmpl' + SERIAL_PREFIX + SERIAL_START,
-};
-var USER_NAMES = ['Jane Smith', 'Tommy Atkins', 'Bob Thompson'];
-
-var LOCATIONS = [{
-  name: 'London',
-  lat: 51.5285582,
-  lon: -0.2416796
-}, {
-  name: 'New York',
-  lat: 40.7055651,
-  lon: -74.1180857
-}, {
-  name: 'San Francisco',
-  lat: 37.7576948,
-  lon: -122.4726194
-}];
-
-console.error('Provision start');
-bp.getEnv(process.env)
-  .then(bp.useDemoAccount)
-  .then(bp.getJwt)
-  .then(integration)
+bp.useDemoAccount()
+bp.getJwt()
   .then(bp.getClient)
-
-  .then(bp.createAccountUser(function(body, $) {
-    if (process.env.SALESFORCE_USER) {
-      body.createIdmUser = true;
-      body.idmUserEmail = process.env.SALESFORCE_USER;
-    }
-    body.accountId = $.env.XIVELY_ACCOUNT_ID;
+  .then(bp.createOrganizationTemplate((body) => {
+    Object.assign(body, config.organizationTemplate)
   }))
-
-  .then(bp.createDeviceTemplate(function(body, $) {
-    body.name = options.deviceTemplateName;
+  .then(bp.createOrganization((body, data) => {
+    Object.assign(body, config.organization, {
+      organizationTemplateId: data.organizationTemplate.id
+    })
   }))
-
-  .then(bp.createDeviceFields(_.reduce({
-    hardwareVersion: 'string',
-    includedSensors: 'string',
-    color: 'string',
-    productionRun: 'string',
-    powerVersion: 'string',
-    activatedDate: 'datetime',
-    filterType: 'string',
-  }, function(bodyArray, fieldType, name) {
-    return bodyArray.concat(function(body, $) {
-      body.deviceTemplateId = $.deviceTemplate.id;
-      body.name = name;
-      body.fieldType = fieldType;
-    });
-  }, [])))
-
-  .then(bp.createChannelTemplates([
-    function(body, $) {
-      body.entityId = $.deviceTemplate.id;
-      body.entityType = 'deviceTemplate';
-      body.name = 'sensor';
-      body.persistenceType = 'timeSeries';
-    },
-    function(body, $) {
-      body.entityId = $.deviceTemplate.id;
-      body.entityType = 'deviceTemplate';
-      body.name = 'control';
-      body.persistenceType = 'simple';
-    },
-    function(body, $) {
-      body.entityId = $.deviceTemplate.id;
-      body.entityType = 'deviceTemplate';
-      body.name = 'temp';
-      body.persistenceType = 'timeSeries';
-    },
-    function(body, $) {
-      body.entityId = $.deviceTemplate.id;
-      body.entityType = 'deviceTemplate';
-      body.name = 'humidity';
-      body.persistenceType = 'simple';
-    },
-    function(body, $) {
-      body.entityId = $.deviceTemplate.id;
-      body.entityType = 'deviceTemplate';
-      body.name = 'co';
-      body.persistenceType = 'timeSeries';
-    },
-    function(body, $) {
-      body.entityId = $.deviceTemplate.id;
-      body.entityType = 'deviceTemplate';
-      body.name = 'dust';
-      body.persistenceType = 'timeSeries';
-    },
-    function(body, $) {
-      body.entityId = $.deviceTemplate.id;
-      body.entityType = 'deviceTemplate';
-      body.name = 'filter';
-      body.persistenceType = 'timeSeries';
-    },
-    function(body, $) {
-      body.entityId = $.deviceTemplate.id;
-      body.entityType = 'deviceTemplate';
-      body.name = 'fan';
-      body.persistenceType = 'simple';
-    }
-  ]))
-
-  .then(bp.createOrganizationTemplate(function(body, $) {
-    body.name = options.organizationTemplateName;
+  .then(bp.createDeviceTemplate((body, data) => {
+    Object.assign(body, config.deviceTemplate)
   }))
-
-  .then(bp.createOrganization(function(body, $) {
-    body.organizationTemplateId = $.organizationTemplate.id;
-    body.name = options.organizationName;
+  .then(bp.createDeviceFields(
+    config.deviceFields.map((field) => {
+      return (body, data) => {
+        Object.assign(body, field, {
+          deviceTemplateId: data.deviceTemplate.id
+        })
+      }
+    })
+  ))
+  .then(bp.createChannelTemplates(
+    config.channelTemplates.map((channel) => {
+      return (body, data) => {
+        Object.assign(body, channel, {
+          entityId: data.deviceTemplate.id
+        })
+      }
+    })
+  ))
+  .then(bp.createDevices(
+    config.devices.map((device) => {
+      return (body, data) => {
+        Object.assign(body, device, {
+          deviceTemplateId: data.deviceTemplate.id,
+          organizationId: data.organization.id
+        })
+      }
+    })
+  ))
+  .then(bp.createEndUserTemplate((body, data) => {
+    Object.assign(body, config.userTemplate)
   }))
-
-  .then(bp.createDevices(_(50).range().map(function(n, index) {
-    return function(body, $) {
-      var loc = LOCATIONS[index % LOCATIONS.length];
-
-      body.deviceTemplateId = $.deviceTemplate.id;
-      body.organizationId = $.organization.id;
-      body.serialNumber = options.serialPrefix + (options.serialStart + n);
-      body.name = body.serialNumber;
-      body.hardwareVersion = '2.5.5';
-      body.includedSensors = 'Temperature, Humidity, VoC, CO, Dust (PM)';
-      body.color = 'white';
-      body.productionRun = 'DEC2014';
-      body.powerVersion = '12VDC';
-      body.filterType = 'carbonHEPA1023';
-      body.firmwareVersion = '2.3.1';
-      body.latitude = loc.lat;
-      body.longitude = loc.lon;
-      body.location = loc.name;
-    };
-  }).value()))
-
-  .then(bp.createEndUserTemplate(function(body, $) {
-    body.name = options.userTemplateName;
+  .then(bp.createEndUser((body, data) => {
+    Object.assign(body, {
+      organizationTemplateId: data.organizationTemplate.id,
+      organizationId: data.organization.id,
+      endUserTemplateId: data.endUserTemplate.id
+    })
   }))
-
-  .then(bp.createEndUser(_(3).range().map(function(n) {
-    return function(body, $) {
-      body.accountId = $.env.XIVELY_ACCOUNT_ID;
-      body.organizationTemplateId = $.organizationTemplate.id;
-      body.organizationId = $.organization.id;
-      body.endUserTemplateId = $.endUserTemplate.id;
-      body.name = USER_NAMES[n];
-    };
-  }).value()))
-
-  .then(function($) {
+  .then((data) => {
     return bp.createMqttCredentials({
       outputProp: 'mqttDevice',
-      body: _($.device).map(function(device) {
-        return function(body, $$) {
-          body.entityId = device.id;
-          body.entityType = 'device';
-        };
-      }).value(),
-    })($);
+      body: data.device.map((device) => {
+        return (body) => {
+          Object.assign(body, {
+            entityId: device.id,
+            entityType: 'device'
+          })
+        }
+      })
+    })(data)
   })
-
-  .then(function($) {
-    return bp.createMqttCredentials({
-      outputProp: 'mqttUser',
-      body: _($.endUser).map(function(endUser) {
-        return function(body, $$) {
-          body.entityId = endUser.id;
-          body.entityType = 'endUser';
-        };
-      }).value(),
-    })($);
-  })
-
-  // Store in PostGRES – for the future!
-  .then(function($) {
-    var tableScript = path.join(__dirname, 'tables.sql');
+  .then(bp.createMqttCredentials({
+    outputProp: 'mqttUser',
+    body: (body, data) => {
+      Object.assign(body, {
+        entityId: data.endUser.id,
+        entityType: 'endUser'
+      })
+    }
+  }))
+  .then((data) => {
+    const tableScript = path.join(__dirname, 'tables.sql')
 
     return database.runScriptFile(tableScript)
-    .then(function() {
-      return Promise.map($.device, function(device) {
-        var mqttCredentials = _.find($.mqttDevice, 'entityId', device.id);
-        var firmware = {
-          id: null,
-          serial: device.serialNumber,
-          mqttUser: device.id,
-          mqttPassword: mqttCredentials.secret,
-          associationCode: 'SOMETHINGISMISSING',
-          organizationId: device.organizationId,
-          deviceId: device.id,
-        };
+      .then(() => {
+        return Promise.all(data.device.map((device) => {
+          const mqttCredentials = data.mqttDevice.find((d) => d.entityId === device.id)
+          const firmware = {
+            serialNumber: device.serialNumber,
+            deviceId: device.id,
+            template: data.deviceTemplate,
+            organizationId: device.organizationId,
+            accountId: mqttCredentials.accountId,
+            entityId: mqttCredentials.entityId,
+            entityType: mqttCredentials.entityType,
+            secret: mqttCredentials.secret
+          }
 
-        return database.insertInventory({serial: device.serialNumber})
-        .then(function(returnedRows) {
-          firmware.id = returnedRows[0].id;
-          console.error('Inserted ' + firmware.id);
-          return database.insertFirmware(firmware);
-        });
-      });
-    })
-    .then(function() {
-      // add org and mqtt user to the application_config db
-      // this will replace redis
-      var appConfig = {
-        accountId: $.env.XIVELY_ACCOUNT_ID,
-        organization: $.organization,
-        mqttUser: $.mqttUser[0],
-        endUser: $.endUser[0],
-        device: $.device[0]
-      };
-
-      return database.insertApplicationConfig(appConfig);
-    })
-    .then(function() {
-      return $;
-    });
+          return database.insertInventory({ serial: firmware.serial })
+            .then((rows) => {
+              firmware.id = rows[0].id
+              return database.insertFirmware(firmware)
+            })
+        }))
+      })
+      .then(() => {
+        const appConfig = {
+          accountId: process.env.XIVELY_ACCOUNT_ID,
+          organization: data.organization,
+          mqttUser: data.mqttUser,
+          endUser: data.endUser,
+          device: data.device[0]
+        }
+        return database.insertApplicationConfig(appConfig)
+      })
   })
-  .then(function(data) {
-    // console.log(JSON.stringify(data, null, 2));
-    console.error('Provision done');
+  .then(() => {
+    console.log('Provision done')
+    process.exit()
   })
-  .catch(function(err) {
-    console.error('Provision error');
-    if (err instanceof Error) {
-      console.log(err);
-      console.error(err.stack);
-    } else {
-      console.error(JSON.stringify(err, null, 2));
-    }
+  .catch((err) => {
+    console.error('Provision error', err)
+    process.exit(1)
   })
-  .finally(function() {
-    process.exit();
-  });

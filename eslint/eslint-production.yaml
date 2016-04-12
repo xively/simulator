@@ -1,8 +1,0 @@
----
-rules:
-  no-console: 2 # override with 0 for node-specific production rules
-  no-constant-condition: 2
-  no-debugger: 2
-  no-empty: 2
-  no-unreachable: 2
-  no-warning-comments: 2

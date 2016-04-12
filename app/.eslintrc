@@ -1,7 +1,0 @@
----
-globals:
-  window: false
-  document: false
-extends:
-  - "../eslint/eslint-defaults.yaml"
-  - "../eslint/eslint-node-commonjs.yaml"

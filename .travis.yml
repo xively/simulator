@@ -1,19 +1,18 @@
 language: node_js
 node_js:
-  - "4"
-  - "stable"
+- '4'
 env:
-- CXX=g++-4.8
+  matrix:
+  - CXX=g++-4.8
+  global:
+    - GH_REF: github.com/RisingStack/concaria.git
+    - secure: kHc16mcrI66vllB0iOARbOCMl4UR91xQkm7HIvqwtEzTQ7QUeQ8FD+J5UmjCtPYioNLX32BdnwWtOsxFcCULBxvOQK/VIozPV1lnseHmiC6itnVnhzgKa8QMVSosgsSHV15MrpNyBRgBG1dL4mTa1niPbaCMNdGGPMQ9mYremi//6ELghUZiv7DwiRWJ6TCr8NXi1LMLiqrpwjYLq03DW4BnkX+KXVd2PkIuv5VWL/yW71S2pEiOtkF0HMekAScI9H26IzTiqvgqJ3x2HBxIESxJLHNphzUXHOjhVW3tTchGSKW9Fzp4CX7/yxx+5kS9e463TpIOatFnMWQM5X16dVluHJVhwRdJiddHEGzk8493Gf/lAfIp4lgWx+txjQxgy4752+cr1Lw+QZoRHpFbCaM1WuXtKJKcPtwpcTciRjk5qjGBrPiNA38SSOYf8e5qWEFfDIoL03os3ngRuDhco4Ozrk9nb2gx2PXqzY9uB9u/LuXsncQp4gRF4QsNNskcRURqwg+/Ht7XTIPpGvyIIqOY0JYmIUN/M9ArwjjI03E8+9F4mtdyDuPF1loQeQe2IU8XdnT80dYXVj1L86MgC7wRgUkuyEylkUXczSvhlwZlBK/1RU0URg4vLIa9/5ib0F6934F5UCzOUbqcjZq0tZVZRYwOvH7m/ja88ZsC/N8=
 addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
+  postgresql: '9.4'
 services:
-  - postgresql
-addons:
-  postgresql: "9.4"
+- postgresql
 before_script:
-  - psql -d postgres -c 'CREATE DATABASE concaria;'
-  - npm run syncdb
+- psql -d postgres -c 'CREATE DATABASE concaria;'
+- npm run syncdb
+after_success:
+- if [[ $TRAVIS_BRANCH != *"-build"* ]]; then bash ./scripts/push-build.sh; fi

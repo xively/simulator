@@ -1,0 +1,74 @@
+@import '../style/variables.less';
+
+.share-modal {
+  position: absolute;
+  max-width: 400px;
+  height: 400px;
+  top: 70px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  box-shadow: 5px 5px 5px 5px fade(@dark-gray, 50%);
+  text-align: center;
+
+  .close {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 1.2em;
+    cursor: pointer;
+  }
+
+  .header {
+    font-size: 1.5em;
+    font-weight: 200;
+  }
+
+  .copy-link {
+    @height: 30px;
+    margin-top: 20px;
+
+    input {
+      width: 200px;
+      height: @height;
+      border: 1px solid fade(@dark-gray, 50%);
+      border-radius: 0;
+      box-shadow: none;
+      font-size: 0.8em;
+    }
+
+    .copy-button {
+      position: relative;
+      display: inline-block;
+      height: @height;
+      line-height: @height;
+      vertical-align: middle;
+      color: @light-blue;
+      margin-right: 10px;
+      cursor: pointer;
+
+      &::after {
+        position: absolute;
+        left: 0;
+        content: attr(data-label);
+        opacity: .001;
+
+        @keyframes floatup {
+          20% {
+            opacity:.999
+          }
+
+          100% {
+            transform: translate3d(0, -17px, 0)
+          }
+        }
+      }
+
+      &.copying {
+        &::after {
+          animation: floatup 0.5s ease-in-out;
+        }
+      }
+    }
+  }
+}

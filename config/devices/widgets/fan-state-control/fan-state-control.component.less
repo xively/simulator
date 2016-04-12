@@ -1,0 +1,23 @@
+@height: 40px;
+
+.fan-state-control {
+  width: 100%;
+  display: flex;
+
+  & > div {
+    height: 100%;
+    flex: 1;
+    margin: 4px;
+    line-height: 40px;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid #e7e7e7;
+    border-radius: 25px;
+    margin: 5px;
+
+    &:hover, &.selected {
+      border-color: #17bae3;
+      color: #17bae3;
+    }
+  }
+}

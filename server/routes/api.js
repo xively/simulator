@@ -1,69 +1,69 @@
-'use strict';
+'use strict'
 
-const database = require('../database');
+const database = require('../database')
 
-function getFirmwareById(req, res) {
+function getFirmwareById (req, res) {
   database.selectFirmware(req.params.id)
-    .then((rows) => res.json(rows.length ? rows[0] : []));
+    .then((rows) => res.json(rows.length ? rows[0] : []))
 }
 
-function updateInventory(req, res) {
+function updateInventory (req, res) {
   database.updateInventory(req.params.verb, req.params.id)
-    .then((rows) => res.json(rows.length ? rows[0] : []));
+    .then((rows) => res.json(rows.length ? rows[0] : []))
 }
 
-function getRules(req, res) {
+function getRules (req, res) {
   database.selectRules()
-    .then((rows) => res.json(rows.length ? rows : []));
+    .then((rows) => res.json(rows.length ? rows : []))
 }
 
-function getRuleById(req, res) {
+function getRuleById (req, res) {
   database.selectRule(req.params.id)
     .then((rows) => {
       if (rows.length) {
-        res.json(rows[0]);
+        res.json(rows[0])
       } else {
-        res.status(404).send();
+        res.status(404).send()
       }
-    });
+    })
 }
 
-function createRule(req, res) {
-  var observer = req.app.get('observer');
+function createRule (req, res) {
+  var observer = req.app.get('observer')
 
   database.insertRule(req.body)
     .then((rows) => {
-      res.json(rows.length ? rows[0] : []);
-      observer.resetRules();
-    });
+      res.json(rows.length ? rows[0] : [])
+      observer.resetRules()
+    })
 }
 
-function removeRule(req, res) {
-  var observer = req.app.get('observer');
+function removeRule (req, res) {
+  var observer = req.app.get('observer')
 
   database.deleteRule(req.params.id)
     .then((rows) => {
       if (rows.length) {
-        res.status(204).send();
-        observer.resetRules();
+        res.status(204).send()
+        observer.resetRules()
       } else {
-        res.status(404).send();
+        res.status(404).send()
       }
-    });
+    })
 }
 
-function updateRule(req, res) {
-  var observer = req.app.get('observer');
+function updateRule (req, res) {
+  var observer = req.app.get('observer')
 
-  database.updateRule(req.params.id, req.body)
+  database.updateRule(req.params.id, req.body.ruleConfig)
     .then((rows) => {
       if (rows.length) {
-        res.json(rows[0]);
-        observer.resetRules();
+        res.json(rows[0])
+        observer.resetRules()
       } else {
-        res.status(404).send();
+        res.status(404).send()
       }
-    });
+    })
 }
 
 module.exports = {
@@ -74,4 +74,4 @@ module.exports = {
   createRule,
   removeRule,
   updateRule
-};
+}

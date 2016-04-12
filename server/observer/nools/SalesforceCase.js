@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 'use strict';
 
 var Salesforce = require('../../vendor/salesforce');
@@ -29,7 +31,7 @@ var SalesforceCase = function(AirSoClean3000, caseTitle) {
   if (salesforceEnabled) {
     salesforce.addCases([{
       subject: caseTitle,
-      description: AirSoClean3000.deviceValues.details || JSON.stringify(AirSoClean3000.deviceValues),
+      description: JSON.stringify(AirSoClean3000.deviceValues),
       deviceId: AirSoClean3000.deviceId,
       orgId: process.env.XIVELY_SAMPLE_ORG_ID
     }]);

@@ -1,0 +1,117 @@
+@primary: #83C68A;
+@primaryHover: #69A46F;
+@primaryActive: #508856;
+
+@secondary: #2196F3;
+@secondaryHover: #1565C0;
+@secondaryActive: #0D47A1;
+
+@delete: #E56A6A;
+@deleteBorder: #EA9B9B;
+@deleteHover: #E56A6A;
+@deleteActive: #BA4A4A;
+
+@regular: #8F8F8F;
+@regularBorder: #C5C5C5;
+@regularHover: #FCFCFC;
+@regularActive: #EAEAEA;
+
+.button {
+  padding: 0.5em 1.0em;
+  border-radius: 4px;
+  font-size: 0.8em;
+  color: @regular;
+  border: 1px @regularBorder solid;
+  background-color: #fff;
+  cursor:pointer;
+  box-sizing: border-box;
+  height: 30px;
+
+  &:hover {
+    background-color: @regularHover;
+  }
+
+  &:active {
+    background-color: @regularActive;
+  }
+
+  &.primary {
+    border-color: @primary;
+    background-color: @primary;
+    color: #fff;
+
+    &:hover {
+      border-color: @primaryHover;
+      background-color: @primaryHover;
+    }
+
+    &:active {
+      border-color: @primaryActive;
+      background-color: @primaryActive;
+    }
+  }
+
+  &.primary-outline {
+    border-color: @primary;
+    color: @primary;
+
+    &:hover {
+      border-color: @primaryHover;
+      background-color: @primaryHover;
+      color:#fff;
+    }
+
+    &:active {
+      border-color: @primaryActive;
+      background-color: @primaryActive;
+      color:#fff;
+    }
+
+    &:disabled {
+      color: #8F8F8F;
+      border-color: #C5C5C5;
+      background-color: #fff;
+      cursor: not-allowed;
+    }
+  }
+
+  &.secondary-outline {
+    border-color: @secondary;
+    color: @secondary;
+
+    &:hover {
+      border-color: @secondaryHover;
+      background-color: @secondaryHover;
+      color:#fff;
+    }
+
+    &:active {
+      border-color: @secondaryActive;
+      background-color: @secondaryActive;
+      color:#fff;
+    }
+
+    &.active {
+      border-color: @secondaryActive;
+      background-color: @secondaryActive;
+      color:#fff;
+    }
+  }
+
+  &.delete-outline {
+    border-color: @deleteBorder;
+    color: @delete;
+
+    &:hover {
+      color:#fff;
+      border-color: @deleteHover;
+      background-color: @deleteHover;
+    }
+
+    &:active {
+      color:#fff;
+      border-color: @deleteActive;
+      background-color: @deleteActive;
+    }
+  }
+}

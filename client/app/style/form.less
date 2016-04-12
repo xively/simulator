@@ -1,0 +1,51 @@
+@import './variables.less';
+
+input[type="text"] {
+  height: 30px;
+  width: 120px;
+  padding: 5px 9px;
+  margin-right: 8px;
+  border: 1px solid #C4C4C4;
+  border-radius: 5px;
+  box-shadow: inset 0px 1px 1px 0px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.8em;
+  vertical-align: bottom;
+
+  // TODO use for consistency?
+  // border: none;
+  // border-radius: 0;
+  // background: @light-gray;
+  // box-shadow: 2px 2px 3px 1px rgba(209, 210, 211, 0.35);
+  // appearance: none;
+
+  &.wide-input {
+    width: 250px;
+  }
+
+  &:disabled {
+    color: #777;
+    border-color: #cecece;
+    background: #f5f5f5;
+    cursor: not-allowed;
+  }
+}
+
+select {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  color: #666666;
+  font-size: 0.8em;
+  height: 30px;
+  background: linear-gradient(to bottom, #fdfdfd 0%, #f7f7f7 100%);
+
+  &.min-width {
+    min-width: 140px;
+    padding-left: 8px;
+  }
+}
+
+select:disabled {
+  appearance: none;
+  cursor: not-allowed;
+}

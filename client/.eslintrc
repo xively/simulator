@@ -1,0 +1,20 @@
+{
+  "env": {
+    "es6": true,
+    "browser": true,
+    "mocha": true,
+    "angular/mocks": true
+  },
+  "extends": ["standard", "angular"],
+  "plugins": ["angular"],
+  "rules": {
+    "angular/json-functions": 0,
+    "angular/window-service": 0,
+    "angular/module-setter": 0,
+    "angular/module-getter": 0,
+    "angular/controller-as-vm": 0
+  },
+  "globals": {
+    "sinon": true
+  }
+}

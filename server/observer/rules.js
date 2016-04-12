@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 'use strict';
 
 var nools = require('nools');
@@ -54,12 +56,10 @@ ConcariaRules.prototype.resetRules = function(newRules) {
   }
 };
 
-ConcariaRules.prototype.modify = function(deviceId, measurements) {
+ConcariaRules.prototype.modify = function(deviceId, device, value) {
   var session = this._sessions[deviceId];
   var fact = session.getFacts(AirSoClean3000)[0];
-  measurements.forEach(function(measurement) {
-    fact.set(measurement.name, measurement.value);
-  });
+  fact.set(device, value);
   session.modify(fact);
 };
 

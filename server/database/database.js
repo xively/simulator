@@ -1,118 +1,118 @@
-'use strict';
+'use strict'
 
-const fs = require('fs');
-const createKnex = require('knex');
-const moment = require('moment');
-const config = require('../config');
+const fs = require('fs')
+const createKnex = require('knex')
+const moment = require('moment')
+const config = require('../../config/server')
 
 const knex = createKnex({
   client: 'pg',
   connection: config.database.pgUri,
   debug: Boolean(process.env.KNEX_DEBUG)
-});
+})
 
 // Application
-function selectApplicationConfig(accountId) {
+function selectApplicationConfig (accountId) {
   return knex('application_config')
     .select()
-    .where('accountId', accountId);
+    .where('accountId', accountId)
 }
 
-function insertApplicationConfig(data) {
+function insertApplicationConfig (data) {
   return knex('application_config')
     .insert(data)
-    .returning('*');
+    .returning('*')
 }
 
 // Firmware
-function selectFirmwares() {
+function selectFirmwares () {
   return knex('firmware')
-    .select();
+    .select()
 }
 
-function selectFirmware(deviceId) {
+function selectFirmware (deviceId) {
   return knex('firmware')
     .select()
     .where('deviceId', deviceId)
-    .limit(1);
+    .limit(1)
 }
 
-function insertFirmware(data) {
+function insertFirmware (data) {
   return knex('firmware')
     .insert(data)
-    .returning('*');
+    .returning('*')
 }
 
 // Rule
-function selectRules() {
-  return knex('rules')
-    .select();
-}
-
-function selectRule(id) {
+function selectRules () {
   return knex('rules')
     .select()
-    .where('id', id);
 }
 
-function insertRule(ruleConfig) {
+function selectRule (id) {
   return knex('rules')
-    .insert(ruleConfig)
-    .returning('*');
+    .select()
+    .where('id', id)
 }
 
-function updateRule(id, ruleConfig) {
+function insertRule (ruleConfig) {
+  return knex('rules')
+    .insert({ ruleConfig })
+    .returning('*')
+}
+
+function updateRule (id, ruleConfig) {
   return knex('rules')
     .where('id', id)
-    .update(ruleConfig)
-    .returning('*');
+    .update({ ruleConfig })
+    .returning('*')
 }
 
-function deleteRule(id) {
+function deleteRule (id) {
   return knex('rules')
     .where('id', id)
     .del()
-    .returning('*');
+    .returning('*')
 }
 
 // Inventory
-function insertInventory(data) {
+function insertInventory (data) {
   return knex('inventory')
     .insert(data)
-    .returning('*');
+    .returning('*')
 }
 
-function updateInventory(verb, inventoryId) {
-  const updateQuery = {};
+function updateInventory (verb, inventoryId) {
+  const updateQuery = {}
   if (verb === 'sell') {
-    updateQuery.sold = true;
-    updateQuery.soldDate = moment.utc().toDate();
+    updateQuery.sold = true
+    updateQuery.soldDate = moment.utc().toDate()
   } else if (verb === 'reserve') {
-    updateQuery.reserved = true;
+    updateQuery.reserved = true
   } else {
-    throw new Error(`Tried to ${verb} the inventory`);
+    throw new Error(`Tried to ${verb} the inventory`)
   }
 
   return knex('inventory')
     .where('id', inventoryId)
     .update(updateQuery)
-    .returning('*');
+    .returning('*')
 }
 
 // Misc
-function runScriptFile(fileName) {
-  var script = fs.readFileSync(fileName, 'utf8');
+function runScriptFile (fileName) {
+  var script = fs.readFileSync(fileName, 'utf8')
 
-  return knex.raw(script);
+  return knex.raw(script)
 }
 
-function truncateTables() {
+function truncateTables () {
   return Promise.all([
     knex('firmware').del(),
     knex('inventory').del(),
     knex('rules').del(),
     knex('application_config').del()
-  ]);
+  ])
 }
 
 module.exports = {
@@ -134,4 +134,4 @@ module.exports = {
 
   runScriptFile,
   truncateTables
-};
+}
