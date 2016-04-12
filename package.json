@@ -69,7 +69,6 @@
     "webpack-dev-server": "1.12.1"
   },
   "dependencies": {
-    "angular-uuid": "0.0.2",
     "bluebird": "3.0.5",
     "body-parser": "1.15.0",
     "cookie-parser": "1.4.1",

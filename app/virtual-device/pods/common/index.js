@@ -1,7 +1,6 @@
 'use strict';
 
 var angular = require('angular');
-require('angular-uuid');
 
 var clamp = require('./values/clamp');
 var csvParse = require('./values/csv-parse');
@@ -13,7 +12,7 @@ var loginProvider = require('../../../manage/pods/common/login-provider');
 var BlueprintClientProvider = require('../../../manage/pods/common/blueprint-client-provider');
 var states = require('./values/states');
 
-var commonModule = angular.module('common', ['angular-uuid']);
+var commonModule = angular.module('common', []);
 
 // utils
 // These are handy functions.

@@ -43,9 +43,7 @@ var purifierDeviceCtrl = [
       purifierFanService.init(sensorChannel);
       purifierResettingService.init({
         deviceId: device.id,
-        accountId: device.accountId,
-        organizationId: device.organizationId,
-        templateId: ''
+        accountId: device.accountId
       }, deviceLogChannel);
       device.state = states.OK;
     }
@@ -83,8 +81,6 @@ var purifierDeviceCtrl = [
       var logMessage = {
         deviceId: logDevice.id,
         accountId: logDevice.accountId,
-        organizationId: logDevice.organizationId,
-        templateId: logDevice.deviceTemplateId,
         message: message,
         details: message,
         tags: tags
@@ -111,8 +107,6 @@ var purifierDeviceCtrl = [
       var malfunctionData = {
         deviceId: logDevice.id,
         accountId: logDevice.accountId,
-        organizationId: logDevice.organizationId,
-        templateId: logDevice.deviceTemplateId,
         message: 'Sensor malfunction occured',
         details: 'Sensor malfunction occured',
         tags: ['malfunction']

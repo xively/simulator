@@ -1,32 +1,26 @@
 'use strict';
 
 var deviceLogService = [
-  'mqttService', 'uuid',
-  function(mqttService, uuid) {
+  'mqttService',
+  function(mqttService) {
     function createDeviceLogMessage(inputData) {
       var informational = 'informational';
-      var now = Date.now().toString();
+      var now = Date.now();
       var severity = inputData.severity || informational;
-      var code = '400';
+      var code = 400;
       if (severity === informational) {
-        code = '200';
+        code = 200;
       }
 
       return {
+        sourceTimestamp: now,
         sourceId: inputData.deviceId,
-        sourceType: 'deviceId',
         accountId: inputData.accountId,
-        organizationId: inputData.organizationId,
-        templateId: inputData.templateId || uuid.v4(),
         code: code,
         message: inputData.message,
-        severity: severity,
         details: inputData.details || inputData.message,
-        tags: inputData.tags || [],
-        guid: uuid.v4(),
-        entryIndex: '7',
-        serviceTimestamp: now,
-        sourceTimestamp: now
+        severity: severity,
+        tags: inputData.tags || []
       };
     }
 
