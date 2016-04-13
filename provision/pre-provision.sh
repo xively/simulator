@@ -10,7 +10,8 @@ app_name=xively-$(date +%s)
 # Removing existing temp dir and heroku app.
 if [[ -e "$temp_dir" ]]; then
   if [[ -e "$temp_dir/app_name" ]]; then
-    heroku apps:destroy "$(< "$temp_dir/app_name")" --confirm "$(< "$temp_dir/app_name")"
+    old_app_name="$(< "$temp_dir/app_name")"
+    heroku apps:destroy $old_app_name --confirm $old_app_name
   fi
   rm -rf "$temp_dir"
 fi

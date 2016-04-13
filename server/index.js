@@ -1,7 +1,7 @@
 'use strict'
 
 // Load .env file into process.env
-require('dotenv').config()
+require('dotenv').config({ silent: true })
 
 const logger = require('winston')
 const request = require('request-promise')

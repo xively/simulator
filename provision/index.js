@@ -1,127 +1,141 @@
 'use strict'
 
-require('dotenv').config()
+require('dotenv').config({ silent: true })
 
 const path = require('path')
-const bp = require('./blueprint')
+const _ = require('lodash')
+const Blueprint = require('./blueprint')
 const database = require('../server/database')
 const config = require('../config/provision')
 
-bp.useDemoAccount()
-bp.getJwt()
-  .then(bp.getClient)
-  .then(bp.createOrganizationTemplate((body) => {
-    Object.assign(body, config.organizationTemplate)
+const blueprint = new Blueprint()
+
+Promise.all([
+  blueprint.createOrganizationTemplates(config.organizationTemplates),
+  blueprint.createDeviceTemplates(config.deviceTemplates),
+  blueprint.createEndUserTemplates(config.endUserTemplates)
+])
+.then((arr) => ({
+  organizationTemplates: arr[0],
+  deviceTemplates: arr[1],
+  endUserTemplates: arr[2]
+}))
+.then((data) => {
+  const organizationTemplates = data.organizationTemplates
+  const deviceTemplates = data.deviceTemplates
+
+  config.organizations = config.organizations.map((organization) => Object.assign({
+    organizationTemplateId: _.find(organizationTemplates, { name: organization.organizationTemplate }).id
+  }, organization))
+
+  config.channelTemplates = config.channelTemplates.map((channelTemplate) => Object.assign({
+    deviceTemplateId: _.find(deviceTemplates, { name: channelTemplate.deviceTemplate }).id
+  }, channelTemplate))
+
+  config.deviceFields = config.deviceFields.map((deviceFields) => Object.assign({
+    deviceTemplateId: _.find(deviceTemplates, { name: deviceFields.deviceTemplate }).id
+  }, deviceFields))
+
+  return Promise.all([
+    blueprint.createOrganizations(config.organizations),
+    blueprint.createChannelTemplates(config.channelTemplates),
+    blueprint.createDeviceFields(config.deviceFields)
+  ])
+  .then((arr) => Object.assign({
+    organizations: arr[0],
+    channelTemplates: arr[1],
+    deviceFields: arr[2]
+  }, data))
+})
+.then((data) => {
+  const organizations = data.organizations
+  const organizationTemplates = data.organizationTemplates
+  const endUserTemplates = data.endUserTemplates
+  const deviceTemplates = data.deviceTemplates
+
+  config.endUsers = config.endUsers.map((endUser) => Object.assign({
+    organizationId: _.find(organizations, { name: endUser.organization }).id,
+    organizationTemplateId: _.find(organizationTemplates, { name: endUser.organizationTemplate }).id,
+    endUserTemplateId: _.find(endUserTemplates, { name: endUser.endUserTemplate }).id
   }))
-  .then(bp.createOrganization((body, data) => {
-    Object.assign(body, config.organization, {
-      organizationTemplateId: data.organizationTemplate.id
-    })
+
+  config.devices = config.devices.map((device) => Object.assign({
+    deviceTemplateId: _.find(deviceTemplates, { name: device.deviceTemplate }).id,
+    organizationId: _.find(organizations, { name: device.organization }).id
+  }, device))
+
+  return Promise.all([
+    blueprint.createEndUser(config.endUsers),
+    blueprint.createDevices(config.devices)
+  ])
+  .then((arr) => Object.assign({
+    endUsers: arr[0],
+    devices: arr[1]
+  }, data))
+})
+.then((data) => {
+  const devices = data.devices.map((device) => ({
+    entityId: device.id,
+    entityType: 'device'
   }))
-  .then(bp.createDeviceTemplate((body, data) => {
-    Object.assign(body, config.deviceTemplate)
+
+  const endUsers = data.endUsers.map((endUser) => ({
+    entityId: endUser.id,
+    entityType: 'endUser'
   }))
-  .then(bp.createDeviceFields(
-    config.deviceFields.map((field) => {
-      return (body, data) => {
-        Object.assign(body, field, {
-          deviceTemplateId: data.deviceTemplate.id
-        })
-      }
-    })
-  ))
-  .then(bp.createChannelTemplates(
-    config.channelTemplates.map((channel) => {
-      return (body, data) => {
-        Object.assign(body, channel, {
-          entityId: data.deviceTemplate.id
-        })
-      }
-    })
-  ))
-  .then(bp.createDevices(
-    config.devices.map((device) => {
-      return (body, data) => {
-        Object.assign(body, device, {
-          deviceTemplateId: data.deviceTemplate.id,
-          organizationId: data.organization.id
-        })
-      }
-    })
-  ))
-  .then(bp.createEndUserTemplate((body, data) => {
-    Object.assign(body, config.userTemplate)
-  }))
-  .then(bp.createEndUser((body, data) => {
-    Object.assign(body, {
-      organizationTemplateId: data.organizationTemplate.id,
-      organizationId: data.organization.id,
-      endUserTemplateId: data.endUserTemplate.id
-    })
-  }))
-  .then((data) => {
-    return bp.createMqttCredentials({
-      outputProp: 'mqttDevice',
-      body: data.device.map((device) => {
-        return (body) => {
-          Object.assign(body, {
-            entityId: device.id,
-            entityType: 'device'
-          })
+
+  const entities = devices.concat(endUsers)
+
+  return Promise.all([
+    blueprint.createMqttCredentials(entities)
+  ])
+  .then((arr) => Object.assign({
+    mqttCredentials: arr[0]
+  }, data))
+})
+.then((data) => {
+  const tableScript = path.join(__dirname, 'tables.sql')
+
+  return database.runScriptFile(tableScript)
+    .then(() => {
+      return Promise.all(data.devices.map((device) => {
+        const mqttCredentials = data.mqttCredentials.find((mqttCredential) => mqttCredential.entityId === device.id)
+
+        const firmware = {
+          serialNumber: device.serialNumber,
+          deviceId: device.id,
+          template: data.deviceTemplates.find((deviceTemplate) => deviceTemplate.id === device.deviceTemplateId),
+          organizationId: device.organizationId,
+          accountId: mqttCredentials.accountId,
+          entityId: mqttCredentials.entityId,
+          entityType: mqttCredentials.entityType,
+          secret: mqttCredentials.secret
         }
-      })
-    })(data)
-  })
-  .then(bp.createMqttCredentials({
-    outputProp: 'mqttUser',
-    body: (body, data) => {
-      Object.assign(body, {
-        entityId: data.endUser.id,
-        entityType: 'endUser'
-      })
-    }
-  }))
-  .then((data) => {
-    const tableScript = path.join(__dirname, 'tables.sql')
 
-    return database.runScriptFile(tableScript)
-      .then(() => {
-        return Promise.all(data.device.map((device) => {
-          const mqttCredentials = data.mqttDevice.find((d) => d.entityId === device.id)
-          const firmware = {
-            serialNumber: device.serialNumber,
-            deviceId: device.id,
-            template: data.deviceTemplate,
-            organizationId: device.organizationId,
-            accountId: mqttCredentials.accountId,
-            entityId: mqttCredentials.entityId,
-            entityType: mqttCredentials.entityType,
-            secret: mqttCredentials.secret
-          }
-
-          return database.insertInventory({ serial: firmware.serial })
-            .then((rows) => {
-              firmware.id = rows[0].id
-              return database.insertFirmware(firmware)
-            })
-        }))
-      })
-      .then(() => {
+        return database.insertInventory({ serial: firmware.serial })
+          .then((rows) => {
+            firmware.id = rows[0].id
+            return database.insertFirmware(firmware)
+          })
+      }))
+    })
+    .then(() => {
+      return Promise.all(data.endUsers.map((endUser) => {
         const appConfig = {
+          endUser,
           accountId: process.env.XIVELY_ACCOUNT_ID,
-          organization: data.organization,
-          mqttUser: data.mqttUser,
-          endUser: data.endUser,
-          device: data.device[0]
+          organization: data.organizations.find((organization) => organization.id === endUser.organizationId),
+          mqttUser: data.mqttCredentials.find((mqttCredential) => mqttCredential.entityId === endUser.id)
         }
         return database.insertApplicationConfig(appConfig)
-      })
-  })
-  .then(() => {
-    console.log('Provision done')
-    process.exit()
-  })
-  .catch((err) => {
-    console.error('Provision error', err)
-    process.exit(1)
-  })
+      }))
+    })
+})
+.then(() => {
+  console.log('Provision done')
+  process.exit()
+})
+.catch((err) => {
+  console.error('Provision error', err)
+  process.exit(1)
+})

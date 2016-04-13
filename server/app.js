@@ -40,15 +40,6 @@ if (process.env.NODE_ENV === 'test') {
         user: {
           username: appConfig.endUser.id,
           password: appConfig.mqttUser.secret
-        },
-        device: {
-          id: appConfig.device.id,
-          accountId: appConfig.device.accountId
-        }
-      },
-      virtualdevice: {
-        mqtt: {
-          deviceId: appConfig.device.id
         }
       }
     })

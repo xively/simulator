@@ -26,7 +26,7 @@ function socketFactory ($q) {
 
     disconnect (device) {
       const deviceId = _.isString(device) ? device : device.id
-      this.deviceIds.remove(deviceId)
+      this.deviceIds.delete(deviceId)
       this.client.emit('disconnectDevice', { deviceId })
     }
 
