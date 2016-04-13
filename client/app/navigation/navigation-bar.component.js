@@ -57,7 +57,7 @@ const navComponent = {
       this.showNavigation = _.toNumber(navigation)
     })
 
-    $scope.$on(EVENTS.loading, (event, args) => {
+    $scope.$on(EVENTS.LOADING, (event, args) => {
       this.loading = args.loading
     })
 

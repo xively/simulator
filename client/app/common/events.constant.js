@@ -1,6 +1,5 @@
 const EVENTS = {
-  loading: 'loading',
-  navigation: 'navigation'
+  LOADING: 'concaria.loading'
 }
 
 module.exports = EVENTS

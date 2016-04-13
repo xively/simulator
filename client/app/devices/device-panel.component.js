@@ -42,19 +42,18 @@ const devicePanelComponent = {
   },
   controllerAs: 'devicePanel',
   /* @ngInject */
-  controller ($log, $scope, CONFIG, DEVICES_CONFIG, socketService) {
+  controller ($log, $scope, socketService, CONFIG, DEVICES_CONFIG, EVENTS) {
     this.config = CONFIG
     const deviceConfig = DEVICES_CONFIG[this.device.template.name]
     this.deviceConfig = deviceConfig
 
     // start virtual device
     socketService.connect(this.device)
-
     // subscribe for mqtt messages
     const unsubscribe = this.device.subscribe()
-    $scope.$on('$destroy', () => {
-      unsubscribe()
+    $scope.$on('$stateChangeStart', () => {
       socketService.disconnect(this.device)
+      unsubscribe()
     })
 
     this.widgets = () => {

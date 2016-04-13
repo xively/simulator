@@ -11,16 +11,27 @@ function socketFactory ($q) {
       this.client.on('connect', () => {
         deferred.resolve()
       })
+
+      this.deviceIds = new Set()
+      this.client.on('reconnect', () => {
+        this.reconnectDevices()
+      })
     }
 
     connect (device) {
       const deviceId = _.isString(device) ? device : device.id
+      this.deviceIds.add(deviceId)
       this.client.emit('connectDevice', { deviceId })
     }
 
     disconnect (device) {
       const deviceId = _.isString(device) ? device : device.id
+      this.deviceIds.remove(deviceId)
       this.client.emit('disconnectDevice', { deviceId })
+    }
+
+    reconnectDevices () {
+      this.deviceIds.forEach((deviceId) => this.connect(deviceId))
     }
 
     startSimulation (device) {
