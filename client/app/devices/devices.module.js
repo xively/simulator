@@ -1,6 +1,5 @@
 const angular = require('angular')
 const commonModule = require('../common')
-const navigationModule = require('../navigation')
 const devicesRoute = require('./devices.route')
 const deviceRoute = require('./device.route')
 const deviceDemoRoute = require('./device-demo.route')
@@ -15,8 +14,7 @@ const notificationComponent = require('./notification.component')
 const devicesModule = angular.module('concaria.devies', [
   require('angular-animate'),
   require('angular-ui-router'),
-  commonModule,
-  navigationModule
+  commonModule
 ])
   .config(devicesRoute)
   .config(deviceRoute)

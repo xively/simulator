@@ -9,13 +9,13 @@ function deviceRoute ($stateProvider) {
     template: `
       <section class="device container">
         <div class="link-bar">
-          <a ui-sref="devices.list">
+          <a class="back" ui-sref="devices.list">
             <span>&#9664;</span>
             Back to devices list
           </a>
           <div class="icons">
             <a class="share" ng-click="device.toggleShareModal()"> ${shareIcon} </a>
-            <a class="arrow-circle" ui-sref="devices.device-demo({ id: device.device.id })"> ${arrowCircleIcon} </a>
+            <a class="arrow-circle" ui-sref="devices.device-demo({ id: device.device.id, header: 0 })"> ${arrowCircleIcon} </a>
           </div>
         </div>
         <device-panel device="device.device"></device-panel>

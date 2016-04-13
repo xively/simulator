@@ -1,39 +1,39 @@
 @import '../style/variables.less';
 
+.loading-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  transform: translate(0,0) scale(1,1);
+  overflow: hidden;
+
+  .bar-1, .bar-2 {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: @light-blue;
+  }
+
+  .bar-1 {
+    animation: progress-linear-indeterminate-scale-1 3s infinite, progress-linear-indeterminate-1 3s infinite;
+  }
+
+  .bar-2 {
+    animation: progress-linear-indeterminate-scale-2 3s infinite, progress-linear-indeterminate-2 3s infinite;
+  }
+}
+
 .navigation-bar {
   position: relative;
   width: 100%;
   height: 82px;
   background: @navy-blue;
   border-bottom: 2px solid @light-gray;
-
-  .loading-bar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    transform: translate(0,0) scale(1,1);
-    overflow: hidden;
-
-    .bar-1, .bar-2 {
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 100%;
-      height: 100%;
-      background-color: @light-blue;
-    }
-
-    .bar-1 {
-      animation: progress-linear-indeterminate-scale-1 3s infinite, progress-linear-indeterminate-1 3s infinite;
-    }
-
-    .bar-2 {
-      animation: progress-linear-indeterminate-scale-2 3s infinite, progress-linear-indeterminate-2 3s infinite;
-    }
-  }
 
   .logo {
     fill: @light-gray;

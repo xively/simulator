@@ -16,17 +16,34 @@
     width: 510px;
     border-right: @border;
 
+    .navigation-header {
+      position: relative;
+      height: 60px;
+      background-color: @navy-blue;
+
+      .logo {
+        height: 100%;
+
+        svg {
+          display: block;
+          height: 80%;
+          margin: 0 auto;
+          fill: @light-gray;
+        }
+      }
+    }
+
     .icons {
       position: absolute;
+      top: 95px;
       right: 30px;
-      top: 30px;
 
       .share {
         fill: @dark-gray;
         cursor: pointer;
 
         svg {
-          height: 20px;
+          height: 25px;
         }
       }
     }

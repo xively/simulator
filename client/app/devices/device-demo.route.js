@@ -10,11 +10,14 @@ require('./device-demo.route.less')
 /* @ngInject */
 function deviceDemoRoute ($stateProvider) {
   $stateProvider.state('devices.device-demo', {
-    url: '/:id/demo',
+    url: '/:id/demo?header',
     template: `
       <div class="device-demo">
         <div class="left-side">
           <iphone-frame>
+            <div class="navigation-header">
+              <div class="logo">${xiLogo}</div>
+            </div>
             <div class="icons">
               <a class="share" ng-click="device.toggleShareModal()"> ${shareIcon} </a>
             </div>
@@ -98,16 +101,7 @@ function deviceDemoRoute ($stateProvider) {
       }
     },
     /* @ngInject */
-    controller ($log, $scope, $state, $location, device, templates, navigationBarOptions, devicesService, socketService, DEVICES_CONFIG) {
-      // hide navigation bar
-      navigationBarOptions.visible = false
-      $scope.$on('$stateChangeStart', (event, toState) => {
-        // when leaving demo state, show navigation bar
-        if (toState.name !== 'devices.device-demo') {
-          navigationBarOptions.visible = true
-        }
-      })
-
+    controller ($log, $scope, $state, $location, device, templates, devicesService, socketService, DEVICES_CONFIG) {
       device.template = templates[device.deviceTemplateId]
       this.config = DEVICES_CONFIG[device.template.name]
       if (this.config) {
@@ -155,7 +149,7 @@ function deviceDemoRoute ($stateProvider) {
         return `<${widget} device="device.device"></${widget}>`
       }
 
-      this.shareLink = $location.absUrl().replace('/demo', '')
+      this.shareLink = $location.absUrl().replace(/\/demo.*/, '?navigation=0')
       this.shareModal = false
       this.toggleShareModal = () => {
         this.shareModal = !this.shareModal

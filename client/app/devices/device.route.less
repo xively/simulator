@@ -22,15 +22,15 @@
         cursor: pointer;
       }
 
-      .arrow-circle {
-        @media (max-width: @mobile-max-width) {
-          display: none;
-        }
-      }
-
       svg {
         height: 20px;
         margin-right: 10px;
+      }
+    }
+
+    .arrow-circle, .back {
+      @media (max-width: @mobile-max-width) {
+        display: none;
       }
     }
   }
