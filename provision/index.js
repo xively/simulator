@@ -200,13 +200,14 @@ bp.getEnv(process.env)
       return Promise.map($.device, function(device) {
         var mqttCredentials = _.find($.mqttDevice, 'entityId', device.id);
         var firmware = {
-          id: null,
-          serial: device.serialNumber,
-          mqttUser: device.id,
-          mqttPassword: mqttCredentials.secret,
+          serialNumber: device.serialNumber,
+          deviceId: device.id,
           associationCode: 'SOMETHINGISMISSING',
           organizationId: device.organizationId,
-          deviceId: device.id,
+          accountId: mqttCredentials.accountId,
+          entityId: mqttCredentials.entityId,
+          entityType: mqttCredentials.entityType,
+          secret: mqttCredentials.secret
         };
 
         return database.insertInventory({serial: device.serialNumber})

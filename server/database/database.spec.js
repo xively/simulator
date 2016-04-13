@@ -6,9 +6,6 @@ const expect = require('chai').expect;
 const database = require('./database');
 
 describe('Database', () => {
-  const string36 = '5NIcsvfP8m6TyawGLkqyp3kur1VWiYZJGWxK';
-  const string44 = 'Msktg2zNzVKVEZIarq2JcXm1KiX6WnHSFAVXRk2m4lb6';
-
   const appConfigMock = {
     accountId: 'accountId',
     organization: {
@@ -37,12 +34,14 @@ describe('Database', () => {
     }
   };
   const firmwareMock = {
-    serial: 'serial1234567',
-    mqttUser: string36,
-    mqttPassword: string44,
+    serialNumber: 'serial1234567',
+    deviceId: 'deviceId',
     associationCode: 'associationCode',
-    organizationId: string36,
-    deviceId: string36
+    organizationId: 'organizationId',
+    accountId: 'accountId',
+    entityId: 'entityId',
+    entityType: 'entityType',
+    secret: 'secret'
   };
 
   afterEach(function * () {

@@ -5,19 +5,16 @@
 // `user`, etc.
 var mqttService = [
   function() {
-    var options = {};
-    this.options = function(_options) {
-      options = _options;
-    };
-
     this.$get = [
+      '$http',
+      '$state',
       'mqtt',
       'userInfo',
-      function(mqtt, userInfo) {
-        var host = options.host;
-        var port = Number(options.port);
-        var user = options.username;
-        var pw = options.password;
+      function($http, $state, mqtt, userInfo) {
+        var host;
+        var port;
+        var user;
+        var pw;
         var useSSL = true;
 
         return {
@@ -30,6 +27,13 @@ var mqttService = [
           sendMessage: function(data, channelName) {
             this.ensureConnection();
             mqtt.sendMessage(data, channelName, host, port, user, pw, useSSL);
+          },
+
+          setProperties: function(data) {
+            host = data.host;
+            port = data.port;
+            user = data.user;
+            pw = data.pw;
           },
 
           // Subscribe `cb` to `channelName`

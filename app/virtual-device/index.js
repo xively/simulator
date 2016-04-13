@@ -33,15 +33,28 @@ app.run(['aqiService', function(aqiService) {
 app.run([
   'Login',
   'applicationConfig',
-  function(Login, applicationConfig) {
+  'mqttService',
+  '$http',
+  '$location',
+  function(Login, applicationConfig, mqttService, $http, $location) {
     Login.renew()
-    .catch(function() {
-      return Login.login({
-        accountId: applicationConfig.accountId,
-        emailAddress: applicationConfig.emailAddress,
-        password: applicationConfig.password,
+      .catch(function() {
+        return Login.login({
+          accountId: applicationConfig.accountId,
+          emailAddress: applicationConfig.emailAddress,
+          password: applicationConfig.password,
+        });
       });
-    });
+
+    $http.get('api/firmware/' + $location.url().substr(1))
+      .then(function(response) {
+        mqttService.setProperties({
+          host: applicationConfig.brokerHost,
+          port: Number(applicationConfig.brokerPort),
+          user: response.data.entityId,
+          pw: response.data.secret
+        });
+      });
   },
 ]);
 
@@ -85,12 +98,5 @@ app.config([
     LoginProvider.options({
       accountId: _.result(applicationConfig, 'accountId'),
       host: _.result(applicationConfig, 'idmHost'),
-    });
-
-    mqttServiceProvider.options({
-      host: _.get(applicationConfig, 'brokerHost'),
-      port: _.get(applicationConfig, 'brokerPort'),
-      username: _.get(applicationConfig, 'user.username'),
-      password: _.get(applicationConfig, 'user.password'),
     });
   }]);
