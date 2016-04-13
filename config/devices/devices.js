@@ -108,6 +108,7 @@ const config = {
           },
           distance: 116,
           direction: 'left',
+          input: false,
           actions: [{
             label: 'Deplete',
             channel: 'filter',

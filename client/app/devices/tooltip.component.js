@@ -101,7 +101,9 @@ const tooltipComponent = {
     }
 
     this.showInput = () => {
-      return _.isNumber(this.options.min) && _.isNumber(this.options.max)
+      return (!this.options.actions || (this.options.actions && this.options.input)) &&
+        _.isNumber(this.options.min) &&
+        _.isNumber(this.options.max)
     }
   }
 }
