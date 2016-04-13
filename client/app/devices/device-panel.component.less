@@ -83,7 +83,6 @@ device-panel, .device-panel {
       .panel {
         box-sizing: border-box;
         width: 30%;
-        height: 100px;
         margin-left: 5%;
         margin-bottom: 20px;
         padding: 0.5em;
@@ -97,8 +96,12 @@ device-panel, .device-panel {
         }
 
         .value {
+          width: 100%;
           font-size: 1.2em;
           text-align: center;
+          margin: 20px 0;
+          padding: 0;
+          word-wrap: break-word;
         }
 
         &:nth-child(3n+1) {

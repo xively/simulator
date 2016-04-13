@@ -19,7 +19,10 @@ const devicePanelComponent = {
           <div class="sensor-panels">
             <div class="panel" ng-repeat="(name, sensor) in devicePanel.device.sensors">
               <p class="name">{{ ::name }}</p>
-              <p class="value">{{ sensor.numericValue }}</p>
+              <p class="value">
+                {{ sensor.numericValue }}
+                <span>{{ ::devicePanel.deviceConfig.sensors[name].unit }}</span>
+              </p>
             </div>
           </div>
         </div>
@@ -42,6 +45,7 @@ const devicePanelComponent = {
   controller ($log, $scope, CONFIG, DEVICES_CONFIG, socketService) {
     this.config = CONFIG
     const deviceConfig = DEVICES_CONFIG[this.device.template.name]
+    this.deviceConfig = deviceConfig
 
     // start virtual device
     socketService.connect(this.device)
