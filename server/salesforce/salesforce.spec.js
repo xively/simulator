@@ -5,7 +5,7 @@ const Salesforce = require('./salesforce')
 const jsforce = require('jsforce')
 const logger = require('winston')
 
-describe('Salesforce', () => {
+describe.skip('Salesforce', () => {
   it('should throw error if nothing is passed', () => {
     try {
       new Salesforce() // eslint-disable-line

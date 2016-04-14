@@ -1,6 +1,7 @@
 'use strict'
 
 const database = require('../database')
+const rulesEngine = require('../rules')
 
 function getFirmwareById (req, res) {
   database.selectFirmware(req.params.id)
@@ -29,23 +30,19 @@ function getRuleById (req, res) {
 }
 
 function createRule (req, res) {
-  var observer = req.app.get('observer')
-
   database.insertRule(req.body)
     .then((rows) => {
       res.json(rows.length ? rows[0] : [])
-      observer.resetRules()
+      rulesEngine.updateRules()
     })
 }
 
 function removeRule (req, res) {
-  var observer = req.app.get('observer')
-
   database.deleteRule(req.params.id)
     .then((rows) => {
       if (rows.length) {
         res.status(204).send()
-        observer.resetRules()
+        rulesEngine.updateRules()
       } else {
         res.status(404).send()
       }
@@ -53,13 +50,11 @@ function removeRule (req, res) {
 }
 
 function updateRule (req, res) {
-  var observer = req.app.get('observer')
-
-  database.updateRule(req.params.id, req.body.ruleConfig)
+  database.updateRule(req.params.id, req.body)
     .then((rows) => {
       if (rows.length) {
         res.json(rows[0])
-        observer.resetRules()
+        rulesEngine.updateRules()
       } else {
         res.status(404).send()
       }

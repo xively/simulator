@@ -2,22 +2,24 @@
 
 const logger = require('winston')
 const jsforce = require('jsforce')
+const config = require('../../config/server')
 
 class Salesforce {
   /**
    * @param  {Object} options
    */
-  constructor (options) {
-    if (!(options && options.user && options.password && options.token)) {
-      throw new TypeError('Salesforce options are missing (user, password, token)')
-    }
-
-    const user = options.user
-    const password = options.password
-    const token = options.token
-
+  constructor () {
     this.connection = new jsforce.Connection()
-    this.loggedIn = this.connection.login(user, `${password}${token}`)
+
+    if (config.salesforce.user && config.salesforce.pass && config.salesforce.token) {
+      this.loggedIn = this.connect()
+      logger.info('salesforce#connected')
+    }
+  }
+
+  connect () {
+    logger.info('salesforce#connecting')
+    return this.connection.login(config.salesforce.user, `${config.salesforce.pass}${config.salesforce.token}`)
   }
 
   /**
@@ -53,13 +55,12 @@ class Salesforce {
   addCases (cases) {
     cases = cases.map((c) => ({
       Subject: c.subject,
-      Description: c.description,
-      Contact: { xively__XI_End_User_ID__c: c.orgId },
-      Asset: { xively__Device_ID__c: c.deviceId },
-      xively__XI_Device_ID__c: c.deviceId
+      Description: c.description
+      // Contact: { xively__XI_End_User_ID__c: c.orgId },
+      // Asset: { xively__Device_ID__c: c.deviceId },
+      // xively__XI_Device_ID__c: c.deviceId
     }))
-
-    this.loggedIn
+    return this.loggedIn
       .then(() => this.connection.sobject('Case').insert(cases))
       .then((results) => {
         results.forEach((result, idx) => {
@@ -85,7 +86,7 @@ class Salesforce {
     }))
 
     this.loggedIn
-      .then(() => this.connection.sobject('Contact').insert(contacts))
+      .then(() => this.connection.sobject('Contact').upsert(contacts, 'xively__XI_End_User_ID__c'))
       .then((results) => {
         results.forEach((result, idx) => {
           if (result.success) {
@@ -109,4 +110,4 @@ class Salesforce {
   };
 }
 
-module.exports = Salesforce
+module.exports = new Salesforce()

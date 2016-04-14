@@ -2,7 +2,6 @@
 
 const mqtt = require('mqtt')
 const _ = require('lodash')
-const uuid = require('uuid')
 const logger = require('winston')
 const serverConfig = require('../config/server')
 const deviceConfigs = require('../config/devices')
@@ -29,10 +28,9 @@ class Device {
   }
 
   connect (socketId) {
-    logger.debug('connecting to device', this.firmware.deviceId)
-
+    logger.debug('virtual device#connecting to device', this.firmware.deviceId)
     if (!this.connections.size) {
-      logger.debug('device connecting to mqtt', this.firmware.deviceId)
+      logger.debug('virtual device#device connecting to mqtt', this.firmware.deviceId)
       this.connectMqtt()
       this.startInterval()
       this.subscribe('control')
@@ -41,11 +39,11 @@ class Device {
   }
 
   disconnect (socketId) {
-    logger.debug('disconnecting from device', this.firmware.deviceId)
+    logger.debug('virtual device#disconnecting from device', this.firmware.deviceId)
 
     this.connections.delete(socketId)
     if (!this.connections.size) {
-      logger.debug('device disconnecting from mqtt', this.firmware.deviceId)
+      logger.debug('virtual device#device disconnecting from mqtt', this.firmware.deviceId)
       this.disconnectMqtt()
       this.stopInterval()
       this.unsubscribe('control')
@@ -62,10 +60,10 @@ class Device {
     this.mqtt = mqtt.connect(host, options)
 
     this.mqtt.on('connect', () => {
-      logger.debug('mqtt connection success')
+      logger.debug('virtual device#mqtt connection success')
     })
     this.mqtt.on('error', (error) => {
-      logger.debug('mqtt connection error', error)
+      logger.debug('virtual device#mqtt connection error', error)
     })
     this.mqtt.on('message', (topic, message) => {
       const channel = topic.split('/').pop()
@@ -79,21 +77,16 @@ class Device {
   sendDeviceLog (log, severity) {
     const logChannel = this.channels.get('_log')
     const date = Date.now().toString()
+
     const message = {
+      sourceTimestamp: date,
       sourceId: this.firmware.deviceId,
-      sourceType: 'deviceId',
       accountId: this.firmware.accountId,
-      organizationId: this.firmware.organizationId,
-      templateId: this.firmware.template.id || uuid.v4(),
       code: severity === 'informational' ? 200 : 400,
       message: log.message,
-      severity: severity,
       details: log.details || log.message,
-      tags: log.tags || [],
-      guid: uuid.v4(),
-      entryIndex: '7',
-      serviceTimestamp: date,
-      sourceTimestamp: date
+      severity: severity,
+      tags: log.tags || []
     }
     this.mqtt.publish(logChannel, JSON.stringify(message))
   }
@@ -109,6 +102,7 @@ class Device {
     }
     const sensorSettings = this.sensors.get(sensorName)
     sensorSettings.latestValue = sensorValue
+
     this.sensors.set(sensorName, sensorSettings)
 
     const mqttMessage = `${timeStamp}, ${sensorName}, ${sensorValue}, , \n`
@@ -122,7 +116,7 @@ class Device {
   subscribe (channelName) {
     const topic = `xi/blue/v1/${this.firmware.accountId}/d/${this.firmware.deviceId}/${channelName}`
 
-    logger.debug('device subscribing to topic', topic)
+    logger.debug('virtual device#device subscribing to topic', topic)
 
     this.channels.set(channelName, topic)
     this.mqtt.subscribe(topic)
@@ -131,7 +125,7 @@ class Device {
   unsubscribe (channelName) {
     const topic = this.channels.get(channelName)
 
-    logger.debug('device unsubscribing from topic', topic)
+    logger.debug('virtual device#device unsubscribing from topic', topic, 'channelName', channelName)
 
     this.mqtt && this.mqtt.unsubscribe(topic)
     this.channels.delete(channelName)
@@ -178,11 +172,11 @@ class Device {
     newValue = _.isNaN(newValue) ? latestValue : _.clamp(Math.round(newValue), sensorSettings.min, sensorSettings.max)
     sensorSettings.latestValue = newValue
 
-    const message = `${Date.now()}, ${sensorName}, ${newValue}, , \n`
-    logger.debug('sending sensor data', sensorSettings.topic, message)
-    this.mqtt.publish(sensorSettings.topic, message)
-
     this.sensors.set(sensorName, sensorSettings)
+
+    const message = `${Date.now()}, ${sensorName}, ${newValue}, , \n`
+    logger.silly('virtual device#sending sensor data', sensorSettings.topic, message)
+    this.mqtt.publish(sensorSettings.topic, message)
   }
 
   generateSensorValues () {
@@ -192,15 +186,19 @@ class Device {
   }
 
   startSimulation () {
-    this.simulation = true
-    this.stopInterval()
-    this.startInterval(this.SIMULATION_INTERVAL)
+    if (!this.simulation) {
+      this.simulation = true
+      this.stopInterval()
+      this.startInterval(this.SIMULATION_INTERVAL)
+    }
   }
 
   stopSimulation () {
-    this.simulation = false
-    this.stopInterval()
-    this.startInterval()
+    if (this.simulation) {
+      this.simulation = false
+      this.stopInterval()
+      this.startInterval()
+    }
   }
 
   startInterval (interval) {

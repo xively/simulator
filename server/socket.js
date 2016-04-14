@@ -23,16 +23,18 @@ module.exports = function configureSocket (app) {
       firmwares.forEach((firmware) => {
         const device = new Device(firmware)
         devices.set(firmware.deviceId, device)
-        logger.debug('creating device', firmware.deviceId)
+        logger.debug('socket.io#creating device', firmware.deviceId)
       })
     })
 
   // handle `connection` event
   io.on('connection', (socket) => {
-    logger.debug('socket.io: connection from', socket.client.conn.remoteAddress)
+    logger.debug('socket.io#connection from', socket.client.conn.remoteAddress)
     const deviceIds = new Set()
 
     socket.on('connectDevice', (data) => {
+      logger.debug('socket.io#connectDevice')
+
       const deviceId = data.deviceId
       deviceIds.add(deviceId)
       const device = devices.get(deviceId)
@@ -56,6 +58,8 @@ module.exports = function configureSocket (app) {
     })
 
     socket.on('disconnectDevice', (data) => {
+      logger.debug('socket.io#disconnectDevice')
+
       const deviceId = data.deviceId
       const device = devices.get(deviceId)
       if (device) {
@@ -65,7 +69,7 @@ module.exports = function configureSocket (app) {
     })
 
     socket.on('disconnect', () => {
-      logger.debug('socket.io: socket disconnected')
+      logger.debug('socket.io#socket disconnected')
       deviceIds.forEach((_, deviceId) => {
         const device = devices.get(deviceId)
         if (device) {
