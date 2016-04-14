@@ -1,5 +1,4 @@
 const _ = require('lodash')
-const moment = require('moment')
 
 /* @ngInject */
 function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeseriesService, CONFIG, DEVICES_CONFIG) {
@@ -125,22 +124,20 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
      * @return {Promise}
      */
     getTimeSeries (deviceOrChannel) {
-      const DATE_FORMAT = 'YYYY.MM.DD HH:mm:ss'
-      const MINUTES = 60
+      const PAGE_SIZE = 100
 
       // for one channel
       if (_.isString(deviceOrChannel)) {
         const channel = deviceOrChannel
-        return timeseriesService.getV4(`data/${channel}`, {
-          startDateTime: moment().utc().subtract(MINUTES, 'minutes').format(DATE_FORMAT),
-          endDateTime: moment().utc().format(DATE_FORMAT)
+        return timeseriesService.getV4(`data/${channel}/latest`, {
+          pageSize: PAGE_SIZE
         })
         .then((response) => {
           if (response.status !== 200) {
             $log.error('TimeSeries response:', response)
             throw new Error(response.statusText)
           }
-          return response.data.result
+          return response.data.result.reverse()
         })
       }
 
@@ -150,13 +147,12 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
       const promises = device.channels
         .filter((channel) => channel.persistenceType === 'timeSeries')
         .map((channel) => timeseriesService.getV4(`data/${channel.channel}`, {
-          startDateTime: moment().utc().subtract(MINUTES, 'minutes').format(DATE_FORMAT),
-          endDateTime: moment().utc().format(DATE_FORMAT)
+          pageSize: PAGE_SIZE
         }))
 
       return $q.all(promises)
         .then((timeseries) => timeseries.filter((response) => response.status !== 404))
-        .then((timeseries) => timeseries.map((response) => response.data.result))
+        .then((timeseries) => timeseries.map((response) => response.data.result.reverse()))
     }
   }
 }

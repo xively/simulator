@@ -131,7 +131,7 @@ class Device {
 
     logger.debug('device unsubscribing from topic', topic)
 
-    this.mqtt.unsubscribe(topic)
+    this.mqtt && this.mqtt.unsubscribe(topic)
     this.channels.delete(channelName)
   }
 
