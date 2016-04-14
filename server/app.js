@@ -38,6 +38,7 @@ if (process.env.NODE_ENV === 'test') {
       account: {
         organizationId: appConfig.organization.id,
         user: {
+          name: appConfig.endUser.name,
           username: appConfig.endUser.id,
           password: appConfig.mqttUser.secret
         }

@@ -114,7 +114,7 @@ class Device {
   }
 
   disconnectMqtt () {
-    this.mqtt.end()
+    this.mqtt && this.mqtt.end()
   }
 
   subscribe (channelName) {

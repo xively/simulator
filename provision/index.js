@@ -57,7 +57,7 @@ Promise.all([
     organizationId: _.find(organizations, { name: endUser.organization }).id,
     organizationTemplateId: _.find(organizationTemplates, { name: endUser.organizationTemplate }).id,
     endUserTemplateId: _.find(endUserTemplates, { name: endUser.endUserTemplate }).id
-  }))
+  }, endUser))
 
   config.devices = config.devices.map((device) => Object.assign({
     deviceTemplateId: _.find(deviceTemplates, { name: device.deviceTemplate }).id,

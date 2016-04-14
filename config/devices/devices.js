@@ -4,7 +4,7 @@
 // proposal: https://gist.github.com/tothandras/a903647365d1a204c9d1ab7f8b8f8f17
 // like: name, type, min, max, initial, wiggle, image, sensor positions, unit
 const config = {
-  hiddenChannels: ['sensor', 'control', 'device-log'],
+  hiddenChannels: ['sensor', 'control', '_log'],
   widgets: [],
   AirSoClean3000: {
     image: 'airsoclean3000.png',

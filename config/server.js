@@ -45,11 +45,6 @@ const config = {
       mqtt: {
         username: process.env.XIVELY_ACCOUNT_BROKER_USER,
         password: process.env.XIVELY_ACCOUNT_BROKER_PASSWORD
-      },
-      channelnamemap: {
-        control: 'control',
-        sensor: 'sensor',
-        deviceinfo: 'device-log'
       }
     }
   },

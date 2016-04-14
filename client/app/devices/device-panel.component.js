@@ -8,6 +8,7 @@ const devicePanelComponent = {
         <div class="section">
           <h1 class="type">{{ ::devicePanel.device.template.name }}</h1>
           <p class="name">{{ ::devicePanel.device.name }}</p>
+          <p class="username">{{ ::devicePanel.config.account.user.name }}</p>
           <p class="email">{{ ::devicePanel.config.account.emailAddress }}</p>
         </div>
         <div class="section" bind-html-compile="devicePanel.widgets()">
