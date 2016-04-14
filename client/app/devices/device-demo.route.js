@@ -142,7 +142,7 @@ function deviceDemoRoute ($stateProvider) {
       }
 
       // update sensor value
-      this.update = device.update
+      this.update = _.debounce(device.update, 100)
 
       // get html for a widget element
       this.getHtml = (widget) => {
