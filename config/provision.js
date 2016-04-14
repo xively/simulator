@@ -63,19 +63,9 @@ const config = {
   }],
   channelTemplates: [{
     deviceTemplate: 'AirSoClean3000',
-    name: 'sensor',
-    entityType: 'deviceTemplate',
-    persistenceType: 'timeSeries'
-  }, {
-    deviceTemplate: 'AirSoClean3000',
     name: 'control',
     entityType: 'deviceTemplate',
     persistenceType: 'simple'
-  }, {
-    deviceTemplate: 'AirSoClean3000',
-    name: 'device-log',
-    entityType: 'deviceTemplate',
-    persistenceType: 'timeSeries'
   }, {
     deviceTemplate: 'AirSoClean3000',
     name: 'temp',
@@ -85,7 +75,7 @@ const config = {
     deviceTemplate: 'AirSoClean3000',
     name: 'humidity',
     entityType: 'deviceTemplate',
-    persistenceType: 'timeSeries'
+    persistenceType: 'simple'
   }, {
     deviceTemplate: 'AirSoClean3000',
     name: 'co',

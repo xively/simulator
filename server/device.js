@@ -18,12 +18,11 @@ class Device {
 
     this.sensors = new Map()
     _.each(deviceConfigs[this.firmware.template.name].sensors, (sensorSettings, sensorName) => {
-      this.addSensor(sensorName, sensorSettings)
+      this.addSensor(sensorName, _.clone(sensorSettings))
     })
 
     this.connections = new Set()
     this.channels = new Map()
-
     this.channels.set('_log', `xi/blue/v1/${this.firmware.accountId}/d/${this.firmware.deviceId}/_log`)
   }
 
