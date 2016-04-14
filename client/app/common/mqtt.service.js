@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const xivelyClient = require('xively-client')
+const mqtt = require('mqtt')
 
 /* @ngInject */
 function mqttFactory ($log, $q, $rootScope, CONFIG, utils) {
@@ -11,37 +11,29 @@ function mqttFactory ($log, $q, $rootScope, CONFIG, utils) {
       this.channels = new Map()
 
       try {
+        const host = `wss://${CONFIG.account.brokerHost}:${CONFIG.account.brokerPort}`
         const options = {
-          host: CONFIG.account.brokerHost,
-          port: Number(CONFIG.account.brokerPort),
-          useSSL: true,
-          user: CONFIG.account.user.username,
-          pass: CONFIG.account.user.password,
-          debug: CONFIG.meta && CONFIG.meta.env === 'development'
+          username: CONFIG.account.user.username,
+          password: CONFIG.account.user.password
         }
-        $log.debug('MQTT#constructor open Xively client with options:', options)
-        this.client = xivelyClient.get(options)
+        $log.debug('MQTT#constructor open Xively client with options:', host, options)
+        this.client = mqtt.connect(host, options)
 
         // extend connection handlers
         const deferred = $q.defer()
         this.connected = deferred.promise
 
-        // save original handlers
-        const _onConnectSuccess = this.client._onConnectSuccess.bind(this.client)
-        const _handleFailedConnection = this.client._handleFailedConnection.bind(this.client)
-
-        this.client._onConnectSuccess = () => {
-          _onConnectSuccess()
+        this.client.on('connect', () => {
           deferred.resolve(this.client)
-        }
+        })
 
-        this.client._handleFailedConnection = () => {
-          _handleFailedConnection()
+        this.client.on('error', () => {
           deferred.reject()
-        }
+        })
 
-        // connect
-        this.client.connect()
+        this.client.on('message', (channel, message) => {
+          this.handleMessage(channel, message.toString())
+        })
       } catch (err) {
         $log.error('MQTT#constructor error:', err)
         this.connected = $q.reject(err)
@@ -55,7 +47,7 @@ function mqttFactory ($log, $q, $rootScope, CONFIG, utils) {
      * @return {Object}
      */
     parseMessage (message, channel) {
-      const payloadString = message && message.payloadString || ''
+      const payloadString = message || ''
       const channelName = channel ? channel.split('/').pop() : null
 
       // JSON format
@@ -114,7 +106,8 @@ function mqttFactory ($log, $q, $rootScope, CONFIG, utils) {
         // subscribe to channel
         if (!this.channels[channel]) {
           this.channels[channel] = new Set()
-          this.client.subscribe(channel, this.handleMessage.bind(this, channel))
+          $log.debug('MQTT#subscribe:', channel)
+          this.client.subscribe(channel)
         }
 
         // add listener
@@ -149,16 +142,19 @@ function mqttFactory ($log, $q, $rootScope, CONFIG, utils) {
      * @param  {String} channel
      * @param  {Object?} options
      */
-    sendMessage (channel, options = {}) {
-      const {
-        timestamp = Date.now(),
-        name = channel.split('/').pop(),
-        numericValue = 0,
-        stringValue = ''
-      } = options.payload || {}
-      const payloadString = options.payloadString || [timestamp, name, numericValue, stringValue].join(',')
+    sendMessage (channel, payload = {}) {
+      let message = payload
+      if (_.isObject(payload)) {
+        const {
+          timestamp = Date.now(),
+          name = channel.split('/').pop(),
+          numericValue = 0,
+          stringValue = ''
+        } = payload
+        message = [timestamp, name, numericValue, stringValue].join(',')
+      }
       this.connected.then(() => {
-        this.client.send(channel, payloadString)
+        this.client.publish(channel, message)
       })
     }
   }

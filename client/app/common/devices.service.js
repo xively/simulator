@@ -29,7 +29,7 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
         })
         device.update = (name, numericValue) => {
           mqttService.sendMessage(device.controlChannel.channel, {
-            payload: { name, numericValue }
+            name, numericValue
           })
         }
         device.subscribe = this.subscribeDevice.bind(this, device)
@@ -87,7 +87,7 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
      * @return {Promise}
      */
     getDevices () {
-      return blueprintService.getV1('devices')
+      return blueprintService.getV1('devices', { pageSize: 100 })
         .then((response) => response.data.devices.results)
         .then((devices) => {
           devices.forEach((device) => this.addDevice(device))
