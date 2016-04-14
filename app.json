@@ -8,8 +8,8 @@
     "Messaging",
     "Xively"
   ],
-  "logo": "https://ws.cubbyusercontent.com/p/_661602227cec4153a1b32ba548e01245/Xively_Concaria_Logo_IconOnly_RGB.png/1516920927",
-  "image": "https://ws.cubbyusercontent.com/p/_661602227cec4153a1b32ba548e01245/Xively_Concaria_Logo_IconOnly_RGB.png/1516920927",
+  "logo": "https://ws.cubbyusercontent.com/p/_344ac3084abc47d4b0e52faf56494903/xively_by-LMI-under_habanero_logo.png/1505747296",
+  "image": "https://ws.cubbyusercontent.com/p/_344ac3084abc47d4b0e52faf56494903/xively_by-LMI-under_habanero_logo.png/1505747296",
   "addons": [
     "xively:test",
     "heroku-postgresql:hobby-dev"
