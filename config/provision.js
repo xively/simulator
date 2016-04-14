@@ -2,6 +2,16 @@
 
 const _ = require('lodash')
 
+const NAMES = {
+  HOME_ORG_TEMPLATE: 'Home',
+  HOME_DEVICE_TEMPLATE: 'HomeAirPurifier',
+  HOME_USER: 'User',
+  COMMERCIAL_ORG_TEMPLATE: 'Commercial',
+  COMMERCIAL_DEVICE_TEMPLATE: 'Industrial HVAC',
+  COMMERCIAL_OPERATIONS_MANAGER: 'Operations Manager',
+  COMMERCIAL_SERVICE_TECHNICIAN: 'Service Technician'
+}
+
 const USER_NAMES = ['Jane Smith', 'Tommy Atkins', 'Bob Thompson']
 
 const LOCATIONS = [{
@@ -18,110 +28,186 @@ const LOCATIONS = [{
   lon: -122.4726194
 }]
 
-const config = {
-  organizationTemplates: [{
-    name: 'AirSoCleanOrgTmpl1'
-  }],
-  deviceTemplates: [{
-    name: 'AirSoClean3000'
-  }],
-  endUserTemplates: [{
-    name: 'AirSoCleanUsrTmpl1'
-  }],
-  organizations: [{
-    organizationTemplate: 'AirSoCleanOrgTmpl1',
-    name: 'Warehouse'
-  }],
-  deviceFields: [{
-    deviceTemplate: 'AirSoClean3000',
-    name: 'hardwareVersion',
-    fieldType: 'string'
-  }, {
-    deviceTemplate: 'AirSoClean3000',
-    name: 'includedSensors',
-    fieldType: 'string'
-  }, {
-    deviceTemplate: 'AirSoClean3000',
-    name: 'color',
-    fieldType: 'string'
-  }, {
-    deviceTemplate: 'AirSoClean3000',
-    name: 'productionRun',
-    fieldType: 'string'
-  }, {
-    deviceTemplate: 'AirSoClean3000',
-    name: 'powerVersion',
-    fieldType: 'string'
-  }, {
-    deviceTemplate: 'AirSoClean3000',
-    name: 'activatedDate',
-    fieldType: 'datetime'
-  }, {
-    deviceTemplate: 'AirSoClean3000',
-    name: 'filterType',
-    fieldType: 'string'
-  }],
-  channelTemplates: [{
-    deviceTemplate: 'AirSoClean3000',
-    name: 'control',
-    entityType: 'deviceTemplate',
-    persistenceType: 'simple'
-  }, {
-    deviceTemplate: 'AirSoClean3000',
-    name: 'temp',
-    entityType: 'deviceTemplate',
-    persistenceType: 'timeSeries'
-  }, {
-    deviceTemplate: 'AirSoClean3000',
-    name: 'humidity',
-    entityType: 'deviceTemplate',
-    persistenceType: 'simple'
-  }, {
-    deviceTemplate: 'AirSoClean3000',
-    name: 'co',
-    entityType: 'deviceTemplate',
-    persistenceType: 'timeSeries'
-  }, {
-    deviceTemplate: 'AirSoClean3000',
-    name: 'dust',
-    entityType: 'deviceTemplate',
-    persistenceType: 'timeSeries'
-  }, {
-    deviceTemplate: 'AirSoClean3000',
-    name: 'filter',
-    entityType: 'deviceTemplate',
-    persistenceType: 'timeSeries'
-  }, {
-    deviceTemplate: 'AirSoClean3000',
-    name: 'fan',
-    entityType: 'deviceTemplate',
-    persistenceType: 'simple'
-  }],
-  devices: _.range(10).map((idx) => {
+/*
+ * organizations
+ */
+
+const homeOrganizations = _.times(5, (idx) => ({
+  organizationTemplate: NAMES.HOME_ORG_TEMPLATE,
+  name: `${NAMES.HOME_ORG_TEMPLATE}${idx}`
+}))
+
+const commercialOrganizations = _.times(3, (idx) => ({
+  organizationTemplate: NAMES.COMMERCIAL_ORG_TEMPLATE,
+  name: `${NAMES.COMMERCIAL_ORG_TEMPLATE}${idx}`
+}))
+
+/*
+ * device fields
+ */
+
+const homeDeviceFields = _.map({
+  hardwareVersion: 'string',
+  includedSensors: 'string',
+  color: 'string',
+  productionRun: 'string',
+  powerVersion: 'string',
+  activatedDate: 'datetime',
+  filterType: 'string'
+}, (fieldType, name) => ({
+  name,
+  fieldType,
+  deviceTemplate: NAMES.HOME_DEVICE_TEMPLATE
+}))
+
+const commercialDeviceFields = _.map({
+  hardwareVersion: 'string',
+  includedSensors: 'string',
+  color: 'string',
+  productionRun: 'string',
+  powerVersion: 'string',
+  activatedDate: 'datetime',
+  filterType: 'string'
+}, (fieldType, name) => ({
+  name,
+  fieldType,
+  deviceTemplate: NAMES.COMMERCIAL_DEVICE_TEMPLATE
+}))
+
+/*
+ * device channels
+ */
+
+const homeDeviceChannels = _.map({
+  control: 'simple',
+  humidity: 'simple',
+  fan: 'simple',
+  temp: 'timeSeries',
+  co: 'timeSeries',
+  dust: 'timeSeries',
+  filter: 'timeSeries'
+}, (persistenceType, name) => ({
+  name,
+  persistenceType,
+  entityType: 'deviceTemplate',
+  deviceTemplate: NAMES.HOME_DEVICE_TEMPLATE
+}))
+
+const commercialDeviceChannels = _.map({
+  control: 'simple',
+  humidity: 'simple',
+  fan: 'simple',
+  temp: 'timeSeries',
+  co: 'timeSeries',
+  dust: 'timeSeries',
+  filter: 'timeSeries'
+}, (persistenceType, name) => ({
+  name,
+  persistenceType,
+  entityType: 'deviceTemplate',
+  deviceTemplate: NAMES.COMMERCIAL_DEVICE_TEMPLATE
+}))
+
+/*
+ * devices
+ */
+
+const homeDevices = _.reduce(homeOrganizations, (devices, organization) => {
+  return _.times(3, (idx) => {
     const location = _.sample(LOCATIONS)
     return {
-      deviceTemplate: 'AirSoClean3000',
-      organization: 'Warehouse',
-      name: `Purify${idx}`,
-      serialNumber: `Purify-${Date.now()}${idx}`,
-      hardwareVersion: '2.5.5',
-      includedSensors: 'Temperature, Humidity, VoC, CO, Dust (PM)',
+      deviceTemplate: NAMES.HOME_DEVICE_TEMPLATE,
+      organization: organization.name,
+      name: `${NAMES.HOME_DEVICE_TEMPLATE}${idx}`,
+      serialNumber: `${organization.name}-${Date.now()}${idx}`,
+      hardwareVersion: `1.1.${idx}`,
+      includedSensors: 'Temperature, Humidity, VoC, CO, Dust, Filter',
       color: 'white',
-      productionRun: 'DEC2014',
+      productionRun: 'DEC2016',
       powerVersion: '12VDC',
-      filterType: 'carbonHEPA1023',
-      firmwareVersion: '2.3.1',
+      filterType: 'carbonHEPA',
+      firmwareVersion: `2.0.${idx}`,
       latitude: location.lat,
       longitude: location.lon,
       location: location.name
     }
-  }),
-  endUsers: _.range(3).map((idx) => ({
-    organizationTemplate: 'AirSoCleanOrgTmpl1',
-    organization: 'Warehouse',
-    endUserTemplate: 'AirSoCleanUsrTmpl1',
+  }).concat(devices)
+}, [])
+
+const commercialDevices = _.reduce(commercialOrganizations, (devices, organization) => {
+  return _.times(10, (idx) => {
+    const location = _.sample(LOCATIONS)
+    return {
+      deviceTemplate: NAMES.COMMERCIAL_DEVICE_TEMPLATE,
+      organization: organization.name,
+      name: `${NAMES.COMMERCIAL_DEVICE_TEMPLATE}${idx}`,
+      serialNumber: `${organization.name}-${Date.now()}${idx}`,
+      hardwareVersion: `1.1.${idx}`,
+      includedSensors: 'Temperature, Humidity, VoC, CO, Dust, Filter',
+      color: 'white',
+      productionRun: 'DEC2016',
+      powerVersion: '12VDC',
+      filterType: 'carbonHEPA',
+      firmwareVersion: `2.0.${idx}`,
+      latitude: location.lat,
+      longitude: location.lon,
+      location: location.name
+    }
+  }).concat(devices)
+}, [])
+
+/*
+ * users
+ */
+
+const homeUsers = _.reduce(homeOrganizations, (users, organization) => {
+  return _.times(2, (idx) => ({
+    organizationTemplate: organization.organizationTemplate,
+    organization: organization.name,
+    endUserTemplate: NAMES.HOME_USER,
+    name: _.sample(USER_NAMES)
+  })).concat(users)
+}, [])
+
+const commercialUsers = _.reduce(commercialOrganizations, (users, organization) => {
+  return _.times(2, (idx) => ({
+    organizationTemplate: organization.organizationTemplate,
+    organization: organization.name,
+    endUserTemplate: NAMES.COMMERCIAL_SERVICE_TECHNICIAN,
     name: _.sample(USER_NAMES)
   }))
+  .concat([{
+    organizationTemplate: organization.organizationTemplate,
+    organization: organization.name,
+    endUserTemplate: NAMES.COMMERCIAL_OPERATIONS_MANAGER,
+    name: _.sample(USER_NAMES)
+  }])
+  .concat(users)
+}, [])
+
+const config = {
+  organizationTemplates: [{
+    name: NAMES.HOME_ORG_TEMPLATE
+  }, {
+    name: NAMES.COMMERCIAL_ORG_TEMPLATE
+  }],
+  deviceTemplates: [{
+    name: NAMES.HOME_DEVICE_TEMPLATE
+  }, {
+    name: NAMES.COMMERCIAL_DEVICE_TEMPLATE
+  }],
+  endUserTemplates: [{
+    name: NAMES.HOME_USER
+  }, {
+    name: NAMES.COMMERCIAL_OPERATIONS_MANAGER
+  }, {
+    name: NAMES.COMMERCIAL_SERVICE_TECHNICIAN
+  }],
+  organizations: [].concat(homeOrganizations).concat(commercialOrganizations),
+  deviceFields: [].concat(homeDeviceFields).concat(commercialDeviceFields),
+  channelTemplates: [].concat(homeDeviceChannels).concat(commercialDeviceChannels),
+  devices: [].concat(homeDevices).concat(commercialDevices),
+  endUsers: [].concat(homeUsers).concat(commercialUsers)
 }
 
 module.exports = config

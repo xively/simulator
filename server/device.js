@@ -17,9 +17,11 @@ class Device {
     this.simulation = false
 
     this.sensors = new Map()
-    _.each(deviceConfigs[this.firmware.template.name].sensors, (sensorSettings, sensorName) => {
-      this.addSensor(sensorName, _.clone(sensorSettings))
-    })
+    if (deviceConfigs[this.firmware.template.name]) {
+      _.each(deviceConfigs[this.firmware.template.name].sensors, (sensorSettings, sensorName) => {
+        this.addSensor(sensorName, _.clone(sensorSettings))
+      })
+    }
 
     this.connections = new Set()
     this.channels = new Map()

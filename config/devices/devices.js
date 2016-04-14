@@ -6,7 +6,7 @@
 const config = {
   hiddenChannels: ['sensor', 'control', '_log'],
   widgets: [],
-  AirSoClean3000: {
+  HomeAirPurifier: {
     image: 'airsoclean3000.png',
     widgets: ['fan-state-control', 'filter'],
     sensors: {

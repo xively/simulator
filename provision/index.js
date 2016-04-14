@@ -29,7 +29,7 @@ Promise.all([
   }, organization))
 
   config.channelTemplates = config.channelTemplates.map((channelTemplate) => Object.assign({
-    deviceTemplateId: _.find(deviceTemplates, { name: channelTemplate.deviceTemplate }).id
+    entityId: _.find(deviceTemplates, { name: channelTemplate.deviceTemplate }).id
   }, channelTemplate))
 
   config.deviceFields = config.deviceFields.map((deviceFields) => Object.assign({
@@ -136,6 +136,6 @@ Promise.all([
   process.exit()
 })
 .catch((err) => {
-  console.error('Provision error', err)
+  console.error('Provision error', err, err.obj.error.details)
   process.exit(1)
 })
