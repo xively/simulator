@@ -3,7 +3,7 @@
 .share-modal {
   position: absolute;
   max-width: 400px;
-  height: 400px;
+  height: 450px;
   top: 70px;
   left: 0;
   right: 0;
@@ -24,7 +24,7 @@
     font-weight: 200;
   }
 
-  .copy-link {
+  .copy-link, .send-link {
     @height: 30px;
     margin-top: 20px;
 
@@ -37,7 +37,7 @@
       font-size: 0.8em;
     }
 
-    .copy-button {
+    .copy-button, .send-button {
       position: relative;
       display: inline-block;
       height: @height;
@@ -64,7 +64,7 @@
         }
       }
 
-      &.copying {
+      &.copying, &.sending {
         &::after {
           animation: floatup 0.5s ease-in-out;
         }

@@ -11,9 +11,9 @@ const notificationComponent = {
   `,
   controllerAs: 'notification',
   /* @ngInject */
-  controller ($log, $scope, $timeout) {
+  controller ($log, $scope, $timeout, EVENTS) {
     this.items = []
-    $scope.$on('notification', (event, item) => {
+    $scope.$on(EVENTS.NOTIFICATION, (event, item) => {
       if (item) {
         this.items.push(item)
         item.remove = () => _.remove(this.items, item)

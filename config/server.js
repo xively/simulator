@@ -10,15 +10,13 @@ const config = {
     pgUri: process.env.DATABASE_URL || 'postgres://localhost:5432/concaria'
   },
   server: {
-    port: process.env.PORT || 5000,
-    whitelist: [
-      'http://www.airnowapi.org/aq/data',
-      'https://timeseries.demo.xively.com/api/v4/data/xi/blue/v1',
-      'http://concaria-sms.herokuapp.com/api'
-    ]
+    port: process.env.PORT || 5000
   },
   blueprint: {
     url: process.env.BLUEPRINT_URL || 'https://blueprint.xively.com/docs'
+  },
+  smsService: {
+    url: process.env.SMS_SERVICE_URL || 'https://concaria-sms.herokuapp.com/api/message'
   },
   salesforce: {
     user: process.env.SALESFORCE_USER,

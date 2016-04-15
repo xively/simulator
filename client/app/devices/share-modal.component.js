@@ -10,6 +10,10 @@ const shareModalComponent = {
         <input type="text" ng-model="shareModal.share.link" readonly onclick="this.select()">
         <span class="copy-button" data-label="copy" ng-click="shareModal.share.copy()" ng-class="{copying: shareModal.share.copying}">copy</span>
       </div>
+      <div class="send-link">
+        <input type="text" ng-model="shareModal.share.phone">
+        <span class="send-button" data-label="send" ng-click="shareModal.share.send()" ng-class="{sending: shareModal.share.sending}">send</span>
+      </div>
     </div>
   `,
   bindings: {
@@ -18,7 +22,7 @@ const shareModalComponent = {
   },
   controllerAs: 'shareModal',
   /* @ngInject */
-  controller ($location, $document, $timeout) {
+  controller ($log, $rootScope, $location, $document, $timeout, smsService, EVENTS) {
     this.modal = false
     this.toggleModal = () => {
       this.modal = !this.modal
@@ -44,6 +48,31 @@ const shareModalComponent = {
         $timeout(() => {
           this.copying = false
         }, 500)
+      },
+      phone: '',
+      sending: false,
+      send () {
+        this.sending = true
+        smsService.send(this.phone, this.link)
+          .then((response) => {
+            this.sending = false
+            $log.debug('shareModal#send:', response)
+            if (response.status < 0 || response.status >= 400) {
+              throw new Error(`Couldn't send SMS to phone number: ${this.phone}`)
+            }
+            $rootScope.$broadcast(EVENTS.NOTIFICATION, {
+              type: 'success',
+              text: `The SMS has been sent to: ${this.phone}`
+            })
+          })
+          .catch((error) => {
+            this.sending = false
+            $rootScope.$broadcast(EVENTS.NOTIFICATION, {
+              type: 'error',
+              text: error && error.message
+            })
+            $log.error('shareModal#send:', error)
+          })
       }
     }
   }
