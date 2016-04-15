@@ -33,6 +33,8 @@ const config = {
     timeSeriesHost: process.env.XIVELY_TIMESERIES_HOST,
     brokerHost: process.env.XIVELY_BROKER_HOST,
     brokerPort: process.env.XIVELY_BROKER_WS_PORT,
+    brokerUser: process.env.XIVELY_ACCOUNT_BROKER_USER,
+    brokerPassword: process.env.XIVELY_ACCOUNT_BROKER_PASSWORD,
     blueprintHost: process.env.XIVELY_BLUEPRINT_HOST,
     accountId: process.env.XIVELY_ACCOUNT_ID,
     emailAddress: process.env.XIVELY_ACCOUNT_USER_NAME,

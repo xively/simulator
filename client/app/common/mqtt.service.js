@@ -13,8 +13,8 @@ function mqttFactory ($log, $q, $rootScope, CONFIG, utils) {
       try {
         const host = `wss://${CONFIG.account.brokerHost}:${CONFIG.account.brokerPort}`
         const options = {
-          username: CONFIG.account.user.username,
-          password: CONFIG.account.user.password
+          username: CONFIG.account.brokerUser,
+          password: CONFIG.account.brokerPassword
         }
         $log.debug('MQTT#constructor open Xively client with options:', host, options)
         this.client = mqtt.connect(host, options)

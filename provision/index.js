@@ -119,17 +119,6 @@ Promise.all([
           })
       }))
     })
-    .then(() => {
-      return Promise.all(data.endUsers.map((endUser) => {
-        const appConfig = {
-          endUser,
-          accountId: process.env.XIVELY_ACCOUNT_ID,
-          organization: data.organizations.find((organization) => organization.id === endUser.organizationId),
-          mqttUser: data.mqttCredentials.find((mqttCredential) => mqttCredential.entityId === endUser.id)
-        }
-        return database.insertApplicationConfig(appConfig)
-      }))
-    })
 })
 .then(() => {
   console.log('Provision done')

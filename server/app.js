@@ -1,8 +1,6 @@
 'use strict'
 
 const path = require('path')
-const logger = require('winston')
-const _ = require('lodash')
 const express = require('express')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
@@ -10,9 +8,6 @@ const favicon = require('serve-favicon')
 
 const config = require('../config/server')
 const devicesConfig = require('../config/devices')
-
-const database = require('./database')
-// const Observer = require('./observer')
 
 const routes = require('./routes')
 const proxy = require('./proxy')
@@ -27,38 +22,6 @@ app.use(bodyParser.urlencoded({
   extended: false
 }))
 app.use(cookieParser())
-
-let configLoading = true
-if (process.env.NODE_ENV === 'test') {
-  configLoading = false
-} else {
-  database.selectApplicationConfig(config.account.accountId).then((data) => {
-    const appConfig = data[0]
-    _.merge(config, {
-      account: {
-        organizationId: appConfig.organization.id,
-        user: {
-          name: appConfig.endUser.name,
-          username: appConfig.endUser.id,
-          password: appConfig.mqttUser.secret
-        }
-      }
-    })
-
-    configLoading = false
-  }).catch((error) => {
-    logger.error(error)
-    configLoading = false
-    // throw new Error('Can not get application config')
-  })
-}
-
-// Show "loading" page until Blueprint data has been fetched.
-app.use((req, res, next) => {
-  if (!configLoading) {
-    return next()
-  }
-})
 
 // Routes
 app.use(routes)
