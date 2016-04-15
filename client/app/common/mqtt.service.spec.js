@@ -59,14 +59,11 @@ describe('MQTT service', () => {
     })
   })
 
-  describe.skip('#subscribe', () => {
-    let listenerFunction
+  describe('#subscribe', () => {
     beforeEach(function () {
       mqttService.connected = $q.resolve()
       mqttService.client = {
-        subscribe (channel, listener) {
-          listenerFunction = listener
-        }
+        subscribe (channel, listener) {}
       }
     })
 
@@ -77,7 +74,7 @@ describe('MQTT service', () => {
       $rootScope.$digest()
 
       const obj = { b: 2 }
-      listenerFunction(JSON.stringify(obj))
+      mqttService.handleMessage(channel, new Buffer(JSON.stringify(obj)))
       $rootScope.$digest()
 
       // TODO sinon-chai has some problems
