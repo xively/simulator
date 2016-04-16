@@ -70,7 +70,7 @@ module.exports = function configureSocket (app) {
 
     socket.on('disconnect', () => {
       logger.debug('socket.io#socket disconnected')
-      deviceIds.forEach((_, deviceId) => {
+      deviceIds.forEach((deviceId) => {
         const device = devices.get(deviceId)
         if (device) {
           device.disconnect(socket.id)

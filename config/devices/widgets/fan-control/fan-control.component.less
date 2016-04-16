@@ -1,36 +1,36 @@
-.fan-control {
+fan-control {
   position: absolute;
-  top: 247px;
-  left: 330px;
-  width: 28px;
-  height: 70px;
+  width: 24px;
+  height: 57px;
   cursor: pointer;
   user-select: none;
+  border-radius: 14px;
+  border: 1px solid #57607e;
 
   .fan-speed-indicator {
     position: absolute;
-    left: 7px;
+    left: 5px;
     width: 14px;
     height: 14px;
     border-radius: 7px;
-    top: 54px;
+    top: 40px;
     background-color: #ff6087;
 
     &.speed-1 {
-      top: 35px;
+      top: 22px;
       background-color: #ffffff;
     }
 
     &.speed-2 {
-      top: 19px;
+      top: 5px;
       background-color: #ffffff;
     }
   }
 
   ul {
     position: absolute;
-    top: 17px;
-    right: -30px;
+    top: 0;
+    right: -32px;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -39,7 +39,7 @@
     color: #ffffff;
 
     li {
-      margin: 4px 0;
+      margin: 6px 0;
     }
   }
 }

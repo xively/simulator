@@ -55,7 +55,7 @@ function deviceDemoRoute ($stateProvider) {
             </div>
           </div>
           <div class="device-controls">
-            <div class="device-container">
+            <div class="device-container" style="width: {{ ::device.config.width }}px">
               <div ng-repeat="(name, sensor) in ::device.config.sensors">
                 <tooltip ng-if="sensor.tooltip"
                   options="sensor"
@@ -65,7 +65,7 @@ function deviceDemoRoute ($stateProvider) {
                 </tooltip>
                 <div ng-if="sensor.widget" bind-html-compile="device.getHtml(sensor.widget)"></div>
               </div>
-              <img class="device-image" src="/devices/images/{{ device.config.image }}" />
+              <img class="device-image" src="{{ device.config.image }}" />
             </div>
             <div class="device-control-sliders" ng-if="device.sensorsNotConfigured">
               <div class="header row">
@@ -146,7 +146,8 @@ function deviceDemoRoute ($stateProvider) {
 
       // get html for a widget element
       this.getHtml = (widget) => {
-        return `<${widget} device="device.device"></${widget}>`
+        const { name, position } = widget
+        return `<${name} device="device.device" style="top: ${position.top}px; left: ${position.left}px"></${name}>`
       }
 
       this.shareLink = $location.absUrl().replace(/\/demo.*/, '?navigation=0')

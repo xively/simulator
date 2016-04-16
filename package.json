@@ -1,7 +1,7 @@
 {
   "name": "concaria",
   "version": "2.0.0",
-  "description": "A Xively (https://xively.com/) demo application",
+  "description": "Xively (https://xively.com/) Product Simulator",
   "scripts": {
     "build": "npm run clean && NODE_ENV=production webpack",
     "build:watch": "npm run clean && webpack --watch",
