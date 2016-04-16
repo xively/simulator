@@ -101,7 +101,7 @@ function deviceDemoRoute ($stateProvider) {
       }
     },
     /* @ngInject */
-    controller ($log, $scope, $state, $location, device, templates, devicesService, socketService, DEVICES_CONFIG) {
+    controller ($log, $scope, $rootScope, $state, $location, device, templates, devicesService, socketService, DEVICES_CONFIG, EVENTS) {
       device.template = templates[device.deviceTemplateId]
       this.config = DEVICES_CONFIG[device.template.name]
       if (this.config) {
@@ -110,7 +110,18 @@ function deviceDemoRoute ($stateProvider) {
           this.sensorsNotConfigured = null
         }
       }
+      device.ok = true
       this.device = device
+
+      $scope.$watch(() => this.device.ok, (ok) => {
+        if (!ok) {
+          $rootScope.$broadcast(EVENTS.NOTIFICATION, {
+            type: 'error',
+            text: 'Your device reported a mailfunction. Please stand by, our agents are already aware of the issue and will have a look at it very soon.',
+            sticky: true
+          })
+        }
+      })
 
       // template navigation options
       devicesService.getDevices().then((devices) => {
@@ -147,7 +158,7 @@ function deviceDemoRoute ($stateProvider) {
       // get html for a widget element
       this.getHtml = (widget) => {
         const { name, position } = widget
-        return `<${name} device="device.device" style="top: ${position.top}px; left: ${position.left}px"></${name}>`
+        return `<${name} device="device.device" style="position: absolute; top: ${position.top}px; left: ${position.left}px"></${name}>`
       }
 
       this.shareLink = $location.absUrl().replace(/\/demo.*/, '?navigation=0')

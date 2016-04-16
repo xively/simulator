@@ -1,5 +1,30 @@
 'use strict'
 
+/* Devices configuration
+
+  {
+    [DeviceTemplateName]: {
+      image: String // image url
+      width: Number // container width
+      widgets: [String] // custom components
+      sensors: {
+        [name]: {
+          unit: String
+          min: Number // minimum value
+          max: Number // maximum value
+          wiggle: Boolean // simulation wiggle
+          tooltip: {
+            position: { // tooltip placement on the device image
+
+            }
+          }
+        }
+      }
+    }
+  }
+
+*/
+
 const filterRule = (latestValue, sensors) => {
   const DEPLETION_RATES = [0, 0.7, 1]
   const fanSensor = sensors.get('fan')
@@ -11,9 +36,6 @@ const filterRule = (latestValue, sensors) => {
   return latestValue - depletion / 3600
 }
 
-// TODO store device information
-// proposal: https://gist.github.com/tothandras/a903647365d1a204c9d1ab7f8b8f8f17
-// like: name, type, min, max, initial, wiggle, image, sensor positions, unit
 const config = {
   hiddenChannels: ['sensor', 'control'],
   widgets: [],
@@ -114,11 +136,9 @@ const config = {
           input: false,
           actions: [{
             label: 'Deplete',
-            channel: 'filter',
             value: 0
           }, {
             label: 'Replace',
-            channel: 'filter',
             value: 1000
           }]
         }
@@ -127,9 +147,7 @@ const config = {
         min: 0,
         max: 2,
         default: 0,
-        simulation: (latestValue, sensors) => {
-          return (latestValue + 1) % 3
-        },
+        simulation: (latestValue, sensors) => (latestValue + 1) % 3,
         wiggle: false,
         widget: {
           name: 'fan-control',
@@ -161,7 +179,14 @@ const config = {
             left: -14
           },
           distance: 100,
-          direction: 'left'
+          direction: 'left',
+          input: true,
+          actions: [{
+            // TODO
+            label: 'Trigger malfunction',
+            name: '',
+            value: ''
+          }]
         }
       },
       co: {
@@ -238,11 +263,9 @@ const config = {
           input: false,
           actions: [{
             label: 'Deplete',
-            channel: 'filter',
             value: 0
           }, {
             label: 'Replace',
-            channel: 'filter',
             value: 1000
           }]
         }
@@ -251,15 +274,22 @@ const config = {
         min: 0,
         max: 2,
         default: 0,
-        simulation: (latestValue, sensors) => {
-          return (latestValue + 1) % 3
-        },
+        simulation: (latestValue, sensors) => (latestValue + 1) % 3,
         wiggle: false,
         widget: {
           name: 'fan-control',
           position: {
             top: 245,
             left: 820
+          }
+        }
+      },
+      display: {
+        widget: {
+          name: 'hvac-display',
+          position: {
+            top: 150,
+            left: 350
           }
         }
       }

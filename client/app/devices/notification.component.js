@@ -5,7 +5,7 @@ require('./notification.component.less')
 const notificationComponent = {
   template: `
     <div class="notification-item" ng-repeat="item in notification.items" ng-class="item.type">
-      {{ item.text }}
+      <p>{{ item.text }}</p>
       <div class="close" ng-click="item.remove()">&#x2715;</div>
     </div>
   `,
@@ -18,7 +18,9 @@ const notificationComponent = {
         this.items.push(item)
         item.remove = () => _.remove(this.items, item)
 
-        $timeout(item.remove, item.timeout || 3000)
+        if (!item.sticky) {
+          $timeout(item.remove, item.timeout || 3000)
+        }
       }
     })
   }

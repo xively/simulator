@@ -1,7 +1,7 @@
 require('./filter.component.less')
 
 /* @ngInject */
-const navComponent = {
+const filterComponent = {
   template: `
     <div class="filter">
       <p>The filter should be replaced in:</p>
@@ -50,4 +50,4 @@ const navComponent = {
   }
 }
 
-module.exports = navComponent
+module.exports = filterComponent

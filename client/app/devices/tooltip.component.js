@@ -23,7 +23,7 @@ const tooltipComponent = {
           </div>
         </div>
         <div class="action-buttons">
-          <div class="action-button" ng-repeat="action in tooltip.options.actions" ng-click="tooltip.update({ value: action.value })">{{ action.label }}</div>
+          <div class="action-button" ng-repeat="action in tooltip.options.actions" ng-click="tooltip.sendUpdate(action)">{{ action.label }}</div>
         </div>
       </div>
       <svg class="tooltip-line"
@@ -104,6 +104,14 @@ const tooltipComponent = {
       return (!this.options.actions || (this.options.actions && this.options.input)) &&
         _.isNumber(this.options.min) &&
         _.isNumber(this.options.max)
+    }
+
+    this.sendUpdate = ({ name, value }) => {
+      const obj = { value }
+      if (name) {
+        obj.name = name
+      }
+      this.update(obj)
     }
   }
 }
