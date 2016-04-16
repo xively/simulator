@@ -2,13 +2,8 @@
 
 const BlueprintClient = require('../server/vendor/blueprint-client-node.js')
 const request = require('request-promise')
-// const _ = require('lodash')
 
-class Blueprint {
-  constructor () {
-    this.client = this.getJwt()
-      .then((jwt) => this.getClient(jwt))
-  }
+const blueprint = {
 
   /**
    * Used in testing provisioning via accounts.json file
@@ -30,7 +25,7 @@ class Blueprint {
     } catch (err) {
       // Fail silently
     }
-  }
+  },
 
   /**
    * Authorize with the IDM server and yield a new state object with a `jwt` property.
@@ -50,7 +45,7 @@ class Blueprint {
       }
     })
     .then((res) => res.jwt)
-  }
+  },
 
   /**
    * Create a new Blueprint client and yield a new client
@@ -62,7 +57,7 @@ class Blueprint {
       authorization: `Bearer ${jwt}`,
       docsUrl: `https://${process.env.XIVELY_BLUEPRINT_HOST}/docs`
     }).ready
-  }
+  },
 
   createOrganizationTemplates (organizationTemplates) {
     return this.create({
@@ -70,7 +65,7 @@ class Blueprint {
       responseField: 'organizationTemplate',
       items: organizationTemplates
     })
-  }
+  },
 
   createDeviceTemplates (deviceTemplates) {
     return this.create({
@@ -78,7 +73,7 @@ class Blueprint {
       responseField: 'deviceTemplate',
       items: deviceTemplates
     })
-  }
+  },
 
   createOrganizations (organizations) {
     return this.create({
@@ -86,7 +81,7 @@ class Blueprint {
       responseField: 'organization',
       items: organizations
     })
-  }
+  },
 
   createDevices (devices) {
     return this.create({
@@ -94,7 +89,7 @@ class Blueprint {
       responseField: 'device',
       items: devices
     })
-  }
+  },
 
   createDeviceFields (fields) {
     return this.create({
@@ -102,7 +97,7 @@ class Blueprint {
       responseField: 'deviceField',
       items: fields
     })
-  }
+  },
 
   createChannelTemplates (channelTemplates) {
     return this.create({
@@ -110,7 +105,7 @@ class Blueprint {
       responseField: 'channelTemplate',
       items: channelTemplates
     })
-  }
+  },
 
   createEndUserTemplates (endUserTemplates) {
     return this.create({
@@ -118,7 +113,7 @@ class Blueprint {
       responseField: 'endUserTemplate',
       items: endUserTemplates
     })
-  }
+  },
 
   createEndUser (endUser) {
     return this.create({
@@ -126,7 +121,7 @@ class Blueprint {
       responseField: 'endUser',
       items: endUser
     })
-  }
+  },
 
   createMqttCredentials (entities) {
     return this.create({
@@ -134,9 +129,14 @@ class Blueprint {
       responseField: 'mqttCredential',
       items: entities
     })
-  }
+  },
 
   create (options) {
+    if (!this.client) {
+      this.client = this.getJwt()
+        .then((jwt) => this.getClient(jwt))
+    }
+
     const apiMethod = options.apiMethod
     const responseField = options.responseField
     const items = options.items
@@ -150,4 +150,4 @@ class Blueprint {
   }
 }
 
-module.exports = Blueprint
+module.exports = blueprint

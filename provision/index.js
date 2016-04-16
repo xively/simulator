@@ -4,16 +4,18 @@ require('dotenv').config({ silent: true })
 
 const path = require('path')
 const _ = require('lodash')
-const Blueprint = require('./blueprint')
+const blueprint = require('./blueprint')
+const integration = require('./integration')
 const database = require('../server/database')
 const config = require('../config/provision')
-
-const blueprint = new Blueprint()
 
 Promise.all([
   blueprint.createOrganizationTemplates(config.organizationTemplates),
   blueprint.createDeviceTemplates(config.deviceTemplates),
-  blueprint.createEndUserTemplates(config.endUserTemplates)
+  blueprint.createEndUserTemplates(config.endUserTemplates),
+  blueprint.getJwt().then((jwt) => {
+    return integration(jwt)
+  })
 ])
 .then((arr) => ({
   organizationTemplates: arr[0],
