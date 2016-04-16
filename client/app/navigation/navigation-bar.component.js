@@ -21,16 +21,14 @@ const navComponent = {
         <div class="navigation-item logo">
           ${xiLogo}
         </div>
-        <!-- TODO do we need the dashboard?
-        <div class="navigation-item" ng-show="navigationBar.showNavigation">
-          <span class="navigation-item-icon">${dashboardIcon}</span>
-          <span class="navigation-item-text">Dashboard</span>
-          <span class="navigation-item-triangle"></span>
-        </div>
-        -->
         <div class="navigation-item" ui-sref="devices" ui-sref-active="active" ng-show="navigationBar.showNavigation">
           <span class="navigation-item-icon">${devicesIcon}</span>
           <span class="navigation-item-text">Devices</span>
+          <span class="navigation-item-triangle"></span>
+        </div>
+        <div class="navigation-item" ng-show="navigationBar.showNavigation" ng-click="navigationBar.navigateToDemo()">
+          <span class="navigation-item-icon">${dashboardIcon}</span>
+          <span class="navigation-item-text">Demo</span>
           <span class="navigation-item-triangle"></span>
         </div>
         <div class="navigation-item" ui-sref="rules" ui-sref-active="active" ng-show="navigationBar.showNavigation">
@@ -48,7 +46,7 @@ const navComponent = {
   `,
   controllerAs: 'navigationBar',
   /* @ngInject */
-  controller ($log, $state, $scope, $location, EVENTS) {
+  controller ($log, $state, $scope, $location, blueprintService, EVENTS) {
     $scope.$watch(() => {
       return $location.search()
     }, (query) => {
@@ -60,6 +58,13 @@ const navComponent = {
     $scope.$on(EVENTS.LOADING, (event, args) => {
       this.loading = args.loading
     })
+
+    this.navigateToDemo = () => {
+      blueprintService.getV1('devices', { pageSize: 1 }).then((response) => {
+        const id = response.data.devices.results[0].id
+        $state.go('devices.device-demo', { id, header: 0 })
+      })
+    }
 
     // TODO dinamically populate navigation items?
     const states = $state.get().splice(1)
