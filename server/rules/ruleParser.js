@@ -30,10 +30,10 @@ class RuleParser {
   }
 
   connectMqtt () {
-    const host = `mqtts://${config.virtualdevice.mqtt.mqttBroker}:${config.virtualdevice.mqtt.mqttPort}`
+    const host = `mqtts://${config.account.brokerHost}:${config.account.brokerPort}`
     const options = {
-      username: config.virtualdevice.userInfo.user,
-      password: config.virtualdevice.userInfo.password
+      username: config.account.brokerUser,
+      password: config.account.brokerPassword
     }
 
     this.mqtt = mqtt.connect(host, options)

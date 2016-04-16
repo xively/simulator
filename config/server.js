@@ -23,9 +23,6 @@ const config = {
     pass: process.env.SALESFORCE_PASSWORD,
     token: process.env.SALESFORCE_TOKEN
   },
-  sample: {
-    orgId: process.env.XIVELY_SAMPLE_ORG_ID
-  },
   account: {
     idmHost: process.env.XIVELY_IDM_HOST,
     timeSeriesHost: process.env.XIVELY_TIMESERIES_HOST,
@@ -40,12 +37,6 @@ const config = {
     airnow: {
       apikey: '640AA087-B3E7-4098-B3F3-9F8EF81C0BC7',
       boundingbox: '-71.059289,42.335449,-71.017232,42.365642'
-    },
-    device: {
-      mqtt: {
-        username: process.env.XIVELY_ACCOUNT_BROKER_USER,
-        password: process.env.XIVELY_ACCOUNT_BROKER_PASSWORD
-      }
     }
   },
   meta: {

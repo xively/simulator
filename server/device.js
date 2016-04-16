@@ -51,7 +51,7 @@ class Device {
   }
 
   connectMqtt () {
-    const host = `mqtts://${serverConfig.virtualdevice.mqtt.mqttBroker}:${serverConfig.virtualdevice.mqtt.mqttPort}`
+    const host = `mqtts://${serverConfig.account.brokerHost}:${serverConfig.account.brokerPort}`
     const options = {
       username: this.firmware.entityId,
       password: this.firmware.secret
