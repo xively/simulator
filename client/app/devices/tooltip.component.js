@@ -46,11 +46,12 @@ const tooltipComponent = {
     options: '<',
     label: '<',
     value: '<',
-    update: '&'
+    update: '&',
+    device: '<'
   },
   controllerAs: 'tooltip',
   /* @ngInject */
-  controller ($element, $scope) {
+  controller ($element, $scope, socketService) {
     Object.assign(this.options, this.options.tooltip)
 
     $scope.$watch(() => {
@@ -106,12 +107,17 @@ const tooltipComponent = {
         _.isNumber(this.options.max)
     }
 
-    this.sendUpdate = ({ name, value }) => {
+    this.sendUpdate = ({ name, value, socket = false }) => {
       const obj = { value }
       if (name) {
         obj.name = name
       }
-      this.update(obj)
+
+      if (socket) {
+        socketService.sendMessage(this.device, name, value)
+      } else {
+        this.update(obj)
+      }
     }
   }
 }

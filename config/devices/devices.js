@@ -182,10 +182,10 @@ const config = {
           direction: 'left',
           input: true,
           actions: [{
-            // TODO
             label: 'Trigger malfunction',
-            name: '',
-            value: ''
+            name: 'malfunction',
+            value: 'dust',
+            socket: true
           }]
         }
       },

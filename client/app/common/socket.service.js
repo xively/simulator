@@ -43,6 +43,11 @@ function socketFactory ($q) {
       const deviceId = _.isString(device) ? device : device.id
       this.client.emit('stopSimulation', { deviceId })
     }
+
+    sendMessage (device, name, value) {
+      const deviceId = _.isString(device) ? device : device.id
+      this.client.emit(name, { deviceId, value })
+    }
   }
 }
 

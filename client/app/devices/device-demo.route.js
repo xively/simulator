@@ -61,7 +61,8 @@ function deviceDemoRoute ($stateProvider) {
                   options="sensor"
                   label="name"
                   value="device.device.sensors[name].numericValue"
-                  update="device.update(name, value)">
+                  update="device.update(name, value)"
+                  device="device.device">
                 </tooltip>
                 <div ng-if="sensor.widget" bind-html-compile="device.getHtml(sensor.widget)"></div>
               </div>
