@@ -14,9 +14,6 @@ const proxy = require('./proxy')
 
 const app = express()
 
-// const observer = new Observer()
-// app.set('observer', observer)
-
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
   extended: false

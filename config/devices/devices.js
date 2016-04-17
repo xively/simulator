@@ -185,7 +185,10 @@ const config = {
             label: 'Trigger malfunction',
             name: 'malfunction',
             value: 'dust',
-            socket: true
+            socket: true,
+            device: {
+              ok: false
+            }
           }]
         }
       },

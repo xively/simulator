@@ -15,6 +15,7 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
      */
     addDevice (device) {
       if (!this.devices[device.id]) {
+        device.ok = true
         device.sensors = {}
         device.controlChannel = _.find(device.channels, { channelTemplateName: 'control' })
         device.channels = device.channels

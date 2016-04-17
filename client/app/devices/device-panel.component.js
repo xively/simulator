@@ -50,7 +50,13 @@ const devicePanelComponent = {
     this.deviceConfig = deviceConfig
 
     // start virtual device
-    socketService.connect(this.device)
+    socketService.connect(this.device, (err, ok = true) => {
+      if (err) {
+        ok = false
+        $log.error(err)
+      }
+      this.device.ok = ok
+    })
     // subscribe for mqtt messages
     const unsubscribe = this.device.subscribe()
     $scope.$on('$stateChangeStart', () => {

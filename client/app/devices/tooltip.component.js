@@ -47,7 +47,7 @@ const tooltipComponent = {
     label: '<',
     value: '<',
     update: '&',
-    device: '<'
+    device: '='
   },
   controllerAs: 'tooltip',
   /* @ngInject */
@@ -107,7 +107,7 @@ const tooltipComponent = {
         _.isNumber(this.options.max)
     }
 
-    this.sendUpdate = ({ name, value, socket = false }) => {
+    this.sendUpdate = ({ name, value, device = {}, socket = false }) => {
       const obj = { value }
       if (name) {
         obj.name = name
@@ -118,6 +118,7 @@ const tooltipComponent = {
       } else {
         this.update(obj)
       }
+      _.merge(this.device, device)
     }
   }
 }

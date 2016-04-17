@@ -111,7 +111,6 @@ function deviceDemoRoute ($stateProvider) {
           this.sensorsNotConfigured = null
         }
       }
-      device.ok = true
       this.device = device
 
       $scope.$watch(() => this.device.ok, (ok) => {
