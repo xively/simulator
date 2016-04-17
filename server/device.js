@@ -11,20 +11,18 @@ class Device {
     this.firmware = firmware
 
     this.INTERVAL = 5000
-    this.SIMULATION_INTERVAL = 1000
     this.WIGGLE_PERCENTAGE = 0.05
-    this.simulation = false
 
-    this.sensors = new Map()
-    if (deviceConfigs[this.firmware.template.name]) {
-      _.each(deviceConfigs[this.firmware.template.name].sensors, (sensorSettings, sensorName) => {
-        this.addSensor(sensorName, _.clone(sensorSettings))
-      })
-    }
+    this.connected = false
+    this.simulation = false
+    this.ok = true
 
     this.connections = new Set()
     this.channels = new Map()
     this.channels.set('_log', `xi/blue/v1/${this.firmware.accountId}/d/${this.firmware.deviceId}/_log`)
+
+    this.sensors = new Map()
+    this.initSensors()
   }
 
   connect (socketId) {
@@ -36,13 +34,25 @@ class Device {
       this.subscribe('control')
     }
     this.connections.add(socketId)
+
+    this.sendDeviceLog({
+      level: 'informational',
+      message: 'Device boot complete'
+    })
+
+    _.each(deviceConfigs[this.firmware.template.name].sensors, (sensorSettings, sensorName) => {
+      if (sensorSettings.deviceLog && sensorSettings.deviceLog.connect) {
+        this.sendDeviceLog(sensorSettings.deviceLog.connect)
+      }
+    })
   }
 
   disconnect (socketId) {
     logger.debug('virtual device#disconnecting from device', this.firmware.deviceId)
 
     this.connections.delete(socketId)
-    if (!this.connections.size) {
+
+    if (!this.connections.size && this.connected) {
       logger.debug('virtual device#device disconnecting from mqtt', this.firmware.deviceId)
       this.disconnectMqtt()
       this.stopInterval()
@@ -58,8 +68,14 @@ class Device {
     }
 
     this.mqtt = mqtt.connect(host, options)
+    this.connected = true
 
     this.mqtt.on('connect', () => {
+      this.sendDeviceLog({
+        level: 'informational',
+        message: 'Device connected',
+        details: 'Device connected'
+      })
       logger.debug('virtual device#mqtt connection success')
     })
     this.mqtt.on('error', (error) => {
@@ -69,30 +85,34 @@ class Device {
       const channel = topic.split('/').pop()
 
       if (channel === 'control') {
-        this.setSensorValue(message)
+        this.parseMessage(message)
       }
     })
   }
 
-  sendDeviceLog (log, severity) {
-    const logChannel = this.channels.get('_log')
-    const date = Date.now().toString()
-
-    const message = {
-      sourceTimestamp: date,
-      sourceId: this.firmware.deviceId,
-      accountId: this.firmware.accountId,
-      code: severity === 'informational' ? 200 : 400,
-      message: log.message,
-      details: log.details || log.message,
-      severity: severity,
-      tags: log.tags || []
-    }
-    this.mqtt.publish(logChannel, JSON.stringify(message))
+  disconnectMqtt () {
+    this.mqtt && this.mqtt.end()
+    this.connected = false
   }
 
-  setSensorValue (message) {
-    const parts = message.toString().split(',')
+  parseMessage (message) {
+    message = message.toString()
+    let response
+
+    try {
+      const parsed = JSON.parse(message)
+      response = this.handleJSON(parsed)
+    } catch (ex) {
+      response = this.handleCSV(message)
+    }
+
+    if (response) {
+      this.mqtt.publish(response.topic, response.message)
+    }
+  }
+
+  handleCSV (message) {
+    const parts = message.split(',')
     const timeStamp = parts[0]
     const sensorName = parts[1]
     const sensorValue = Number(parts[2])
@@ -105,12 +125,91 @@ class Device {
 
     this.sensors.set(sensorName, sensorSettings)
 
-    const mqttMessage = `${timeStamp}, ${sensorName}, ${sensorValue}, , \n`
-    this.mqtt.publish(sensorSettings.topic, mqttMessage)
+    return {
+      topic: sensorSettings.topic,
+      message: `${timeStamp}, ${sensorName}, ${sensorValue}, , \n`
+    }
   }
 
-  disconnectMqtt () {
-    this.mqtt && this.mqtt.end()
+  handleJSON (message) {
+    switch (message.command) {
+      case 'speed':
+        const fanValues = ['off', 'low', 'high']
+        const fanSettings = this.sensors.get('fan')
+        fanSettings.latestValue = fanValues.indexOf(message.option)
+        this.sensors.set('fan', fanSettings)
+        this.sendFanLog(message.option)
+
+        return {
+          topic: fanSettings.topic,
+          message: `${Date.now()}, 'fan', ${fanValues.indexOf(message.option)}, , \n`
+        }
+      case 'factory-reset':
+        this.factoryReset()
+        return
+      case 'filter':
+        const filterSettings = this.sensors.get('filter')
+        filterSettings.latestValue = message.option
+        this.sensors.set('filter', filterSettings)
+        this.sendFilterLog(message.option)
+
+        return {
+          topic: filterSettings.topic,
+          message: `${Date.now()}, 'fan', ${message.option}, , \n`
+        }
+    }
+  }
+
+  sendDeviceLog (log) {
+    const logChannel = this.channels.get('_log')
+    const date = Date.now().toString()
+
+    const message = {
+      // required
+      sourceId: this.firmware.deviceId,
+      sourceType: 'deviceId',
+      accountId: this.firmware.accountId,
+      message: log.message,
+      // optional
+      sourceTimestamp: date,
+      code: log.level === 'informational' ? 200 : 400,
+      details: log.details || log.message,
+      severity: log.level, // ['emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'informational', 'debug', 'lifecycle']
+      tags: log.tags || []
+    }
+    this.mqtt.publish(logChannel, JSON.stringify(message))
+  }
+
+  // TODO: handle this in a more generic way
+  sendFanLog (value) {
+    this.sendDeviceLog({
+      level: 'informational',
+      message: `Fan ${value}`
+    })
+  }
+
+  sendFilterLog (value) {
+    let log
+    if (value === 1000) {
+      log = {
+        level: 'informational',
+        message: 'Filter replaced',
+        details: 'Authentic Concaria filter detected'
+      }
+    } else if (value === 0) {
+      log = {
+        level: 'error',
+        message: 'Filter depleted',
+        details: 'Filter is depleted'
+      }
+    } else if (value < 24) {
+      log = {
+        level: 'warning',
+        message: 'Filter low',
+        details: 'Filter low'
+      }
+    }
+    this.sendDeviceLog(log)
   }
 
   subscribe (channelName) {
@@ -131,15 +230,24 @@ class Device {
     this.channels.delete(channelName)
   }
 
+  initSensors () {
+    if (deviceConfigs[this.firmware.template.name]) {
+      _.each(deviceConfigs[this.firmware.template.name].sensors, (sensorSettings, sensorName) => {
+        this.addSensor(sensorName, _.clone(sensorSettings))
+      })
+    }
+  }
+
   addSensor (sensorName, sensorSettings) {
     sensorSettings = sensorSettings || {}
     sensorSettings.topic = `xi/blue/v1/${this.firmware.accountId}/d/${this.firmware.deviceId}/${sensorName}`
     this.sensors.set(sensorName, sensorSettings)
   }
 
-  wiggle (current, min, max) {
-    // adds or subtracts 0-10% of full range to the current value
-    return current + _.random(this.WIGGLE_PERCENTAGE, true) * _.sample([-1, 1]) * (max - min)
+  generateSensorValues () {
+    this.sensors.forEach((sensorSettings, sensorName) => {
+      this.generateSensorValue(sensorSettings, sensorName)
+    })
   }
 
   generateSensorValue (sensorSettings, sensorName) {
@@ -179,26 +287,101 @@ class Device {
     this.mqtt.publish(sensorSettings.topic, message)
   }
 
-  generateSensorValues () {
-    this.sensors.forEach((sensorSettings, sensorName) => {
-      this.generateSensorValue(sensorSettings, sensorName)
+  wiggle (current, min, max) {
+    return current + _.random(this.WIGGLE_PERCENTAGE, true) * _.sample([-1, 1]) * (max - min)
+  }
+
+  triggerThermometerFaliure () {
+    this.sendDeviceLog({
+      level: 'error',
+      message: 'Thermometer failure',
+      details: 'Failed to read from TMP36. Sensor not found.'
     })
   }
 
+  triggerMalfunction () {
+    this.ok = false
+    this.disconnectMqtt()
+    this.stopInterval()
+    this.unsubscribe('control')
+
+    this.sendDeviceLog({
+      level: 'error',
+      message: 'Sensor malfunction occured',
+      details: 'Sensor malfunction occured',
+      tags: ['malfunction']
+    })
+  }
+
+  factoryReset () {
+    this.sendDeviceLog({
+      level: 'warning',
+      message: 'Factory reset',
+      details: 'Reset command received from remote'
+    })
+
+    this.ok = true
+    this.connectMqtt()
+    this.startInterval()
+    this.subscribe('control')
+  }
+
   startSimulation () {
+    this.connectMqtt()
     if (!this.simulation) {
-      this.simulation = true
-      this.stopInterval()
-      this.startInterval(this.SIMULATION_INTERVAL)
+      this.simulation = setInterval(() => {
+        const event = _.random(10)
+
+        switch (event) {
+          case 1: // hight temp warning
+            if (this.connected) {
+              this.sendDeviceLog({
+                level: 'warning',
+                message: 'High Temperature',
+                details: '100 F'
+              })
+            }
+            return
+          case 2: // malfunction
+            if (this.connected && this.ok) {
+              this.sendDeviceLog({
+                level: 'error',
+                message: 'Fan overheated',
+                details: 'Shutting down	Filter internal temperature over 150 F'
+              })
+              this.triggerMalfunction()
+            }
+            return
+          case 3: // factory reset
+            if (!this.connected && !this.ok) {
+              this.factoryReset()
+            }
+            return
+          case 4:
+          case 5: // disconnect from MQTT
+            this.sendDeviceLog({
+              level: 'error',
+              message: 'Network connection failed',
+              details: 'Failed to initialize network connection. DNS lookup to concaria.broker.xively.com failed. SSID: HomeWifi'
+            })
+            if (this.connected) {
+              this.disconnect('simulation')
+              this.connectMqtt()
+            }
+            return
+          default: // connect to MQTT
+            if (!this.connected) {
+              this.connect('simulation')
+            }
+            return
+        }
+      }, this.INTERVAL)
     }
   }
 
   stopSimulation () {
-    if (this.simulation) {
-      this.simulation = false
-      this.stopInterval()
-      this.startInterval()
-    }
+    this.disconnectMqtt()
+    clearInterval(this.simulation)
   }
 
   startInterval (interval) {

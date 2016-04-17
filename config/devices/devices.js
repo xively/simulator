@@ -60,6 +60,13 @@ const config = {
           },
           distance: 90,
           direction: 'top'
+        },
+        deviceLog: {
+          connect: {
+            level: 'informational',
+            message: 'Dust sensor connected',
+            details: 'GP2Y1010AU0F driver initialization complete'
+          }
         }
       },
       co: {
@@ -79,6 +86,13 @@ const config = {
           },
           distance: 153,
           direction: 'right'
+        },
+        deviceLog: {
+          connect: {
+            level: 'informational',
+            message: 'CO sensor connected',
+            details: 'MQ-7 drive initialization complete'
+          }
         }
       },
       temp: {
@@ -97,6 +111,13 @@ const config = {
           },
           distance: 143,
           direction: 'right'
+        },
+        deviceLog: {
+          connect: {
+            level: 'informational',
+            message: 'Thermometer connected',
+            details: 'TMP36 driver initialization complete'
+          }
         }
       },
       humidity: {
@@ -136,10 +157,16 @@ const config = {
           input: false,
           actions: [{
             label: 'Deplete',
-            value: 0
+            value: JSON.stringify({
+              command: 'filter',
+              option: 0
+            })
           }, {
             label: 'Replace',
-            value: 1000
+            value: JSON.stringify({
+              command: 'filter',
+              option: 1000
+            })
           }]
         }
       },
@@ -266,10 +293,16 @@ const config = {
           input: false,
           actions: [{
             label: 'Deplete',
-            value: 0
+            value: JSON.stringify({
+              command: 'filter',
+              option: 0
+            })
           }, {
             label: 'Replace',
-            value: 1000
+            value: JSON.stringify({
+              command: 'filter',
+              option: 1000
+            })
           }]
         }
       },

@@ -27,7 +27,10 @@ const fanStateControlComponent = {
       this.selected = newValue
     })
     this.changeState = (value) => {
-      this.device.update('fan', value)
+      this.device.update('speed', JSON.stringify({
+        command: 'speed',
+        option: this.buttons[value].toLowerCase()
+      }))
       this.selected = value
     }
   }

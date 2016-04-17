@@ -3,6 +3,7 @@
 const http = require('http')
 const logger = require('winston')
 const socketIO = require('socket.io')
+const _ = require('lodash')
 
 const db = require('./database')
 
@@ -20,7 +21,7 @@ module.exports = function configureSocket (app) {
 
   db.selectFirmwares()
     .then((firmwares) => {
-      firmwares.forEach((firmware) => {
+      _.each(firmwares, (firmware) => {
         const device = new Device(firmware)
         devices.set(firmware.deviceId, device)
         logger.debug('socket.io#creating device', firmware.deviceId)
@@ -44,16 +45,25 @@ module.exports = function configureSocket (app) {
     })
 
     socket.on('startSimulation', (data) => {
-      const device = devices.get(data.deviceId)
-      if (device) {
-        device.startSimulation()
-      }
+      const thermometerFaliure = _.sample(devices.keys())
+      devices.forEach((device, deviceId) => {
+        if (deviceId !== data.deviceId) {
+          device.startSimulation()
+        }
+        if (deviceId === thermometerFaliure) {
+          device.triggerThermometerFaliure()
+        }
+      })
     })
 
     socket.on('stopSimulation', (data) => {
+      devices.forEach((device) => device.stopSimulation())
+    })
+
+    socket.on('malfunction', (data) => {
       const device = devices.get(data.deviceId)
       if (device) {
-        device.stopSimulation()
+        device.triggerMalfunction()
       }
     })
 

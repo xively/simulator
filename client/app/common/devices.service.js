@@ -28,10 +28,15 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
             type: channel.persistenceType
           }
         })
-        device.update = (name, numericValue) => {
-          mqttService.sendMessage(device.controlChannel.channel, {
-            name, numericValue
-          })
+        device.update = (name, value) => {
+          const channel = device.controlChannel.channel
+          const numericValue = _.parseInt(value)
+          if (!_.isNaN(numericValue)) {
+            return mqttService.sendMessage(channel, {
+              name, numericValue
+            })
+          }
+          mqttService.sendMessage(channel, value)
         }
         device.subscribe = this.subscribeDevice.bind(this, device)
         this.devices[device.id] = device
