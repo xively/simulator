@@ -327,9 +327,16 @@ class Device {
   }
 
   startSimulation () {
+    this.simulationCounter = 0
     this.connectMqtt()
+
     if (!this.simulation) {
       this.simulation = setInterval(() => {
+        if (++this.simulationCounter === 100) {
+          this.stopSimulation()
+          return
+        }
+
         const event = _.random(10)
 
         switch (event) {
