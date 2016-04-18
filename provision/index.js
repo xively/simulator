@@ -37,6 +37,20 @@ var LOCATIONS = [{
   lon: -122.4726194
 }];
 
+var LOCATIONS = [{
+  name: 'London',
+  lat: 51.5285582,
+  lon: -0.2416796
+}, {
+  name: 'New York',
+  lat: 40.7055651,
+  lon: -74.1180857
+}, {
+  name: 'San Francisco',
+  lat: 37.7576948,
+  lon: -122.4726194
+}];
+
 console.error('Provision start');
 bp.getEnv(process.env)
   .then(bp.useDemoAccount)
