@@ -5,7 +5,7 @@ require('./fan-control.component.less')
 /* @ngInject */
 const fanControlComponent = {
   template: `
-    <div class="fan-control" ng-click="fanControl.changeState()">
+    <div class="fan-control" ng-click="!fanControl.device.ok || fanControl.changeState()">
       <div class="purifier-device-switch">
       <div class="fan-speed-indicator" ng-class="'speed-' + fanControl.device.sensors.fan.numericValue"></div>
       <ul>

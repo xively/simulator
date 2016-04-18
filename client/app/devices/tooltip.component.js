@@ -16,14 +16,20 @@ const tooltipComponent = {
                  min="{{ ::tooltip.options.min }}"
                  max="{{ ::tooltip.options.max }}"
                  value="{{ ::tooltip.options.min }}"
-                 ng-model="tooltip.newValue" ng-change="tooltip.update({value: tooltip.newValue })"/>
+                 ng-model="tooltip.newValue" ng-change="tooltip.update({value: tooltip.newValue })"
+                 ng-disabled="!tooltip.device.ok"/>
           <div class="tooltip-range">
             <span class="tooltip-range-min">{{ ::tooltip.options.min }}</span>
             <span class="tooltip-range-max">{{ ::tooltip.options.max }}</span>
           </div>
         </div>
         <div class="action-buttons">
-          <div class="action-button" ng-repeat="action in tooltip.options.actions" ng-click="tooltip.sendUpdate(action)">{{ action.label }}</div>
+          <button class="action-button"
+                  ng-repeat="action in tooltip.options.actions"
+                  ng-click="tooltip.sendUpdate(action)"
+                  ng-disabled="!tooltip.device.ok">
+                  {{ action.label }}
+          </button>
         </div>
       </div>
       <svg class="tooltip-line"

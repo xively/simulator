@@ -61,15 +61,19 @@ tooltip, .tooltip {
   .action-buttons {
     width: 100%;
     text-align: center;
-    color: @light-gray;
 
     .action-button {
       width: @tooltip-box-size - 40px;
-      margin: 27px auto;
+      margin: 20px auto;
       padding: 5px;
+      border: none;
       border-radius: @tooltip-box-size / 10;
       box-shadow: 0 0 4px 4px fade(@light-blue, 60%);
       cursor: pointer;
+      appearance: none;
+      outline: none;
+      background: none;
+      color: @light-gray;
 
       &:hover {
         box-shadow: 0 0 4px 4px fade(@light-blue, 40%);

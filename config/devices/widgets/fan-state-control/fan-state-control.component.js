@@ -4,9 +4,12 @@ require('./fan-state-control.component.less')
 const fanStateControlComponent = {
   template: `
     <div class="fan-state-control">
-      <div ng-click="fanStateControl.changeState(0)" ng-class="{selected: fanStateControl.selected === 0}">Off</div>
-      <div ng-click="fanStateControl.changeState(1)" ng-class="{selected: fanStateControl.selected === 1}">Low</div>
-      <div ng-click="fanStateControl.changeState(2)" ng-class="{selected: fanStateControl.selected === 2}">High</div>
+      <button ng-repeat="button in ::fanStateControl.buttons"
+              ng-click="fanStateControl.changeState($index)"
+              ng-class="{selected: fanStateControl.selected === $index}"
+              ng-disabled="!fanStateControl.device.ok">
+              {{ button }}
+      </button>
     </div>
   `,
   replace: true,
@@ -16,6 +19,8 @@ const fanStateControlComponent = {
   controllerAs: 'fanStateControl',
   /* @ngInject */
   controller ($scope) {
+    this.buttons = ['Off', 'Low', 'High']
+
     $scope.$watch(() => {
       return this.device.sensors.fan.numericValue
     }, (newValue) => {

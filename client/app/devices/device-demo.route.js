@@ -77,7 +77,7 @@ function deviceDemoRoute ($stateProvider) {
               <div class="row" ng-repeat="(name, sensor) in device.sensorsNotConfigured">
                 <div class="channel-name">{{ name }}</div>
                 <div class="control">
-                  <input type="range" min="0" max="100" ng-model="value" ng-init="value = 0" ng-change="device.update(name, value)">
+                  <input type="range" min="0" max="100" ng-model="value" ng-init="value = 0" ng-change="device.update(name, value)" ng-disabled="!device.device.ok">
                 </div>
                 <div class="value">
                   {{ value }}
