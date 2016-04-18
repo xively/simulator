@@ -16,6 +16,8 @@ function MqttListener(options) {
   this._mqttConfig = options;
   // client
   this._client = this._connect();
+
+  this._messages = [];
   // channels to subscribe to per device
   this._channels = [];
   // devices to subscribe to
@@ -38,6 +40,10 @@ function MqttListener(options) {
   this._client.on('offline', this._onOffline.bind(this));
   this._client.on('message', this._onMessage.bind(this));
   this._client.on('connect', this._onConnect.bind(this), console.error);
+
+  this._finished = new Promise((resolve, reject) => {
+    this._finishedResolve = resolve;
+  });
 }
 
 
@@ -84,6 +90,16 @@ MqttListener.prototype.use = function(channel, callback) {
   }
 };
 
+MqttListener.prototype.queueMessage = function(message) {
+  this._messages.push(message);
+};
+
+MqttListener.prototype._broadcastMessages = function(topic) {
+  var that = this;
+  this._messages.forEach(function(message) {
+    that._client.publish(topic, message);
+  });
+};
 
 // private methods
 
@@ -92,6 +108,7 @@ MqttListener.prototype._addTopic = function(deviceId, channel) {
   // If this topic already is in the list, skip
   if (this._topics.indexOf(topic) === -1) {
     this._topics.push(topic);
+    this._broadcastMessages(topic);
   }
 
   if (this._toSubscribe.indexOf(topic) === -1) {
@@ -108,6 +125,7 @@ MqttListener.prototype._subscribeAll = function() {
     if (that._toSubscribe.length === 0) {
       // If we have nothing else to subscribe to
       that._subscriberState = 'finished';
+      that._finishedResolve();
       console.log('subscribed to %s channels', that._topics.length);
     } else {
       var topic = that._toSubscribe[0];

@@ -7,9 +7,11 @@ require('dotenv').load();
 var _ = require('lodash');
 var bp = require('./blueprint');
 var Promise = require('bluebird');
-var database = require('../server/database');
 var path = require('path');
 var integration = require('./integration');
+
+var populate = require('./populate');
+var database = require('../server/database');
 
 var SERIAL_PREFIX = 'Purify';
 var SERIAL_START = Math.floor(Math.random() * 100000) * 100;
@@ -211,11 +213,11 @@ bp.getEnv(process.env)
         };
 
         return database.insertInventory({serial: device.serialNumber})
-        .then(function(returnedRows) {
-          firmware.id = returnedRows[0].id;
-          console.error('Inserted ' + firmware.id);
-          return database.insertFirmware(firmware);
-        });
+          .then(function(returnedRows) {
+            firmware.id = returnedRows[0].id;
+            console.error('Inserted ' + firmware.id);
+            return database.insertFirmware(firmware);
+          });
       });
     })
     .then(function() {
@@ -235,8 +237,8 @@ bp.getEnv(process.env)
       return $;
     });
   })
-  .then(function(data) {
-    // console.log(JSON.stringify(data, null, 2));
+  .then(function() {
+    return populate.generateData();
     console.error('Provision done');
   })
   .catch(function(err) {

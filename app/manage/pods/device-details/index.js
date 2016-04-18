@@ -352,7 +352,6 @@ deviceDetailsModule.config([
                 })
                 .then(function(dataSource) {
                   $scope.$applyAsync(function() {
-                    // Trigger data change at chartData to pass down to chart.
                     item.chartData.dataSource = angular.merge({}, item.chartData.dataSource, dataSource);
                   });
                   return item.chartData;
