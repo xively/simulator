@@ -11,12 +11,8 @@
   "logo": "https://ws.cubbyusercontent.com/p/_344ac3084abc47d4b0e52faf56494903/xively_by-LMI-under_habanero_logo.png/1505747296",
   "image": "https://ws.cubbyusercontent.com/p/_344ac3084abc47d4b0e52faf56494903/xively_by-LMI-under_habanero_logo.png/1505747296",
   "addons": [
-    "xively:test",
     "heroku-postgresql:hobby-dev"
   ],
-  "scripts": {
-    "postdeploy": "node provision"
-  },
   "buildpacks": [
     {
       "url": "https://github.com/heroku/heroku-buildpack-nodejs"
