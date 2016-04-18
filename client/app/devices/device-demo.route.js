@@ -15,14 +15,17 @@ function deviceDemoRoute ($stateProvider) {
       <div class="device-demo">
         <div class="left-side">
           <iphone-frame>
-            <div class="navigation-header">
-              <div class="logo">${xiLogo}</div>
+            <div class="iphone-frame-scrollable">
+              <div class="navigation-header">
+                <div class="logo">${xiLogo}</div>
+              </div>
+              <div class="icons">
+                <a class="share" ng-click="device.toggleShareModal()"> ${shareIcon} </a>
+              </div>
+              <device-panel device="device.device"></device-panel>
             </div>
-            <div class="icons">
-              <a class="share" ng-click="device.toggleShareModal()"> ${shareIcon} </a>
-            </div>
-            <device-panel device="device.device"></device-panel>
             <share-modal link="device.shareLink" toggle="device.toggleShareModal()" ng-show="device.shareModal"></share-modal>
+            <boldchat></boldchat>
           </iphone-frame>
         </div>
         <div class="right-side">

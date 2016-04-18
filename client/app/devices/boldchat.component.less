@@ -1,0 +1,42 @@
+@import '../style/variables.less';
+
+boldchat {
+  position: fixed;
+  display: block;
+  height: 60px;
+  width: 350px;
+  bottom: 0;
+  right: 0;
+
+  & .mobile, .mobile & {
+    position: absolute;
+    margin: 0;
+    width: 100%;
+    left: 0;
+  }
+
+  @media (max-width: @mobile-max-width) {
+    width: 100%;
+  }
+
+  .boldchat-button {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    background: #52C4E0;
+    cursor: pointer;
+
+    p {
+      text-align: center;
+      color: #fafafa;
+
+      svg {
+        display: inline-block;
+        height: 20px;
+        fill: #fafafa;
+      }
+    }
+  }
+}

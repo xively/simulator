@@ -20,6 +20,7 @@ function deviceRoute ($stateProvider) {
         </div>
         <device-panel device="device.device"></device-panel>
         <share-modal link="device.shareLink" toggle="device.toggleShareModal()" ng-show="device.shareModal"></share-modal>
+        <boldchat></boldchat>
       </section>
     `,
     controllerAs: 'device',

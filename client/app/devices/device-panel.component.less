@@ -1,12 +1,12 @@
 @import '../style/variables.less';
 
-device-panel, .device-panel {
+.device-panel {
   display: flex;
   flex-direction: row;
   width: 100%;
 
   & .mobile, .mobile & {
-    margin: 0;
+    margin: 0 0 60px 0;
 
     & {
       flex-direction: column;
@@ -14,7 +14,7 @@ device-panel, .device-panel {
   }
 
   @media (max-width: @mobile-max-width) {
-    .mobile
+    .mobile;
   }
 
   & > div {
