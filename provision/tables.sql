@@ -17,6 +17,7 @@ WITH (
 CREATE TABLE firmware
 (
   id integer NOT NULL,
+  "name" text,
   "serialNumber" text,
   "deviceId" text,
   "template" json,

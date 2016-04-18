@@ -18,7 +18,20 @@ function integration (jwt) {
       organizationId: result.organizationId
     }))
     .then((salesforce) => {
-      return request({
+      logger.info('Integrating with SalesForce')
+
+      const removeAccount = () => request({
+        url: `https://${process.env.XIVELY_INTEGRATION_HOST}/api/v1/accounts`,
+        method: 'DELETE',
+        auth: {
+          bearer: jwt
+        },
+        json: {
+          id: salesforce.organizationId
+        }
+      })
+
+      const addAccount = () => request({
         url: `https://${process.env.XIVELY_INTEGRATION_HOST}/api/v1/accounts`,
         method: 'POST',
         auth: {
@@ -29,10 +42,14 @@ function integration (jwt) {
           accountId: process.env.XIVELY_ACCOUNT_ID
         }
       })
+
+      return removeAccount()
+        .catch(addAccount)
+        .then(addAccount)
     })
+    .then(() => logger.info('Integrating with SalesForce success'))
     .catch((err) => {
-      logger.error('Salesforce integration error:', err)
-      throw err
+      logger.error('Salesforce integration error:', JSON.stringify(err))
     })
 }
 

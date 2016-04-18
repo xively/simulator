@@ -28,7 +28,7 @@ echo "$app_name" > app_name
 # Initialize new heroku app.
 git init
 heroku apps:create $app_name
-heroku addons:create xively:test
+heroku addons:create xively:xi-dev-internal
 heroku addons:create heroku-postgresql:hobby-dev
 
 # Write environment vars to .env file

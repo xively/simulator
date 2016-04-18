@@ -2,6 +2,7 @@
 
 const BlueprintClient = require('../server/vendor/blueprint-client-node.js')
 const request = require('request-promise')
+const logger = require('winston')
 
 const blueprint = {
 
@@ -60,6 +61,7 @@ const blueprint = {
   },
 
   createOrganizationTemplates (organizationTemplates) {
+    logger.info('Creating: organization templates')
     return this.create({
       apiMethod: 'organizationsTemplates',
       responseField: 'organizationTemplate',
@@ -68,6 +70,7 @@ const blueprint = {
   },
 
   createDeviceTemplates (deviceTemplates) {
+    logger.info('Creating: device templates')
     return this.create({
       apiMethod: 'devicesTemplates',
       responseField: 'deviceTemplate',
@@ -76,6 +79,7 @@ const blueprint = {
   },
 
   createOrganizations (organizations) {
+    logger.info('Creating: organizations')
     return this.create({
       apiMethod: 'organizations',
       responseField: 'organization',
@@ -84,6 +88,7 @@ const blueprint = {
   },
 
   createDevices (devices) {
+    logger.info('Creating: devices')
     return this.create({
       apiMethod: 'devices',
       responseField: 'device',
@@ -92,6 +97,7 @@ const blueprint = {
   },
 
   createDeviceFields (fields) {
+    logger.info('Creating: device fields')
     return this.create({
       apiMethod: 'devicesCustomFields',
       responseField: 'deviceField',
@@ -100,6 +106,7 @@ const blueprint = {
   },
 
   createChannelTemplates (channelTemplates) {
+    logger.info('Creating: channel templates')
     return this.create({
       apiMethod: 'channelsTemplates',
       responseField: 'channelTemplate',
@@ -108,6 +115,7 @@ const blueprint = {
   },
 
   createEndUserTemplates (endUserTemplates) {
+    logger.info('Creating: end user templates')
     return this.create({
       apiMethod: 'endUsersTemplates',
       responseField: 'endUserTemplate',
@@ -116,6 +124,7 @@ const blueprint = {
   },
 
   createEndUser (endUser) {
+    logger.info('Creating: end user')
     return this.create({
       apiMethod: 'endUsers',
       responseField: 'endUser',
@@ -124,6 +133,7 @@ const blueprint = {
   },
 
   createMqttCredentials (entities) {
+    logger.info('Creating: mqtt credentials')
     return this.create({
       apiMethod: 'accessMqttCredentials',
       responseField: 'mqttCredential',

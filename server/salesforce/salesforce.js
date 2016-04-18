@@ -11,15 +11,13 @@ class Salesforce {
   constructor () {
     this.connection = new jsforce.Connection()
 
-    if (config.salesforce.user && config.salesforce.pass && config.salesforce.token) {
-      this.loggedIn = this.connect()
-      logger.info('salesforce#connected')
+    if (!(config.salesforce.user && config.salesforce.pass && config.salesforce.token)) {
+      this.loggedIn = Promise.reject('Environment variables are missing')
+      return
     }
-  }
 
-  connect () {
+    this.loggedIn = this.connection.login(config.salesforce.user, `${config.salesforce.pass}${config.salesforce.token}`)
     logger.info('salesforce#connecting')
-    return this.connection.login(config.salesforce.user, `${config.salesforce.pass}${config.salesforce.token}`)
   }
 
   /**
@@ -55,20 +53,19 @@ class Salesforce {
   addCases (cases) {
     cases = cases.map((c) => ({
       Subject: c.subject,
-      Description: c.description
-      // Contact: { xively__XI_End_User_ID__c: c.orgId },
-      // Asset: { xively__Device_ID__c: c.deviceId },
-      // xively__XI_Device_ID__c: c.deviceId
+      Description: c.description,
+      Contact: { xively__XI_End_User_ID__c: c.orgId },
+      Asset: { xively__Device_ID__c: c.deviceId },
+      xively__XI_Device_ID__c: c.deviceId
     }))
     return this.loggedIn
       .then(() => this.connection.sobject('Case').insert(cases))
       .then((results) => {
         results.forEach((result, idx) => {
-          if (result.success) {
-            logger.info('Salesforce #addCases', `inserted successfully: ${cases[idx].Subject}`)
-          } else {
+          if (!result.success) {
             throw result
           }
+          logger.info('Salesforce #addCases', `inserted successfully: ${cases[idx].Subject}`)
         })
       })
       .catch((err) => {
@@ -85,15 +82,15 @@ class Salesforce {
       xively__XI_End_User_ID__c: c.orgId
     }))
 
+    // TODO limit
     this.loggedIn
-      .then(() => this.connection.sobject('Contact').upsert(contacts, 'xively__XI_End_User_ID__c'))
+      .then(() => this.connection.sobject('Contact').upsert(contacts.slice(0, 10), 'xively__XI_End_User_ID__c'))
       .then((results) => {
         results.forEach((result, idx) => {
-          if (result.success) {
-            logger.info('Salesforce #addContacts', `inserted successfully: ${contacts[idx].Email}`)
-          } else {
+          if (!result.success) {
             throw result
           }
+          logger.info('Salesforce #addContacts', `inserted successfully: ${contacts[idx].Email}`)
         })
       })
       .catch((err) => {

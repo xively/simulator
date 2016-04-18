@@ -4,10 +4,9 @@
 require('dotenv').config({ silent: true })
 
 const logger = require('winston')
-// const request = require('request-promise')
 const config = require('../config/server')
-// const salesforce = require('./salesforce')
-// const Blueprint = require('./blueprint')
+const salesforce = require('./salesforce')
+const database = require('./database')
 const app = require('./app')
 const socket = require('./socket')
 
@@ -19,43 +18,32 @@ const server = socket(app)
   Salesforce
  */
 
-// try {
-//   salesforce.addContacts([{
-//     email: config.salesforce.user,
-//     orgId: config.sample.orgId
-//   }])
-//
-//   const emailAddress = config.account.emailAddress
-//   const accountId = config.account.accountId
-//   const password = config.account.password
-//
-//   request({
-//     method: 'POST',
-//     url: 'https://id.demo.xively.com/api/v1/auth/login-user',
-//     form: {
-//       emailAddress,
-//       password,
-//       accountId
-//     },
-//     json: true
-//   })
-//   .then((body) => {
-//     const jwt = body.jwt
-//     return new Blueprint({
-//       url: 'https://blueprint.demo.xively.com/docs',
-//       key: `Bearer ${jwt}`
-//     })
-//   })
-//   .then((client) => {
-//     // client
-//     // TODO salesforce.addAssets()
-//   })
-// } catch (err) {
-//   logger.warn(`
-//     Skipping salesforce provisioning.
-//     To set up this application with Salesforce, follow the instructions in the README.
-//   `)
-// }
+try {
+  database.selectApplicationConfig(config.account.accountId).then((appConfigs) => {
+    const contacts = appConfigs.map((appConfig) => ({
+      email: config.salesforce.user,
+      orgId: appConfig.organization.id
+    }))
+
+    salesforce.addContacts(contacts)
+  })
+
+  database.selectFirmwares().then((firmwares) => {
+    const devices = firmwares.map((firmware) => ({
+      product: firmware.name,
+      serial: firmware.serialNumber,
+      deviceId: firmware.deviceId,
+      orgId: firmware.organizationId
+    }))
+
+    salesforce.addAssets(devices)
+  })
+} catch (err) {
+  logger.warn(`
+    Skipping salesforce provisioning.
+    To set up this application with Salesforce, follow the instructions in the README.
+  `, err)
+}
 
 /*
   Server

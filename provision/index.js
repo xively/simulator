@@ -4,19 +4,19 @@ require('dotenv').config({ silent: true })
 
 const path = require('path')
 const _ = require('lodash')
+const logger = require('winston')
 const blueprint = require('./blueprint')
 const integration = require('./integration')
 const database = require('../server/database')
 const config = require('../config/provision')
 
-Promise.all([
-  blueprint.createOrganizationTemplates(config.organizationTemplates),
-  blueprint.createDeviceTemplates(config.deviceTemplates),
-  blueprint.createEndUserTemplates(config.endUserTemplates),
-  blueprint.getJwt().then((jwt) => {
-    return integration(jwt)
-  })
-])
+blueprint.getJwt().then(integration).then(() => {
+  return Promise.all([
+    blueprint.createOrganizationTemplates(config.organizationTemplates),
+    blueprint.createDeviceTemplates(config.deviceTemplates),
+    blueprint.createEndUserTemplates(config.endUserTemplates)
+  ])
+})
 .then((arr) => ({
   organizationTemplates: arr[0],
   deviceTemplates: arr[1],
@@ -100,10 +100,12 @@ Promise.all([
 
   return database.runScriptFile(tableScript)
     .then(() => {
+      logger.info('Inserting: firmwares')
       return Promise.all(data.devices.map((device) => {
         const mqttCredentials = data.mqttCredentials.find((mqttCredential) => mqttCredential.entityId === device.id)
 
         const firmware = {
+          name: device.name,
           serialNumber: device.serialNumber,
           deviceId: device.id,
           template: data.deviceTemplates.find((deviceTemplate) => deviceTemplate.id === device.deviceTemplateId),
@@ -121,12 +123,24 @@ Promise.all([
           })
       }))
     })
+    .then(() => {
+      logger.info('Inserting: application configs')
+      return Promise.all(data.endUsers.map((endUser) => {
+        const appConfig = {
+          endUser,
+          accountId: process.env.XIVELY_ACCOUNT_ID,
+          organization: data.organizations.find((organization) => organization.id === endUser.organizationId),
+          mqttUser: data.mqttCredentials.find((mqttCredential) => mqttCredential.entityId === endUser.id)
+        }
+        return database.insertApplicationConfig(appConfig)
+      }))
+    })
 })
 .then(() => {
   console.log('Provision done')
   process.exit()
 })
 .catch((err) => {
-  console.error('Provision error', err, err.obj.error.details)
+  console.error('Provision error', err, err.obj && err.obj.error.details)
   process.exit(1)
 })
