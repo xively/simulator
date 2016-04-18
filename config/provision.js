@@ -34,12 +34,12 @@ const LOCATIONS = [{
 
 const homeOrganizations = _.times(5, (idx) => ({
   organizationTemplate: NAMES.HOME_ORG_TEMPLATE,
-  name: `${NAMES.HOME_ORG_TEMPLATE}${idx}`
+  name: `${NAMES.HOME_ORG_TEMPLATE}-${idx}`
 }))
 
 const commercialOrganizations = _.times(3, (idx) => ({
   organizationTemplate: NAMES.COMMERCIAL_ORG_TEMPLATE,
-  name: `${NAMES.COMMERCIAL_ORG_TEMPLATE}${idx}`
+  name: `${NAMES.COMMERCIAL_ORG_TEMPLATE}-${idx}`
 }))
 
 /*
@@ -118,7 +118,7 @@ const homeDevices = _.reduce(homeOrganizations, (devices, organization) => {
     return {
       deviceTemplate: NAMES.HOME_DEVICE_TEMPLATE,
       organization: organization.name,
-      name: `${NAMES.HOME_DEVICE_TEMPLATE}${idx}`,
+      name: `${organization.name}-${NAMES.HOME_DEVICE_TEMPLATE}-${idx}`,
       serialNumber: `${organization.name}-${Date.now()}${idx}`,
       hardwareVersion: `1.1.${idx}`,
       includedSensors: 'Temperature, Humidity, VoC, CO, Dust, Filter',
@@ -140,7 +140,7 @@ const commercialDevices = _.reduce(commercialOrganizations, (devices, organizati
     return {
       deviceTemplate: NAMES.COMMERCIAL_DEVICE_TEMPLATE,
       organization: organization.name,
-      name: `${NAMES.COMMERCIAL_DEVICE_TEMPLATE}${idx}`,
+      name: `${organization.name}-${NAMES.COMMERCIAL_DEVICE_TEMPLATE}-${idx}`,
       serialNumber: `${organization.name}-${Date.now()}${idx}`,
       hardwareVersion: `1.1.${idx}`,
       includedSensors: 'Temperature, Humidity, VoC, CO, Dust, Filter',

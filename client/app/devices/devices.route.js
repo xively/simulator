@@ -2,6 +2,9 @@ const _ = require('lodash')
 
 require('./devices.route.less')
 
+const connectedIcon = require('./images/connected.svg')
+const notConnectedIcon = require('./images/not-connected.svg')
+
 /* @ngInject */
 function devicesRoute ($stateProvider) {
   $stateProvider.state('devices', {
@@ -36,7 +39,10 @@ function devicesRoute ($stateProvider) {
                 </td>
                 <td class="capitalize">{{ device.template.name }}</td>
                 <td>{{ device.provisioningState }}</td>
-                <td>{{ device.connected }}</td>
+                <td>
+                  <span ng-if="device.connected">${connectedIcon}</span>
+                  <span ng-if="!device.connected">${notConnectedIcon}</span>
+                </td>
                 <td>{{ device.location || 'N/A' }}</td>
               </tr>
             </tbody>
