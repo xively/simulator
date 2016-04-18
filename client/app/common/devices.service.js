@@ -47,6 +47,7 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
      */
     subscribeDevice (device) {
       const listener = (update) => {
+        device.ok = true
         _.assign(device.sensors, update)
       }
       const unsubscribeCallbacks = []

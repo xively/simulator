@@ -113,12 +113,16 @@ function deviceDemoRoute ($stateProvider) {
       }
       this.device = device
 
-      $scope.$watch(() => this.device.ok, (ok) => {
+      $scope.$watch(() => this.device.ok, (ok, wasOk) => {
         if (!ok) {
           $rootScope.$broadcast(EVENTS.NOTIFICATION, {
             type: 'error',
-            text: 'Your device reported a mailfunction. Please stand by, our agents are already aware of the issue and will have a look at it very soon.',
-            sticky: true
+            text: 'Your device reported a mailfunction. Please stand by, our agents are already aware of the issue and will have a look at it very soon.'
+          })
+        } else if (!wasOk && ok) {
+          $rootScope.$broadcast(EVENTS.NOTIFICATION, {
+            type: 'success',
+            text: 'The device has been fixed.'
           })
         }
       })
