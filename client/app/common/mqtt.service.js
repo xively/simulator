@@ -19,18 +19,6 @@ function mqttFactory ($log, $q, $rootScope, CONFIG, utils) {
         $log.debug('MQTT#constructor open Xively client with options:', host, options)
         this.client = mqtt.connect(host, options)
 
-        // extend connection handlers
-        const deferred = $q.defer()
-        this.connected = deferred.promise
-
-        this.client.on('connect', () => {
-          deferred.resolve(this.client)
-        })
-
-        this.client.on('error', () => {
-          deferred.reject()
-        })
-
         this.client.on('message', (channel, message) => {
           this.handleMessage(channel, message.toString())
         })
@@ -101,20 +89,15 @@ function mqttFactory ($log, $q, $rootScope, CONFIG, utils) {
         throw new TypeError('MQTT#subscribe: missing arguments')
       }
 
-      // wait for connection to be opened
-      this.connected.then(() => {
-        // subscribe to channel
-        if (!this.channels[channel]) {
-          this.channels[channel] = new Set()
-          $log.debug('MQTT#subscribe:', channel)
-          this.client.subscribe(channel)
-        }
+      // subscribe to channel
+      if (!this.channels[channel]) {
+        this.channels[channel] = new Set()
+        $log.debug('MQTT#subscribe:', channel)
+        this.client.subscribe(channel)
+      }
 
-        // add listener
-        this.channels[channel].add(listener)
-      }, (err) => {
-        $log.error('MQTT#subscribe:', err)
-      })
+      // add listener
+      this.channels[channel].add(listener)
 
       // return unsubscribe function
       return this.unsubscribe.bind(this, channel, listener)
@@ -126,15 +109,13 @@ function mqttFactory ($log, $q, $rootScope, CONFIG, utils) {
      * @param  {Function} listener
      */
     unsubscribe (channel, listener) {
-      this.connected.then(() => {
-        // delete listener
-        this.channels[channel].delete(listener)
-        // unsubscribe from channel when noone is listening
-        if (this.channels[channel].size === 0) {
-          this.client.unsubscribe(channel)
-          delete this.channels[channel]
-        }
-      })
+      // delete listener
+      this.channels[channel].delete(listener)
+      // unsubscribe from channel when noone is listening
+      if (!this.channels[channel].size) {
+        this.client.unsubscribe(channel)
+        delete this.channels[channel]
+      }
     }
 
     /**
@@ -153,9 +134,7 @@ function mqttFactory ($log, $q, $rootScope, CONFIG, utils) {
         } = payload
         message = [timestamp, name, numericValue, stringValue].join(',')
       }
-      this.connected.then(() => {
-        this.client.publish(channel, message)
-      })
+      this.client.publish(channel, message)
     }
   }
 }

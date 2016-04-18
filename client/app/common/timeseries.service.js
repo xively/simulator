@@ -1,6 +1,6 @@
 /* @ngInject */
 function timeseriesFactory ($log, $http, CONFIG) {
-  return new class Blueprint {
+  return {
     /**
      * GET resource
      * @param  {String} resource

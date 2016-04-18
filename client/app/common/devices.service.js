@@ -130,15 +130,11 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
      * @param  {Object} device
      * @return {Promise}
      */
-    getTimeSeries (deviceOrChannel) {
-      const PAGE_SIZE = 100
-
+    getTimeSeries (deviceOrChannel, pageSize = 100) {
       // for one channel
       if (_.isString(deviceOrChannel)) {
         const channel = deviceOrChannel
-        return timeseriesService.getV4(`data/${channel}/latest`, {
-          pageSize: PAGE_SIZE
-        })
+        return timeseriesService.getV4(`data/${channel}/latest`, { pageSize })
         .then((response) => {
           if (response.status !== 200) {
             $log.error('TimeSeries response:', response)
@@ -153,9 +149,7 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
       const device = deviceOrChannel
       const promises = device.channels
         .filter((channel) => channel.persistenceType === 'timeSeries')
-        .map((channel) => timeseriesService.getV4(`data/${channel.channel}`, {
-          pageSize: PAGE_SIZE
-        }))
+        .map((channel) => timeseriesService.getV4(`data/${channel.channel}`, { pageSize }))
 
       return $q.all(promises)
         .then((timeseries) => timeseries.filter((response) => response.status !== 404))
