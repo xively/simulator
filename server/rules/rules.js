@@ -51,7 +51,7 @@ class RulesEngine {
       method: 'GET',
       qs: {
         accountId: config.account.accountId,
-        pageSize: 100 // FIXME: this sux
+        pageSize: 100 // FIXME: handle this in a more generic way
       },
       headers: {
         authorization: `Bearer ${options.token}`

@@ -3,6 +3,14 @@ const _ = require('lodash')
 const rulesTemplate = require('./rules.html')
 const rulesManageTemplate = require('./rules.manage.html')
 
+function removeBlankLines (rule) {
+  rule.conditions.rules = rule.conditions.rules.filter((rule) => rule.template)
+  if (rule.conditions.additionalRules) {
+    rule.conditions.additionalRules = rule.conditions.additionalRules.filter((rule) => rule.template)
+  }
+  return rule
+}
+
 /* @ngInject */
 function rulesRoute ($stateProvider) {
   $stateProvider.state('rules', {
@@ -76,7 +84,7 @@ function rulesRoute ($stateProvider) {
       }
 
       this.save = () => {
-        rulesService.createRule(this.rule)
+        rulesService.createRule(removeBlankLines(this.rule))
           .then(() => $state.go('rules.list'))
       }
     }
@@ -110,7 +118,7 @@ function rulesRoute ($stateProvider) {
       this.rule = rule
 
       this.save = () => {
-        rulesService.updateRule($stateParams.ruleId, this.rule)
+        rulesService.updateRule($stateParams.ruleId, removeBlankLines(this.rule))
           .then(() => $state.go('rules.list'))
       }
     }

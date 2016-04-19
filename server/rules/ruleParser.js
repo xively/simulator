@@ -74,9 +74,13 @@ class RuleParser {
       const mode = entry.conditions.mode === 'all' ? 'every' : 'some'
       const sensorValues = {}
       const ruleResults = entry.conditions.rules.map((rule) => {
+        if (!rule.template) {
+          return true
+        }
         if (rule.template.id !== this.device.deviceTemplateId) {
           return false
         }
+
         const sensorValue = this.channels.get(rule.channel.name).latestValue
         sensorValues[rule.channel.name] = sensorValue
 
