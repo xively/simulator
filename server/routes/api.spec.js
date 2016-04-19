@@ -2,8 +2,10 @@
 
 const request = require('super-request')
 const expect = require('chai').expect
+
 const server = require('../app')
 const database = require('../database')
+const rulesEngine = require('../rules')
 
 describe('API endpoints (/api/*)', () => {
   describe('GET /firmware/:id', () => {
@@ -38,7 +40,7 @@ describe('API endpoints (/api/*)', () => {
     })
   })
 
-  describe.skip('GET /rules', () => {
+  describe('GET /rules', () => {
     it('should get rules', function * () {
       this.sandbox.stub(database, 'selectRules').returnsWithResolve(['data'])
 
@@ -52,41 +54,38 @@ describe('API endpoints (/api/*)', () => {
     })
   })
 
-  describe.skip('GET /rules/:id', () => {
+  describe('GET /rules/:id', () => {
     it('should get rules', function * () {
-      this.sandbox.stub(database, 'selectRule')
-        .withArgs('id')
-        .returnsWithResolve(['data'])
-
+      const selectRuleStub = this.sandbox.stub(database, 'selectRule').returnsWithResolve(['data'])
       const resp = yield request(server.listen())
-        .get('/api/rules/id')
+        .get('/api/rules/ruleId')
         .json(true)
         .expect(200)
         .end()
 
       expect(resp.body).to.eql('data')
+      expect(selectRuleStub).to.be.calledWith('ruleId')
     })
 
     it('should response with 404 if there is no such rule', function * () {
-      this.sandbox.stub(database, 'selectRule').returnsWithResolve([])
+      const selectRuleStub = this.sandbox.stub(database, 'selectRule').returnsWithResolve([])
 
       yield request(server.listen())
-        .get('/api/rules/id')
+        .get('/api/rules/ruleId')
         .json(true)
         .expect(404)
         .end()
+
+      expect(selectRuleStub).to.be.calledWith('ruleId')
     })
   })
 
-  describe.skip('POST /rules', () => {
+  describe('POST /rules', () => {
     it('should create a new rule', function * () {
-      const observer = server.get('observer')
       const ruleConfig = { a: 1 }
 
-      this.sandbox.stub(database, 'insertRule')
-        .withArgs(ruleConfig)
-        .returnsWithResolve(['data'])
-      this.sandbox.stub(observer, 'resetRules')
+      const insertRuleStub = this.sandbox.stub(database, 'insertRule').returnsWithResolve(['data'])
+      const updateRulesStub = this.sandbox.stub(rulesEngine, 'updateRules')
 
       const resp = yield request(server.listen())
         .post('/api/rules')
@@ -96,58 +95,50 @@ describe('API endpoints (/api/*)', () => {
         .end()
 
       expect(resp.body).to.eql('data')
-      expect(observer.resetRules).to.have.been.called // eslint-disable-line
+      expect(insertRuleStub).to.be.calledWith(ruleConfig)
+      expect(updateRulesStub).to.be.called // eslint-disable-line
     })
   })
 
-  describe.skip('DELETE /rules/:id', () => {
+  describe('DELETE /rules/:id', () => {
     it('should remove a rule', function * () {
-      const observer = server.get('observer')
-
-      this.sandbox.stub(database, 'deleteRule')
-        .withArgs('id')
-        .returnsWithResolve(['data'])
-      this.sandbox.stub(observer, 'resetRules')
+      const deleteRuleStub = this.sandbox.stub(database, 'deleteRule').returnsWithResolve(['data'])
+      const updateRulesStub = this.sandbox.stub(rulesEngine, 'updateRules')
 
       yield request(server.listen())
-        .del('/api/rules/id')
+        .del('/api/rules/ruleId')
         .json(true)
         .expect(204)
         .end()
 
-      expect(observer.resetRules).to.have.been.called // eslint-disable-line
+      expect(deleteRuleStub).to.be.calledWith('ruleId')
+      expect(updateRulesStub).to.be.called // eslint-disable-line
     })
 
     it('should response with 404 if there is no such rule', function * () {
-      const observer = server.get('observer')
-
-      this.sandbox.stub(database, 'deleteRule')
-        .withArgs('id')
-        .returnsWithResolve([])
-      this.sandbox.stub(observer, 'resetRules')
+      const deleteRuleStub = this.sandbox.stub(database, 'deleteRule').returnsWithResolve([])
+      const updateRulesStub = this.sandbox.stub(rulesEngine, 'updateRules')
 
       yield request(server.listen())
-        .del('/api/rules/id')
+        .del('/api/rules/ruleId')
         .json(true)
         .expect(404)
         .end()
 
-      expect(observer.resetRules).not.to.have.been.called // eslint-disable-line
+      expect(deleteRuleStub).to.be.calledWith('ruleId')
+      expect(updateRulesStub).to.not.be.called // eslint-disable-line
     })
   })
 
-  describe.skip('PUT /rules/:id', () => {
+  describe('PUT /rules/:id', () => {
     it('should update a rule', function * () {
-      const observer = server.get('observer')
       const ruleConfig = { a: 1 }
 
-      this.sandbox.stub(database, 'updateRule')
-        .withArgs('id', ruleConfig)
-        .returnsWithResolve(['data'])
-      this.sandbox.stub(observer, 'resetRules')
+      const updateRuleStub = this.sandbox.stub(database, 'updateRule').returnsWithResolve(['data'])
+      const updateRulesStub = this.sandbox.stub(rulesEngine, 'updateRules')
 
-      yield request(server.listen())
-        .put('/api/rules/id')
+      const resp = yield request(server.listen())
+        .put('/api/rules/ruleId')
         .body({
           ruleConfig
         })
@@ -155,22 +146,23 @@ describe('API endpoints (/api/*)', () => {
         .expect(200)
         .end()
 
-      expect(observer.resetRules).to.have.been.called // eslint-disable-line
+      expect(resp.body).to.eql('data')
+      expect(updateRuleStub).to.be.calledWith('ruleId')
+      expect(updateRulesStub).to.be.called // eslint-disable-line
     })
 
     it('should response with 404 if there is no such rule', function * () {
-      const observer = server.get('observer')
-
-      this.sandbox.stub(database, 'updateRule').returnsWithResolve([])
-      this.sandbox.stub(observer, 'resetRules')
+      const updateRuleStub = this.sandbox.stub(database, 'updateRule').returnsWithResolve([])
+      const updateRulesStub = this.sandbox.stub(rulesEngine, 'updateRules')
 
       yield request(server.listen())
-        .put('/api/rules/id')
+        .put('/api/rules/ruleId')
         .json(true)
         .expect(404)
         .end()
 
-      expect(observer.resetRules).not.to.have.been.called // eslint-disable-line
+      expect(updateRuleStub).to.be.calledWith('ruleId')
+      expect(updateRulesStub).to.not.be.called // eslint-disable-line
     })
   })
 })

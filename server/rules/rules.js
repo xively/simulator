@@ -9,7 +9,9 @@ const RuleParser = require('./ruleParser')
 class RulesEngine {
   constructor () {
     this.ruleParsers = new Map()
-    this.init()
+    if (process.env.NODE_ENV !== 'test') {
+      this.init()
+    }
   }
 
   init () {

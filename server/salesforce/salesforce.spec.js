@@ -1,133 +1,111 @@
 'use strict'
 
 const expect = require('chai').expect
-const Salesforce = require('./salesforce')
 const jsforce = require('jsforce')
-const logger = require('winston')
+const Salesforce = require('./salesforce')
+const config = require('../../config/server')
 
-describe.skip('Salesforce', () => {
-  it('should throw error if nothing is passed', () => {
-    try {
-      new Salesforce() // eslint-disable-line
-    } catch (ex) {
-      expect(ex.message).to.eql('Salesforce options are missing (user, password, token)')
-      return
-    }
+describe('Salesforce', () => {
+  let salesforce
 
-    throw new Error('Should not get here')
-  })
-
-  it('should throw error if options doesn\'t have user', () => {
-    const options = {
-      password: 'password',
+  beforeEach(function () {
+    config.salesforce = {
+      user: 'user',
+      pass: 'pass',
       token: 'token'
     }
 
-    try {
-      new Salesforce(options) // eslint-disable-line
-    } catch (ex) {
-      expect(ex.message).to.eql('Salesforce options are missing (user, password, token)')
-      return
-    }
-
-    throw new Error('Should not get here')
-  })
-
-  it('should throw error if options doesn\'t have password', () => {
-    const options = {
-      user: 'user',
-      token: 'token'
-    }
-
-    try {
-      new Salesforce(options) // eslint-disable-line
-    } catch (ex) {
-      expect(ex.message).to.eql('Salesforce options are missing (user, password, token)')
-      return
-    }
-
-    throw new Error('Should not get here')
-  })
-
-  it('should throw error if options doesn\'t have token', () => {
-    const options = {
-      user: 'user',
-      password: 'password'
-    }
-
-    try {
-      new Salesforce(options) // eslint-disable-line
-    } catch (ex) {
-      expect(ex.message).to.eql('Salesforce options are missing (user, password, token)')
-      return
-    }
-
-    throw new Error('Should not get here')
-  })
-
-  it('should initiate without error', function () {
-    const options = {
-      user: 'user',
-      password: 'password',
-      token: 'token'
-    }
-
-    const loginSpy = this.sandbox.spy()
-    this.sandbox.stub(jsforce, 'Connection').returns({
-      login: loginSpy
+    function Connection () {}
+    Connection.prototype.login = this.sandbox.spy(() => Promise.resolve())
+    Connection.prototype.sobject = this.sandbox.spy(function () {
+      return this
     })
+    Connection.prototype.upsertBulk = this.sandbox.spy(() => Promise.resolve([]))
+    Connection.prototype.insert = this.sandbox.spy(() => Promise.resolve([]))
+    Connection.prototype.upsert = this.sandbox.spy(() => Promise.resolve([]))
+    Connection.prototype.retrieve = this.sandbox.spy(() => Promise.resolve())
 
-    new Salesforce(options) // eslint-disable-line
-    expect(loginSpy).to.be.calledWith('user', 'passwordtoken')
+    this.sandbox.stub(jsforce, 'Connection', Connection)
+    salesforce = new Salesforce()
   })
 
-  it('should initiate without error', function () {
-    const options = {
-      user: 'user',
-      password: 'password',
-      token: 'token'
-    }
-
-    const loginSpy = this.sandbox.spy()
-    this.sandbox.stub(jsforce, 'Connection').returns({
-      login: loginSpy
-    })
-
-    new Salesforce(options) // eslint-disable-line
-    expect(loginSpy).to.be.calledWith('user', 'passwordtoken')
-  })
-
-  it.skip('should add assets', function () {
-    const options = {
-      user: 'user',
-      password: 'password',
-      token: 'token'
-    }
+  it('should add assets', function (done) {
     const assets = [{
       product: 'product',
       serial: 'serial',
       deviceId: 'deviceId',
       orgId: 'orgId'
     }]
-    const upsertBulkSpy = this.sandbox.spy(() => Promise.resolve([{
-      success: true
-    }]))
-    const sobjectSpy = this.sandbox.spy(function () {
-      return this
-    })
 
-    this.sandbox.stub(jsforce, 'Connection').returns({
-      login: () => Promise.resolve(),
-      sobject: sobjectSpy,
-      upsertBulk: upsertBulkSpy
-    })
+    const transformedAssets = [{
+      Name: 'product',
+      SerialNumber: 'serial',
+      xively__Device_ID__c: 'deviceId',
+      Contact: { xively__XI_End_User_ID__c: 'orgId' }
+    }]
 
-    const loggerSpy = this.sandbox.spy(logger, 'info')
-
-    const salesforce = new Salesforce(options)
     salesforce.addAssets(assets)
+      .then(() => {
+        expect(salesforce.connection.sobject).to.be.calledWith('Asset')
+        expect(salesforce.connection.upsertBulk).to.be.calledWith(transformedAssets, 'xively__Device_ID__c')
+        done(null)
+      })
+      .catch(done)
+  })
 
-    expect(sobjectSpy).to.be.calledWith('Asset')
-    expect(loggerSpy).to.be.calledWith('Salesforce #addAssets', 'inserted successfully: serial')
+  it('should add cases', function (done) {
+    const cases = [{
+      subject: 'subject',
+      description: 'description',
+      deviceId: 'deviceId',
+      orgId: 'orgId'
+    }]
+
+    const transformedCases = [{
+      Subject: 'subject',
+      Description: 'description',
+      Contact: { xively__XI_End_User_ID__c: 'orgId' },
+      Asset: { xively__Device_ID__c: 'deviceId' },
+      xively__XI_Device_ID__c: 'deviceId'
+    }]
+
+    salesforce.addCases(cases)
+      .then(() => {
+        expect(salesforce.connection.sobject).to.be.calledWith('Case')
+        expect(salesforce.connection.insert).to.be.calledWith(transformedCases)
+        done(null)
+      })
+      .catch(done)
+  })
+
+  it('should add contacts', function (done) {
+    const contacts = [{
+      email: 'email',
+      orgId: 'orgId'
+    }]
+
+    const transformedContacts = [{
+      Email: 'email',
+      xively__XI_End_User_ID__c: 'orgId'
+    }]
+
+    salesforce.addContacts(contacts)
+      .then(() => {
+        expect(salesforce.connection.sobject).to.be.calledWith('Contact')
+        expect(salesforce.connection.upsert).to.be.calledWith(transformedContacts, 'xively__XI_End_User_ID__c')
+        done(null)
+      })
+      .catch(done)
+  })
+
+  it('should retrieve a contact', function (done) {
+    const contactId = 'contactId'
+    salesforce.retrieveContact(contactId)
+      .then(() => {
+        expect(salesforce.connection.sobject).to.be.calledWith('Contact')
+        expect(salesforce.connection.retrieve).to.be.calledWith(contactId)
+        done(null)
+      })
+      .catch(done)
   })
 })

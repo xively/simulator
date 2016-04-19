@@ -31,7 +31,7 @@ class Salesforce {
       Contact: { xively__XI_End_User_ID__c: a.orgId }
     }))
 
-    this.loggedIn
+    return this.loggedIn
       .then(() => this.connection.sobject('Asset').upsertBulk(assets, 'xively__Device_ID__c'))
       .then((results) => {
         results.forEach((result, idx) => {
@@ -44,6 +44,7 @@ class Salesforce {
       })
       .catch((err) => {
         logger.error('Salesforce #addAssets', err)
+        throw new Error(err)
       })
   }
 
@@ -58,6 +59,7 @@ class Salesforce {
       Asset: { xively__Device_ID__c: c.deviceId },
       xively__XI_Device_ID__c: c.deviceId
     }))
+
     return this.loggedIn
       .then(() => this.connection.sobject('Case').insert(cases))
       .then((results) => {
@@ -83,7 +85,7 @@ class Salesforce {
     }))
 
     // TODO limit
-    this.loggedIn
+    return this.loggedIn
       .then(() => this.connection.sobject('Contact').upsert(contacts.slice(0, 10), 'xively__XI_End_User_ID__c'))
       .then((results) => {
         results.forEach((result, idx) => {
@@ -107,4 +109,4 @@ class Salesforce {
   };
 }
 
-module.exports = new Salesforce()
+module.exports = Salesforce
