@@ -107,7 +107,9 @@ class RuleParser {
         logger.debug(`rule parser#creating SalesForce ticket for rule ${entry.name}`)
         salesforce.addCases([{
           subject: entry.actions.salesforceCase.value,
-          description: 'Test description'
+          description: 'Test description',
+          deviceId: this.device.id,
+          orgId: this.device.organizationId
         }])
           .then(() => {
             entry.reported = true
