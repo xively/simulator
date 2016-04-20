@@ -9,6 +9,9 @@ const config = {
   database: {
     pgUri: process.env.DATABASE_URL || 'postgres://localhost:5432/concaria'
   },
+  habanero: {
+    host: process.env.HABANERO_HOST
+  },
   server: {
     port: process.env.PORT || 5000
   },

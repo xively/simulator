@@ -1,3 +1,10 @@
 'use strict'
 
-module.exports = require('./rules')
+const RulesEngine = require('./rules')
+let rulesEngine
+
+if (!rulesEngine) {
+  rulesEngine = new RulesEngine()
+}
+
+module.exports = rulesEngine

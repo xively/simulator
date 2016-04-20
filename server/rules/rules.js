@@ -9,12 +9,17 @@ const RuleParser = require('./ruleParser')
 class RulesEngine {
   constructor () {
     this.ruleParsers = new Map()
-    if (process.env.NODE_ENV !== 'test') {
-      this.init()
-    }
+    this.disabled = config.habanero.host || process.env.NODE_ENV === 'test'
+
+    this.init()
   }
 
   init () {
+    if (this.disabled) {
+      logger.debug('RulesEngine is disabled')
+      return
+    }
+
     this.getToken()
       .then((token) => {
         Promise.all([
@@ -41,6 +46,11 @@ class RulesEngine {
   }
 
   updateRules () {
+    if (this.disabled) {
+      logger.debug('RulesEngine is disabled')
+      return
+    }
+
     this.getRules()
       .then((rules) => {
         this.ruleParsers.forEach((ruleParser) => ruleParser.updateRules(rules))
@@ -83,4 +93,4 @@ class RulesEngine {
   }
 }
 
-module.exports = new RulesEngine()
+module.exports = RulesEngine

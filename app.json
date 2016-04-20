@@ -30,6 +30,10 @@
     "SALESFORCE_TOKEN": {
       "description": "Your Salesforce token",
       "required": false
+    },
+    "HABANERO_HOST": {
+      "description": "Heroku domain or app id for habanero",
+      "required": false
     }
   }
 }
