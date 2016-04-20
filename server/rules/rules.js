@@ -22,7 +22,7 @@ class RulesEngine {
 
     this.getToken()
       .then((token) => {
-        Promise.all([
+        return Promise.all([
           this.getRules(),
           this.getDevices({ token })
         ])
