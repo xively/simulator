@@ -22,7 +22,7 @@ const boldchatComponent = {
   controller ($window, $location) {
     this.demoView = $location.path().includes('/demo')
 
-    const bdid = '-1'
+    const bdid = '457830310750908782'
     const _bcvma = [
       ['setAccountID', '461159850398350203'],
       ['setParameter', 'WebsiteID', '457763915474596414'],
@@ -35,7 +35,6 @@ const boldchatComponent = {
     this.open = () => {
       $window._bcvmw.chatWindow({
         bdid,
-        cwdid: '457830322156144216',
         element: 'boldchat',
         embed: true,
         height: 530,
