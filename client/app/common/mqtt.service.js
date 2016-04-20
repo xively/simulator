@@ -109,12 +109,14 @@ function mqttFactory ($log, $q, $rootScope, CONFIG, utils) {
      * @param  {Function} listener
      */
     unsubscribe (channel, listener) {
-      // delete listener
-      this.channels[channel].delete(listener)
-      // unsubscribe from channel when noone is listening
-      if (!this.channels[channel].size) {
-        this.client.unsubscribe(channel)
-        delete this.channels[channel]
+      if (this.channels[channel]) {
+        // delete listener
+        this.channels[channel].delete(listener)
+        // unsubscribe from channel when noone is listening
+        if (!this.channels[channel].size) {
+          this.client.unsubscribe(channel)
+          delete this.channels[channel]
+        }
       }
     }
 

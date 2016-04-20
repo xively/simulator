@@ -1,15 +1,4 @@
 require('./rules.less')
-const _ = require('lodash')
-const rulesTemplate = require('./rules.html')
-const rulesManageTemplate = require('./rules.manage.html')
-
-function removeBlankLines (rule) {
-  rule.conditions.rules = rule.conditions.rules.filter((rule) => rule.template)
-  if (rule.conditions.additionalRules) {
-    rule.conditions.additionalRules = rule.conditions.additionalRules.filter((rule) => rule.template)
-  }
-  return rule
-}
 
 /* @ngInject */
 function rulesRoute ($stateProvider) {
@@ -21,7 +10,38 @@ function rulesRoute ($stateProvider) {
 
   $stateProvider.state('rules.list', {
     url: '',
-    template: rulesTemplate,
+    template: `
+      <section class="rules container">
+        <header>
+          <h1 class="title">Rules List</h1>
+          <a class="pull-right new-button" ui-sref="rules.create">
+            <button type="button" class="button primary">New Rule</button>
+          </a>
+        </header>
+
+        <div class="content">
+          <div class="no-rules" ng-if="!rules.rules.length">
+            <h3>Your rules will appear here</h3>
+            <p>At the moment you haven't created any rules. You can make one by
+              <a href="" ui-sref="rules.create">clicking here</a>.</p>
+          </div>
+
+          <div ng-if="rules.rules.length">
+            <ul class="rule-list">
+              <li ng-repeat="rule in rules.rules track by $index">
+                <a class="rule-name" ui-sref="rules.edit({ruleId: rule.id})">{{rule.ruleConfig.name}}</a>
+                <div class="pull-right">
+                  <a ui-sref="rules.edit({ruleId: rule.id})">
+                    <button type="button" class="button primary-outline">View rule</button>
+                  </a>
+                  <button class="button delete-outline" ng-click="rules.removeRule(rule.id)">Remove rule</button>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    `,
     resolve: {
       rules: (rulesService) => {
         return rulesService.getRules()
@@ -40,86 +60,6 @@ function rulesRoute ($stateProvider) {
                 this.rules = result.data
               })
           })
-      }
-    }
-  })
-
-  $stateProvider.state('rules.create', {
-    url: '/create',
-    template: rulesManageTemplate,
-    controllerAs: 'rulesManage',
-    resolve: {
-      templates: (devicesService) => {
-        return devicesService.getDeviceTemplates()
-          .then((templates) => {
-            return _.map(templates, (template) => {
-              return {
-                id: template.id,
-                name: template.name,
-                channels: template.channelTemplates
-              }
-            })
-          })
-      }
-    },
-    controller (templates, $state, rulesService) {
-      this.title = 'New Rule'
-      this.templates = templates
-      this.rule = {
-        name: '',
-        conditions: {
-          mode: 'all',
-          rules: [{
-            operator: '$eq',
-            editing: false
-          }],
-          additionalRules: []
-        },
-        actions: {
-          salesforceCase: {
-            value: '',
-            enabled: false
-          }
-        }
-      }
-
-      this.save = () => {
-        rulesService.createRule(removeBlankLines(this.rule))
-          .then(() => $state.go('rules.list'))
-      }
-    }
-  })
-
-  $stateProvider.state('rules.edit', {
-    url: '/:ruleId',
-    template: rulesManageTemplate,
-    resolve: {
-      rule: ($stateParams, rulesService) => {
-        return rulesService.getRule($stateParams.ruleId)
-          .then((result) => result.data.ruleConfig)
-      },
-      templates: (devicesService) => {
-        return devicesService.getDeviceTemplates()
-          .then((templates) => {
-            return _.map(templates, (template) => {
-              return {
-                id: template.id,
-                name: template.name,
-                channels: template.channelTemplates
-              }
-            })
-          })
-      }
-    },
-    controllerAs: 'rulesManage',
-    controller (rule, templates, $state, $stateParams, rulesService) {
-      this.title = 'Edit rule'
-      this.templates = templates
-      this.rule = rule
-
-      this.save = () => {
-        rulesService.updateRule($stateParams.ruleId, removeBlankLines(this.rule))
-          .then(() => $state.go('rules.list'))
       }
     }
   })
