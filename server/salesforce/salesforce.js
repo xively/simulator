@@ -2,6 +2,7 @@
 
 const logger = require('winston')
 const jsforce = require('jsforce')
+const _ = require('lodash')
 const config = require('../../config/server')
 
 class Salesforce {
@@ -79,20 +80,22 @@ class Salesforce {
    * @param {Array} contacts
    */
   addContacts (contacts) {
-    contacts = contacts.map((c) => ({
+    contacts = _.uniq(contacts.map((c) => ({
       Email: c.email,
       xively__XI_End_User_ID__c: c.orgId
-    }))
+    })))
 
-    // TODO limit
+    const chunksOfContacts = _.chunk(contacts, 10)
+
     return this.loggedIn
-      .then(() => this.connection.sobject('Contact').upsert(contacts.slice(0, 10), 'xively__XI_End_User_ID__c'))
+      .then(() => Promise.all(chunksOfContacts.map((chunk) => this.connection.sobject('Contact').upsert(chunk, 'xively__XI_End_User_ID__c'))))
+      .then((chunkOfResults) => _.flatten(chunkOfResults))
       .then((results) => {
         results.forEach((result, idx) => {
           if (!result.success) {
             throw result
           }
-          logger.info('Salesforce #addContacts', `inserted successfully: ${contacts[idx].Email}`)
+          logger.info('Salesforce #addContacts', `inserted successfully: ${JSON.stringify(contacts[idx])}`)
         })
       })
       .catch((err) => {
