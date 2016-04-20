@@ -106,7 +106,19 @@ class Salesforce {
   retrieveContact (id) {
     return this.loggedIn
       .then(() => this.connection.sobject('Contact').retrieve(id))
-  };
+  }
+
+  /**
+   * @return {Promise} user email as a promise
+   */
+  getUserEmail () {
+    return this.loggedIn
+      .then(() => {
+        console.log(this.connection)
+        return this.connection.query(`SELECT Id, Email FROM User WHERE Id = '${this.connection.userInfo.id}'`)
+      })
+      .then((result) => result.records[0].Email)
+  }
 }
 
 module.exports = Salesforce

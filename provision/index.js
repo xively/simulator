@@ -10,11 +10,36 @@ const integration = require('./integration')
 const database = require('../server/database')
 const config = require('../config/provision')
 
-blueprint.getJwt().then(integration).then(() => {
+// const salesforce = require('../server/salesforce')
+// const createAccountUser = () => {
+//   logger.info('Creating: account user')
+//   return salesforce.getUserEmail().then((idmUserEmail) => {
+//     console.log(idmUserEmail)
+//     const item = {
+//       accountId: process.env.XIVELY_ACCOUNT_ID
+//     }
+//     if (process.env.SALESFORCE_USER) {
+//       Object.assign(item, {
+//         createIdmUser: true,
+//         idmUserEmail
+//       })
+//     }
+//     return blueprint.create({
+//       apiMethod: 'accountUsers',
+//       responseField: 'accountUser',
+//       items: [item]
+//     })
+//   })
+// }
+
+blueprint.getJwt()
+.then((jwt) => integration(jwt))
+.then(() => {
   return Promise.all([
     blueprint.createOrganizationTemplates(config.organizationTemplates),
     blueprint.createDeviceTemplates(config.deviceTemplates),
-    blueprint.createEndUserTemplates(config.endUserTemplates)
+    blueprint.createEndUserTemplates(config.endUserTemplates),
+    blueprint.createAccountUser()
   ])
 })
 .then((arr) => ({

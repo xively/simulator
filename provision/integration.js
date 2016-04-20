@@ -44,8 +44,8 @@ function integration (jwt) {
       })
 
       return removeAccount()
-        .catch(addAccount)
-        .then(addAccount)
+        .catch(() => addAccount())
+        .then(() => addAccount())
     })
     .then(() => logger.info('Integrating with SalesForce success'))
     .catch((err) => {

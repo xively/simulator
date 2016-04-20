@@ -141,6 +141,24 @@ const blueprint = {
     })
   },
 
+  createAccountUser () {
+    logger.info('Creating: account user')
+    const item = {
+      accountId: process.env.XIVELY_ACCOUNT_ID
+    }
+    if (process.env.SALESFORCE_USER) {
+      Object.assign(item, {
+        createIdmUser: true,
+        idmUserEmail: process.env.SALESFORCE_USER
+      })
+    }
+    return this.create({
+      apiMethod: 'accountUsers',
+      responseField: 'accountUser',
+      items: [item]
+    })
+  },
+
   create (options) {
     if (!this.client) {
       this.client = this.getJwt()
