@@ -116,10 +116,7 @@ class Salesforce {
    */
   getUserEmail () {
     return this.loggedIn
-      .then(() => {
-        console.log(this.connection)
-        return this.connection.query(`SELECT Id, Email FROM User WHERE Id = '${this.connection.userInfo.id}'`)
-      })
+      .then(() => this.connection.query(`SELECT Id, Email FROM User WHERE Id = '${this.connection.userInfo.id}'`))
       .then((result) => result.records[0].Email)
   }
 }

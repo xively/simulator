@@ -138,21 +138,12 @@ class Blueprint {
     })
   }
 
-  createAccountUser () {
-    logger.info('Creating: account user')
-    const item = {
-      accountId: this.accountId
-    }
-    if (this.salesforce.user) {
-      Object.assign(item, {
-        createIdmUser: true,
-        idmUserEmail: this.salesforce.user
-      })
-    }
+  createAccountUsers (accountUsers) {
+    logger.info('Creating: account users')
     return this.create({
       url: 'account-users',
       responseField: 'accountUser',
-      items: [item]
+      items: accountUsers
     })
   }
 }

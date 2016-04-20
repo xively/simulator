@@ -6,31 +6,30 @@ const path = require('path')
 const _ = require('lodash')
 const logger = require('winston')
 const blueprint = require('./blueprint')
+const salesforce = require('../server/salesforce')
 const integration = require('./integration')
 const database = require('../server/database')
 const config = require('../config/provision')
 
-// const salesforce = require('../server/salesforce')
-// const createAccountUser = () => {
-//   logger.info('Creating: account user')
-//   return salesforce.getUserEmail().then((idmUserEmail) => {
-//     console.log(idmUserEmail)
-//     const item = {
-//       accountId: process.env.XIVELY_ACCOUNT_ID
-//     }
-//     if (process.env.SALESFORCE_USER) {
-//       Object.assign(item, {
-//         createIdmUser: true,
-//         idmUserEmail
-//       })
-//     }
-//     return blueprint.create({
-//       apiMethod: 'accountUsers',
-//       responseField: 'accountUser',
-//       items: [item]
-//     })
-//   })
-// }
+const createAccountUser = () => {
+  const salesforceUser = process.env.SALESFORCE_USER
+  const account = {
+    accountId: process.env.XIVELY_ACCOUNT_ID
+  }
+
+  if (!salesforceUser) {
+    return blueprint.createAccountUsers([account])
+  }
+
+  return salesforce.getUserEmail().then((idmUserEmail) => {
+    Object.assign(account, {
+      createIdmUser: true,
+      idmUserEmail
+    })
+
+    return blueprint.createAccountUsers([account])
+  })
+}
 
 blueprint.getJwt()
 .then((jwt) => integration(jwt))
@@ -39,7 +38,7 @@ blueprint.getJwt()
     blueprint.createOrganizationTemplates(config.organizationTemplates),
     blueprint.createDeviceTemplates(config.deviceTemplates),
     blueprint.createEndUserTemplates(config.endUserTemplates),
-    blueprint.createAccountUser()
+    createAccountUser()
   ])
 })
 .then((arr) => ({
