@@ -42,7 +42,8 @@ describe('Database', () => {
     secret: 'secret',
     template: {
       name: 'templateName'
-    }
+    },
+    name: 'name'
   }
 
   afterEach(function * () {
