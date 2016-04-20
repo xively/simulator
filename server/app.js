@@ -10,7 +10,6 @@ const config = require('../config/server')
 const devicesConfig = require('../config/devices')
 
 const routes = require('./routes')
-const proxy = require('./proxy')
 
 const app = express()
 
@@ -29,9 +28,6 @@ app.use('/script/config.js', (req, res) => {
     window.DEVICES_CONFIG = ${JSON.stringify(devicesConfig)}
   `)
 })
-
-// Proxy route
-app.use('/api/proxy', proxy)
 
 // Serve up favicon
 app.use(favicon(path.join(__dirname, '/favicon.ico')))
