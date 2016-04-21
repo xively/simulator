@@ -39,7 +39,7 @@ const filterRule = (latestValue, sensors) => {
 const config = {
   hiddenChannels: ['sensor', 'control'],
   widgets: [],
-  HomeAirPurifier: {
+  ['Home Air Purifier']: {
     image: '/devices/images/home-air-purifier.png',
     width: 680,
     widgets: ['fan-state-control', 'filter'],

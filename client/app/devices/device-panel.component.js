@@ -6,7 +6,7 @@ const devicePanelComponent = {
       <div class="control-panel content">
         <div class="section">
           <h1 class="type">{{ ::devicePanel.device.template.name }}</h1>
-          <p class="name">{{ ::devicePanel.device.name }}</p>
+          <p class="name">{{ ::devicePanel.device.serialNumber }}</p>
           <!-- TODO: replace with real end user name -->
           <p class="username">Jane Smith</p>
           <p class="email">{{ ::devicePanel.config.account.emailAddress }}</p>

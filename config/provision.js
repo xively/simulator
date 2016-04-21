@@ -1,32 +1,20 @@
 'use strict'
 
 const _ = require('lodash')
+const faker = require('faker')
+const geojsonExtent = require('geojson-extent')
+const geojsonRandom = require('geojson-random')
+const map = require('./map')
 
 const NAMES = {
   HOME_ORG_TEMPLATE: 'Home',
-  HOME_DEVICE_TEMPLATE: 'HomeAirPurifier',
-  HOME_USER: 'User',
-  COMMERCIAL_ORG_TEMPLATE: 'Commercial',
+  HOME_DEVICE_TEMPLATE: 'Home Air Purifier',
+  HOME_USER: 'Home User',
+  COMMERCIAL_ORG_TEMPLATE: 'Warehouse',
   COMMERCIAL_DEVICE_TEMPLATE: 'Industrial HVAC',
   COMMERCIAL_OPERATIONS_MANAGER: 'Operations Manager',
   COMMERCIAL_SERVICE_TECHNICIAN: 'Service Technician'
 }
-
-const USER_NAMES = ['Jane Smith', 'Tommy Atkins', 'Bob Thompson']
-
-const LOCATIONS = [{
-  name: 'London',
-  lat: 51.5285582,
-  lon: -0.2416796
-}, {
-  name: 'New York',
-  lat: 40.7055651,
-  lon: -74.1180857
-}, {
-  name: 'San Francisco',
-  lat: 37.7576948,
-  lon: -122.4726194
-}]
 
 /*
  * organizations
@@ -34,12 +22,12 @@ const LOCATIONS = [{
 
 const homeOrganizations = _.times(5, (idx) => ({
   organizationTemplate: NAMES.HOME_ORG_TEMPLATE,
-  name: `${NAMES.HOME_ORG_TEMPLATE}-${idx}`
+  name: `${NAMES.HOME_ORG_TEMPLATE}-${idx + 1}`
 }))
 
 const commercialOrganizations = _.times(3, (idx) => ({
   organizationTemplate: NAMES.COMMERCIAL_ORG_TEMPLATE,
-  name: `${NAMES.COMMERCIAL_ORG_TEMPLATE}-${idx}`
+  name: `${NAMES.COMMERCIAL_ORG_TEMPLATE}-${idx + 1}`
 }))
 
 /*
@@ -112,14 +100,16 @@ const commercialDeviceChannels = _.map({
  * devices
  */
 
-const homeDevices = _.reduce(homeOrganizations, (devices, organization) => {
-  return _.times(3, (idx) => {
-    const location = _.sample(LOCATIONS)
+const homeDevices = _.reduce(homeOrganizations, (devices, organization, orgIdx) => {
+  const DEVICES_PER_ORGANIZATION = 3
+  return _.times(DEVICES_PER_ORGANIZATION, (idx) => {
+    const bbox = geojsonExtent(_.sample(map.features))
+    const location = geojsonRandom.position(bbox)
     return {
       deviceTemplate: NAMES.HOME_DEVICE_TEMPLATE,
       organization: organization.name,
-      name: `${organization.name}-${NAMES.HOME_DEVICE_TEMPLATE}-${idx}`,
-      serialNumber: `${organization.name}-${Date.now()}${idx}`,
+      name: `${NAMES.HOME_DEVICE_TEMPLATE.replace(/\s/g, '-')}-${idx}`,
+      serialNumber: `${NAMES.HOME_DEVICE_TEMPLATE.replace(/\s/g, '-')}-${_.padStart(DEVICES_PER_ORGANIZATION * orgIdx + idx + 1, 6, '0')}`,
       hardwareVersion: `1.1.${idx}`,
       includedSensors: 'Temperature, Humidity, VoC, CO, Dust, Filter',
       color: 'white',
@@ -127,21 +117,22 @@ const homeDevices = _.reduce(homeOrganizations, (devices, organization) => {
       powerVersion: '12VDC',
       filterType: 'carbonHEPA',
       firmwareVersion: `2.0.${idx}`,
-      latitude: location.lat,
-      longitude: location.lon,
-      location: location.name
+      longitude: location[0],
+      latitude: location[1]
     }
   }).concat(devices)
 }, [])
 
-const commercialDevices = _.reduce(commercialOrganizations, (devices, organization) => {
-  return _.times(10, (idx) => {
-    const location = _.sample(LOCATIONS)
+const commercialDevices = _.reduce(commercialOrganizations, (devices, organization, orgIdx) => {
+  const DEVICES_PER_ORGANIZATION = 10
+  return _.times(DEVICES_PER_ORGANIZATION, (idx) => {
+    const bbox = geojsonExtent(_.sample(map.features))
+    const location = geojsonRandom.position(bbox)
     return {
       deviceTemplate: NAMES.COMMERCIAL_DEVICE_TEMPLATE,
       organization: organization.name,
-      name: `${organization.name}-${NAMES.COMMERCIAL_DEVICE_TEMPLATE}-${idx}`,
-      serialNumber: `${organization.name}-${Date.now()}${idx}`,
+      name: `${NAMES.COMMERCIAL_DEVICE_TEMPLATE.replace(/\s/g, '-')}-${idx}`,
+      serialNumber: `${NAMES.COMMERCIAL_DEVICE_TEMPLATE.replace(/\s/g, '-')}-${_.padStart(DEVICES_PER_ORGANIZATION * orgIdx + idx + 1, 6, '0')}`,
       hardwareVersion: `1.1.${idx}`,
       includedSensors: 'Temperature, Humidity, VoC, CO, Dust, Filter',
       color: 'white',
@@ -149,9 +140,8 @@ const commercialDevices = _.reduce(commercialOrganizations, (devices, organizati
       powerVersion: '12VDC',
       filterType: 'carbonHEPA',
       firmwareVersion: `2.0.${idx}`,
-      latitude: location.lat,
-      longitude: location.lon,
-      location: location.name
+      longitude: location[0],
+      latitude: location[1]
     }
   }).concat(devices)
 }, [])
@@ -165,7 +155,7 @@ const homeUsers = _.reduce(homeOrganizations, (users, organization) => {
     organizationTemplate: organization.organizationTemplate,
     organization: organization.name,
     endUserTemplate: NAMES.HOME_USER,
-    name: _.sample(USER_NAMES)
+    name: faker.name.findName()
   })).concat(users)
 }, [])
 
@@ -174,13 +164,13 @@ const commercialUsers = _.reduce(commercialOrganizations, (users, organization) 
     organizationTemplate: organization.organizationTemplate,
     organization: organization.name,
     endUserTemplate: NAMES.COMMERCIAL_SERVICE_TECHNICIAN,
-    name: _.sample(USER_NAMES)
+    name: faker.name.findName()
   }))
   .concat([{
     organizationTemplate: organization.organizationTemplate,
     organization: organization.name,
     endUserTemplate: NAMES.COMMERCIAL_OPERATIONS_MANAGER,
-    name: _.sample(USER_NAMES)
+    name: faker.name.findName()
   }])
   .concat(users)
 }, [])
