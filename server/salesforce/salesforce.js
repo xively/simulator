@@ -28,12 +28,12 @@ class Salesforce {
     assets = assets.map((a) => ({
       Name: a.product,
       SerialNumber: a.serial,
-      xively__Device_ID__c: a.deviceId,
+      [config.salesforce.deviceField]: a.deviceId,
       Contact: { xively__XI_End_User_ID__c: a.orgId }
     }))
 
     return this.loggedIn
-      .then(() => this.connection.sobject('Asset').upsertBulk(assets, 'xively__Device_ID__c'))
+      .then(() => this.connection.sobject('Asset').upsertBulk(assets, config.salesforce.deviceField))
       .then((results) => {
         results.forEach((result, idx) => {
           if (result.success) {
@@ -57,8 +57,8 @@ class Salesforce {
       Subject: c.subject,
       Description: c.description,
       Contact: { xively__XI_End_User_ID__c: c.orgId },
-      Asset: { xively__Device_ID__c: c.deviceId },
-      xively__XI_Device_ID__c: c.deviceId
+      Asset: { [config.salesforce.deviceField]: c.deviceId },
+      [config.salesforce.deviceField]: c.deviceId
     }))
 
     return this.loggedIn

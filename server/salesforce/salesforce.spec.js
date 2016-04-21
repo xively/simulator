@@ -40,14 +40,14 @@ describe('Salesforce', () => {
     const transformedAssets = [{
       Name: 'product',
       SerialNumber: 'serial',
-      xively__Device_ID__c: 'deviceId',
+      [config.salesforce.deviceField]: 'deviceId',
       Contact: { xively__XI_End_User_ID__c: 'orgId' }
     }]
 
     salesforce.addAssets(assets)
       .then(() => {
         expect(salesforce.connection.sobject).to.be.calledWith('Asset')
-        expect(salesforce.connection.upsertBulk).to.be.calledWith(transformedAssets, 'xively__Device_ID__c')
+        expect(salesforce.connection.upsertBulk).to.be.calledWith(transformedAssets, config.salesforce.deviceField)
         done(null)
       })
       .catch(done)
@@ -65,8 +65,8 @@ describe('Salesforce', () => {
       Subject: 'subject',
       Description: 'description',
       Contact: { xively__XI_End_User_ID__c: 'orgId' },
-      Asset: { xively__Device_ID__c: 'deviceId' },
-      xively__XI_Device_ID__c: 'deviceId'
+      Asset: { [config.salesforce.deviceField]: 'deviceId' },
+      [config.salesforce.deviceField]: 'deviceId'
     }]
 
     salesforce.addCases(cases)

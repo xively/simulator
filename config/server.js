@@ -24,7 +24,8 @@ const config = {
   salesforce: {
     user: process.env.SALESFORCE_USER,
     pass: process.env.SALESFORCE_PASSWORD,
-    token: process.env.SALESFORCE_TOKEN
+    token: process.env.SALESFORCE_TOKEN,
+    deviceField: process.env.XIVELY_DEVICE_ID_FIELD_NAME || 'xively__XI_Device_ID__c'
   },
   account: {
     idmHost: process.env.XIVELY_IDM_HOST,
