@@ -120,7 +120,8 @@ function deviceDemoRoute ($stateProvider) {
         if (!ok) {
           $rootScope.$broadcast(EVENTS.NOTIFICATION, {
             type: 'error',
-            text: 'Your device reported a mailfunction. Please stand by, our agents are already aware of the issue and will have a look at it very soon.'
+            text: 'Your device reported a mailfunction. Please stand by, our agents are already aware of the issue and will have a look at it very soon.',
+            sticky: true
           })
         } else if (!wasOk && ok) {
           $rootScope.$broadcast(EVENTS.NOTIFICATION, {

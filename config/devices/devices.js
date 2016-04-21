@@ -214,7 +214,12 @@ const config = {
             value: 'dust',
             socket: true,
             device: {
-              ok: false
+              ok: false,
+              sensors: {
+                dust: {
+                  numericValue: -255
+                }
+              }
             }
           }]
         }
