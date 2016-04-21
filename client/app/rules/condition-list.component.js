@@ -33,8 +33,8 @@ const conditionListComponent = {
             <option value="$gt">&gt;</option>
             <option value="$gte">&gt;=</option>
             <option value="$eq">=</option>
-            <option value="$in">Matches Any</option>
-            <option value="$nin">Matches None</option>
+            <option value="$in">Contains</option>
+            <option value="$nin">Doesn't contain</option>
           </select>
           <input type="text"  ng-disabled="!$last && !rule.editing" ng-model="rule.value" placeholder="value"/>
           <span ng-if="!$last">
@@ -85,8 +85,8 @@ const conditionListComponent = {
             <option value="$gt">&gt;</option>
             <option value="$gte">&gt;=</option>
             <option value="$eq">=</option>
-            <option value="$in">Matches Any</option>
-            <option value="$nin">Matches None</option>
+            <option value="$in">Contains</option>
+            <option value="$nin">Doesn't contain</option>
           </select>
           <input type="text"  ng-disabled="!$last && !rule.editing" ng-model="rule.value" placeholder="value"/>
           <span ng-if="!$last">

@@ -22,6 +22,12 @@ class RuleParser {
   }
 
   getChannels () {
+    this.device.channels.push({
+      channelTemplateName: 'log:message',
+      channel: `xi/blue/v1/${this.device.accountId}/d/${this.device.id}/_log`,
+      persistenceType: 'simple'
+    })
+
     _.each(this.device.channels, (channel) => {
       this.channels.set(channel.channelTemplateName, channel)
 
@@ -45,8 +51,16 @@ class RuleParser {
       logger.debug('rule parser#mqtt connection error', error)
     })
     this.mqtt.on('message', (topic, message) => {
-      const channelName = topic.split('/').pop()
+      let channelName = topic.split('/').pop()
+      if (channelName === '_log') {
+        channelName = 'log:message'
+      }
+
       const channel = this.channels.get(channelName)
+
+      if (!channel) {
+        return logger.debug('rule parser#failed to get channel', topic, message)
+      }
 
       channel.latestValue = this.parseMessage(channel.persistenceType, message)
       this.channels.set(channelName, channel)
@@ -61,7 +75,7 @@ class RuleParser {
     if (channelType !== 'timeSeries') {
       try {
         const parsed = JSON.parse(message)
-        return parsed.options || parsed.command
+        return parsed.message || parsed.options || parsed.command
       } catch (ex) { /* ignore */ }
     }
 
@@ -86,9 +100,9 @@ class RuleParser {
 
         switch (rule.operator) {
           case '$in':
-            return rule.value.indexOf(sensorValue) > -1
+            return sensorValue && sensorValue.indexOf(rule.value) > -1
           case '$nin':
-            return rule.value.indexOf(sensorValue) < 0
+            return sensorValue && sensorValue.indexOf(rule.value) < 0
           case '$eq':
             return rule.value === sensorValue
           case '$ne':

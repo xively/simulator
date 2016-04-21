@@ -63,6 +63,25 @@ function removeBlankLines (rule) {
   return rule
 }
 
+function getDeviceTemplates (devicesService) {
+  return devicesService.getDeviceTemplates()
+    .then((templates) => {
+      return _.map(templates, (template) => {
+        if (template.channelTemplates) {
+          template.channelTemplates.push({
+            name: 'log:message',
+            id: '_log'
+          })
+        }
+        return {
+          id: template.id,
+          name: template.name,
+          channels: template.channelTemplates
+        }
+      })
+    })
+}
+
 /* @ngInject */
 function rulesManageRoute ($stateProvider) {
   $stateProvider.state('rules.create', {
@@ -71,14 +90,7 @@ function rulesManageRoute ($stateProvider) {
     controllerAs: 'rulesManage',
     resolve: {
       templates: (devicesService) => {
-        return devicesService.getDeviceTemplates()
-          .then((templates) => {
-            return _.map(templates, (template) => ({
-              id: template.id,
-              name: template.name,
-              channels: template.channelTemplates
-            }))
-          })
+        return getDeviceTemplates(devicesService)
       }
     },
     controller (templates, $state, rulesService) {
@@ -118,14 +130,7 @@ function rulesManageRoute ($stateProvider) {
           .then((result) => result.data.ruleConfig)
       },
       templates: (devicesService) => {
-        return devicesService.getDeviceTemplates()
-          .then((templates) => {
-            return _.map(templates, (template) => ({
-              id: template.id,
-              name: template.name,
-              channels: template.channelTemplates
-            }))
-          })
+        return getDeviceTemplates(devicesService)
       }
     },
     controllerAs: 'rulesManage',
