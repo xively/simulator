@@ -51,7 +51,7 @@ function deviceDemoRoute ($stateProvider) {
                   <span class="navigation-item-icon">${settingsIcon}</span>
                   <span class="navigation-item-text">Settings</span>
                 </div>
-                <a class="navigation-item logo" href="https://app.demo.xively.com/" target="_blank">
+                <a class="navigation-item logo" href="{{ device.cpmLink }}" target="_blank">
                   <span class="navigation-item-icon">${xiLogo}</span>
                   <span class="navigation-item-text">CPM</span>
                 </a>
@@ -106,7 +106,7 @@ function deviceDemoRoute ($stateProvider) {
       }
     },
     /* @ngInject */
-    controller ($log, $scope, $rootScope, $state, $location, device, templates, devicesService, socketService, DEVICES_CONFIG, EVENTS) {
+    controller ($log, $scope, $rootScope, $state, $location, device, templates, devicesService, socketService, DEVICES_CONFIG, CONFIG, EVENTS) {
       device.template = templates[device.deviceTemplateId]
       this.config = DEVICES_CONFIG[device.template.name]
       if (this.config) {
@@ -179,6 +179,9 @@ function deviceDemoRoute ($stateProvider) {
       this.toggleShareModal = () => {
         this.shareModal = !this.shareModal
       }
+
+      // FIXME workaround
+      this.cpmLink = `https://${CONFIG.account.idmHost.replace('id.', 'app.')}`
     }
   })
 }
