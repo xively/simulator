@@ -160,6 +160,10 @@ function deviceDemoRoute ($stateProvider) {
         }
       }
 
+      $scope.$on('stopSimulation', () => {
+        this.simulate = false
+      })
+
       // update sensor value
       this.update = _.debounce(device.update, 100)
 

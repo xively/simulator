@@ -10,7 +10,7 @@ class Device {
   constructor (firmware) {
     this.firmware = firmware
 
-    this.INTERVAL = 5000
+    this.INTERVAL = 500
     this.WIGGLE_PERCENTAGE = 0.05
 
     this.connected = false
@@ -71,11 +71,6 @@ class Device {
     this.connected = true
 
     this.mqtt.on('connect', () => {
-      this.sendDeviceLog({
-        level: 'informational',
-        message: 'Device connected',
-        details: 'Device connected'
-      })
       logger.debug('virtual device#mqtt connection success')
     })
     this.mqtt.on('error', (error) => {
@@ -300,11 +295,6 @@ class Device {
   }
 
   triggerMalfunction () {
-    this.ok = false
-    this.disconnectMqtt()
-    this.stopInterval()
-    this.unsubscribe('control')
-
     this.sendDeviceLog({
       level: 'error',
       message: 'Sensor malfunction occured',
@@ -319,75 +309,66 @@ class Device {
       message: 'Factory reset',
       details: 'Reset command received from remote'
     })
-
-    this.ok = true
-    this.connectMqtt()
-    this.startInterval()
-    this.subscribe('control')
   }
 
-  startSimulation () {
+  startSimulation (stopSimulationSignal) {
     this.simulationCounter = 0
-    this.connectMqtt()
 
     if (!this.simulation) {
       this.simulation = setInterval(() => {
-        if (++this.simulationCounter === 100) {
-          this.stopSimulation()
-          return
-        }
-
+        console.log('RUNNING', this.simulationCounter)
         const event = _.random(10)
 
         switch (event) {
           case 1: // hight temp warning
-            if (this.connected) {
-              this.sendDeviceLog({
-                level: 'warning',
-                message: 'High Temperature',
-                details: '100 F'
-              })
+            if (this.connected && this.ok) {
+              // this.sendDeviceLog({
+              //   level: 'warning',
+              //   message: 'High Temperature',
+              //   details: '100 F'
+              // })
             }
-            return
+            break
           case 2: // malfunction
             if (this.connected && this.ok) {
-              this.sendDeviceLog({
-                level: 'error',
-                message: 'Fan overheated',
-                details: 'Shutting down	Filter internal temperature over 150 F'
-              })
-              this.triggerMalfunction()
+              // this.sendDeviceLog({
+              //   level: 'error',
+              //   message: 'Fan overheated',
+              //   details: 'Shutting down	Filter internal temperature over 150 F'
+              // })
+              // this.triggerMalfunction()
             }
-            return
+            break
           case 3: // factory reset
             if (!this.connected && !this.ok) {
-              this.factoryReset()
+              // this.factoryReset()
             }
-            return
+            break
           case 4:
-          case 5: // disconnect from MQTT
-            this.sendDeviceLog({
-              level: 'error',
-              message: 'Network connection failed',
-              details: 'Failed to initialize network connection. DNS lookup to concaria.broker.xively.com failed. SSID: HomeWifi'
-            })
+          case 5: // disconnect
+            // this.sendDeviceLog({
+            //   level: 'error',
+            //   message: 'Network connection failed',
+            //   details: 'Failed to initialize network connection. DNS lookup to concaria.broker.xively.com failed. SSID: HomeWifi'
+            // })
             if (this.connected) {
-              this.disconnect('simulation')
-              this.connectMqtt()
             }
-            return
-          default: // connect to MQTT
+            break
+          default: // connect
             if (!this.connected) {
-              this.connect('simulation')
+
             }
-            return
+        }
+
+        if (this.simulationCounter++ === 5) {
+          stopSimulationSignal()
         }
       }, this.INTERVAL)
     }
   }
 
   stopSimulation () {
-    this.disconnectMqtt()
+    console.log('STOPPING')
     clearInterval(this.simulation)
   }
 

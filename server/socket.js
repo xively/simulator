@@ -10,6 +10,10 @@ const db = require('./database')
 const Device = require('./device')
 const devices = new Map()
 
+function stopSimulation () {
+  devices.forEach((device) => device.stopSimulation())
+}
+
 /**
  * Configure socket.io connection.
  * @param  {express.Server} app   Express Server
@@ -48,7 +52,10 @@ module.exports = function configureSocket (app) {
       const thermometerFaliure = _.sample(devices.keys())
       devices.forEach((device, deviceId) => {
         if (deviceId !== data.deviceId) {
-          device.startSimulation()
+          device.startSimulation(() => {
+            socket.emit('stopSimulation')
+            stopSimulation()
+          })
         }
         if (deviceId === thermometerFaliure) {
           device.triggerThermometerFaliure()
@@ -56,9 +63,7 @@ module.exports = function configureSocket (app) {
       })
     })
 
-    socket.on('stopSimulation', (data) => {
-      devices.forEach((device) => device.stopSimulation())
-    })
+    socket.on('stopSimulation', stopSimulation)
 
     socket.on('malfunction', (data) => {
       const device = devices.get(data.deviceId)
@@ -80,6 +85,7 @@ module.exports = function configureSocket (app) {
 
     socket.on('disconnect', () => {
       logger.debug('socket.io#socket disconnected')
+
       deviceIds.forEach((deviceId) => {
         const device = devices.get(deviceId)
         if (device) {

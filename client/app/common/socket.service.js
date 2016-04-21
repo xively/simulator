@@ -2,7 +2,7 @@ const _ = require('lodash')
 const socket = require('socket.io-client')
 
 /* @ngInject */
-function socketFactory ($q) {
+function socketFactory ($q, $rootScope) {
   return new class Client {
     constructor () {
       this.client = socket('/')
@@ -16,6 +16,8 @@ function socketFactory ($q) {
       this.client.on('reconnect', () => {
         this.reconnectDevices()
       })
+
+      this.client.on('stopSimulation', () => $rootScope.$broadcast('stopSimulation'))
     }
 
     connect (device) {
