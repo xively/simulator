@@ -22,29 +22,50 @@ const filterComponent = {
   },
   controllerAs: 'filter',
   /* @ngInject */
-  controller ($scope) {
+  controller ($scope, $interval) {
     this.dashOffset = 0
     const dasharray = 630
     const max = 1000
-    this.lifeLeft = Math.round(max / 24)
+    this.value = max
+    this.lifeLeft = Math.round(this.value / 24)
 
+    const setFilterValue = (value) => {
+      this.value = value
+      this.dashOffset = Math.min(
+        dasharray,
+        (max - (value / max) * max) * (dasharray / max)
+      )
+      if (value > 48) {
+        this.lifeLeft = Math.round(value / 24)
+        this.measure = 'days'
+      } else {
+        this.lifeLeft = value
+        this.measure = 'hours'
+      }
+    }
+
+    let interval
     $scope.$watch(() => {
       return this.device.sensors.filter
     }, (filter = {}) => {
+      $interval.cancel(interval)
+
       let actual = parseInt(filter.numericValue, 10)
       if (Number.isNaN(actual)) {
         actual = 1000
       }
-      this.dashOffset = Math.min(
-        dasharray,
-        (max - (actual / max) * max) * (dasharray / max)
-      )
-      if (actual > 48) {
-        this.lifeLeft = Math.round(actual / 24)
-        this.measure = 'days'
+
+      if (this.value > actual) {
+        let step = () => Math.min(50, this.value - actual)
+        setFilterValue(this.value - step())
+        interval = $interval(() => {
+          if (this.value <= actual) {
+            return $interval.cancel(interval)
+          }
+          setFilterValue(this.value - step())
+        }, 100)
       } else {
-        this.lifeLeft = actual
-        this.measure = 'hours'
+        setFilterValue(actual)
       }
     })
   }
