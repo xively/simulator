@@ -5,6 +5,10 @@ const jsforce = require('jsforce')
 const _ = require('lodash')
 const config = require('../../config/server')
 
+const DEVICE_FIELD_NAME = `${config.salesforce.namespace}__XI_Device_ID__c`
+const DEVICE_FIELD_NAME_WITHOUT_XI = `${config.salesforce.namespace}__Device_ID__c`
+const END_USER_FIELD_NAME = `${config.salesforce.namespace}__XI_End_User_ID__c`
+
 class Salesforce {
   /**
    * @param  {Object} options
@@ -28,12 +32,12 @@ class Salesforce {
     assets = assets.map((a) => ({
       Name: a.product,
       SerialNumber: a.serial,
-      [config.salesforce.deviceField]: a.deviceId,
-      Contact: { xively__XI_End_User_ID__c: a.orgId }
+      [DEVICE_FIELD_NAME_WITHOUT_XI]: a.deviceId,
+      Contact: { [END_USER_FIELD_NAME]: a.orgId }
     }))
 
     return this.loggedIn
-      .then(() => this.connection.sobject('Asset').upsertBulk(assets, config.salesforce.deviceField))
+      .then(() => this.connection.sobject('Asset').upsertBulk(assets, DEVICE_FIELD_NAME_WITHOUT_XI))
       .then((results) => {
         results.forEach((result, idx) => {
           if (result.success) {
@@ -56,9 +60,7 @@ class Salesforce {
     cases = cases.map((c) => ({
       Subject: c.subject,
       Description: c.description,
-      Contact: { xively__XI_End_User_ID__c: c.orgId },
-      Asset: { [config.salesforce.deviceField]: c.deviceId },
-      [config.salesforce.deviceField]: c.deviceId
+      [DEVICE_FIELD_NAME]: c.deviceId
     }))
 
     return this.loggedIn
@@ -82,13 +84,13 @@ class Salesforce {
   addContacts (contacts) {
     contacts = _.uniq(contacts.map((c) => ({
       Email: c.email,
-      xively__XI_End_User_ID__c: c.orgId
+      [END_USER_FIELD_NAME]: c.orgId
     })))
 
     const chunksOfContacts = _.chunk(contacts, 10)
 
     return this.loggedIn
-      .then(() => Promise.all(chunksOfContacts.map((chunk) => this.connection.sobject('Contact').upsert(chunk, 'xively__XI_End_User_ID__c'))))
+      .then(() => Promise.all(chunksOfContacts.map((chunk) => this.connection.sobject('Contact').upsert(chunk, END_USER_FIELD_NAME))))
       .then((chunkOfResults) => _.flatten(chunkOfResults))
       .then((results) => {
         results.forEach((result, idx) => {
