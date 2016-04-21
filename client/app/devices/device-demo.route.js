@@ -15,6 +15,7 @@ function deviceDemoRoute ($stateProvider) {
       <div class="device-demo">
         <div class="left-side">
           <iphone-frame>
+            <notification></notification>
             <div class="iphone-frame-scrollable">
               <div class="navigation-header">
                 <div class="logo">${xiLogo}</div>

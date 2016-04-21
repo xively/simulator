@@ -300,8 +300,13 @@ const config = {
             label: 'Deplete',
             value: JSON.stringify({
               command: 'filter',
-              option: 0
-            })
+              option: 5
+            }),
+            notification: {
+              type: 'error',
+              text: 'This device’s filter is low. It should be replaced to ensure optimal air quality.',
+              sticky: true
+            }
           }, {
             label: 'Replace',
             value: JSON.stringify({

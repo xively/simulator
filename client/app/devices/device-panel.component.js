@@ -3,7 +3,6 @@ require('./device-panel.component.less')
 const devicePanelComponent = {
   template: `
     <div class="device-panel">
-      <notification></notification>
       <div class="control-panel content">
         <div class="section">
           <h1 class="type">{{ ::devicePanel.device.template.name }}</h1>

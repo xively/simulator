@@ -57,7 +57,7 @@ const tooltipComponent = {
   },
   controllerAs: 'tooltip',
   /* @ngInject */
-  controller ($element, $scope, socketService) {
+  controller ($element, $rootScope, $scope, socketService, EVENTS) {
     Object.assign(this.options, this.options.tooltip)
 
     $scope.$watch(() => {
@@ -113,7 +113,7 @@ const tooltipComponent = {
         _.isNumber(this.options.max)
     }
 
-    this.sendUpdate = ({ name, value, device = {}, socket = false }) => {
+    this.sendUpdate = ({ name, value, device = {}, socket = false, notification }) => {
       const obj = { value }
       if (name) {
         obj.name = name
@@ -125,6 +125,10 @@ const tooltipComponent = {
         this.update(obj)
       }
       _.merge(this.device, device)
+
+      if (notification) {
+        $rootScope.$broadcast(EVENTS.NOTIFICATION, notification)
+      }
     }
   }
 }
