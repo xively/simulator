@@ -10,7 +10,7 @@ class Device {
   constructor (firmware) {
     this.firmware = firmware
 
-    this.INTERVAL = 500
+    this.INTERVAL = 5000
     this.WIGGLE_PERCENTAGE = 0.05
 
     this.connected = false
@@ -23,16 +23,17 @@ class Device {
 
     this.sensors = new Map()
     this.initSensors()
+
+    this.connectFallbackMqtt()
   }
 
   connect (socketId) {
     logger.debug('virtual device#connecting to device', this.firmware.deviceId)
+
     if (!this.connections.size) {
-      logger.debug('virtual device#device connecting to mqtt', this.firmware.deviceId)
-      this.connectMqtt()
-      this.startInterval()
-      this.subscribe('control')
+      this.start()
     }
+
     this.connections.add(socketId)
 
     this.sendDeviceLog({
@@ -53,14 +54,35 @@ class Device {
     this.connections.delete(socketId)
 
     if (!this.connections.size && this.connected) {
-      logger.debug('virtual device#device disconnecting from mqtt', this.firmware.deviceId)
-      this.disconnectMqtt()
-      this.stopInterval()
-      this.unsubscribe('control')
+      this.shutDown()
     }
   }
 
+  shutDown () {
+    this.disconnectMqtt()
+    this.stopInterval()
+    this.unsubscribe('control')
+  }
+
+  start () {
+    this.connectMqtt()
+    this.startInterval()
+    this.subscribe('control')
+  }
+
+  connectFallbackMqtt () {
+    const host = `mqtts://${serverConfig.account.brokerHost}:${serverConfig.account.brokerPort}`
+    const options = {
+      username: serverConfig.virtualdevice.userInfo.user,
+      password: serverConfig.virtualdevice.userInfo.password
+    }
+
+    this.fallbackMqtt = mqtt.connect(host, options)
+  }
+
   connectMqtt () {
+    logger.debug('virtual device#device connecting to mqtt', this.firmware.deviceId)
+
     const host = `mqtts://${serverConfig.account.brokerHost}:${serverConfig.account.brokerPort}`
     const options = {
       username: this.firmware.entityId,
@@ -86,6 +108,7 @@ class Device {
   }
 
   disconnectMqtt () {
+    logger.debug('virtual device#device disconnecting from mqtt', this.firmware.deviceId)
     this.mqtt && this.mqtt.end()
     this.connected = false
   }
@@ -172,10 +195,14 @@ class Device {
       severity: log.level, // ['emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'informational', 'debug', 'lifecycle']
       tags: log.tags || []
     }
-    this.mqtt.publish(logChannel, JSON.stringify(message))
+
+    if (this.connected) {
+      return this.mqtt.publish(logChannel, JSON.stringify(message))
+    }
+
+    this.fallbackMqtt.publish(logChannel, JSON.stringify(message))
   }
 
-  // TODO: handle this in a more generic way
   sendFanLog (value) {
     this.sendDeviceLog({
       level: 'informational',
@@ -301,6 +328,9 @@ class Device {
       details: 'Sensor malfunction occured',
       tags: ['malfunction']
     })
+
+    this.ok = false
+    this.shutDown()
   }
 
   factoryReset () {
@@ -309,6 +339,12 @@ class Device {
       message: 'Factory reset',
       details: 'Reset command received from remote'
     })
+
+    this.ok = true
+
+    if (this.connected) {
+      this.start()
+    }
   }
 
   startSimulation (stopSimulationSignal) {
@@ -316,51 +352,51 @@ class Device {
 
     if (!this.simulation) {
       this.simulation = setInterval(() => {
-        console.log('RUNNING', this.simulationCounter)
         const event = _.random(10)
 
         switch (event) {
           case 1: // hight temp warning
             if (this.connected && this.ok) {
-              // this.sendDeviceLog({
-              //   level: 'warning',
-              //   message: 'High Temperature',
-              //   details: '100 F'
-              // })
+              this.sendDeviceLog({
+                level: 'warning',
+                message: 'High Temperature',
+                details: '100 F'
+              })
             }
             break
           case 2: // malfunction
             if (this.connected && this.ok) {
-              // this.sendDeviceLog({
-              //   level: 'error',
-              //   message: 'Fan overheated',
-              //   details: 'Shutting down	Filter internal temperature over 150 F'
-              // })
-              // this.triggerMalfunction()
+              this.sendDeviceLog({
+                level: 'error',
+                message: 'Fan overheated',
+                details: 'Shutting down	Filter internal temperature over 150 F'
+              })
+              this.triggerMalfunction()
             }
             break
           case 3: // factory reset
             if (!this.connected && !this.ok) {
-              // this.factoryReset()
+              this.factoryReset()
             }
             break
           case 4:
           case 5: // disconnect
-            // this.sendDeviceLog({
-            //   level: 'error',
-            //   message: 'Network connection failed',
-            //   details: 'Failed to initialize network connection. DNS lookup to concaria.broker.xively.com failed. SSID: HomeWifi'
-            // })
+            this.sendDeviceLog({
+              level: 'error',
+              message: 'Network connection failed',
+              details: 'Failed to initialize network connection. DNS lookup to concaria.broker.xively.com failed. SSID: HomeWifi'
+            })
             if (this.connected) {
+              this.disconnect('simulation')
             }
             break
           default: // connect
             if (!this.connected) {
-
+              this.connect('simulation')
             }
         }
 
-        if (this.simulationCounter++ === 5) {
+        if (this.simulationCounter++ === 100) {
           stopSimulationSignal()
         }
       }, this.INTERVAL)
@@ -368,7 +404,10 @@ class Device {
   }
 
   stopSimulation () {
-    console.log('STOPPING')
+    if (this.connected) {
+      this.disconnect('simulation')
+    }
+    this.ok = true
     clearInterval(this.simulation)
   }
 
