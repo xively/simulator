@@ -20,10 +20,10 @@ function socketFactory ($q, $rootScope) {
       this.client.on('stopSimulation', () => $rootScope.$broadcast('stopSimulation'))
     }
 
-    connect (device) {
+    connect (device, cb) {
       const deviceId = _.isString(device) ? device : device.id
       this.deviceIds.add(deviceId)
-      this.client.emit('connectDevice', { deviceId })
+      this.client.emit('connectDevice', { deviceId }, cb)
     }
 
     disconnect (device) {

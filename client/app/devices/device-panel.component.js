@@ -39,7 +39,7 @@ const devicePanelComponent = {
     </div>
   `,
   bindings: {
-    device: '<'
+    device: '='
   },
   controllerAs: 'devicePanel',
   /* @ngInject */
@@ -49,11 +49,12 @@ const devicePanelComponent = {
     this.deviceConfig = deviceConfig
 
     // start virtual device
-    socketService.connect(this.device, (err, ok = true) => {
+    socketService.connect(this.device, (err, { ok = true, simulate = false } = {}) => {
       if (err) {
         ok = false
         $log.error(err)
       }
+      this.device.simulate = simulate
       this.device.ok = ok
     })
     // subscribe for mqtt messages

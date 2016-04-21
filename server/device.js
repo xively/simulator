@@ -14,7 +14,6 @@ class Device {
     this.WIGGLE_PERCENTAGE = 0.05
 
     this.connected = false
-    this.simulation = false
     this.ok = true
 
     this.connections = new Set()

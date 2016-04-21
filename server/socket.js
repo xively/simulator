@@ -10,7 +10,9 @@ const db = require('./database')
 const Device = require('./device')
 const devices = new Map()
 
+let simulationRunning = false
 function stopSimulation () {
+  simulationRunning = false
   devices.forEach((device) => device.stopSimulation())
 }
 
@@ -37,7 +39,7 @@ module.exports = function configureSocket (app) {
     logger.debug('socket.io#connection from', socket.client.conn.remoteAddress)
     const deviceIds = new Set()
 
-    socket.on('connectDevice', (data) => {
+    socket.on('connectDevice', (data, cb) => {
       logger.debug('socket.io#connectDevice')
 
       const deviceId = data.deviceId
@@ -45,10 +47,12 @@ module.exports = function configureSocket (app) {
       const device = devices.get(deviceId)
       if (device) {
         device.connect(socket.id)
+        cb(null, { ok: device.ok, simulate: simulationRunning })
       }
     })
 
     socket.on('startSimulation', (data) => {
+      simulationRunning = true
       const thermometerFaliure = _.sample(devices.keys())
       devices.forEach((device, deviceId) => {
         if (deviceId !== data.deviceId) {

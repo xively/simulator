@@ -39,7 +39,7 @@ function deviceDemoRoute ($stateProvider) {
                   ng-options="deviceLink.name for deviceLink in device.navigation.availableOptions track by deviceLink.device.deviceTemplateId">
                 </select>
                 <div class="simulate-button" ng-click="device.toggleSimulation()">
-                  {{ device.simulate ? 'Stop' : 'Start' }} simulation
+                  {{ device.device.simulate ? 'Stop' : 'Start' }} simulation
                 </div>
               </div>
               <div class="navigation-items">
@@ -151,10 +151,9 @@ function deviceDemoRoute ($stateProvider) {
       })
 
       // simulate
-      this.simulate = false
       this.toggleSimulation = () => {
-        this.simulate = !this.simulate
-        if (this.simulate) {
+        this.device.simulate = !this.device.simulate
+        if (this.device.simulate) {
           socketService.startSimulation(device)
         } else {
           socketService.stopSimulation(device)
@@ -162,7 +161,7 @@ function deviceDemoRoute ($stateProvider) {
       }
 
       $scope.$on('stopSimulation', () => {
-        this.simulate = false
+        this.device.simulate = false
       })
 
       // update sensor value
