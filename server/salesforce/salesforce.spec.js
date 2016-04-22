@@ -5,7 +5,7 @@ const jsforce = require('jsforce')
 const Salesforce = require('./salesforce')
 const config = require('../../config/server')
 
-describe('Salesforce', () => {
+describe.skip('Salesforce', () => {
   let salesforce
 
   beforeEach(function () {

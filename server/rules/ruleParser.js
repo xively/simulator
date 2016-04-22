@@ -100,9 +100,9 @@ class RuleParser {
 
         switch (rule.operator) {
           case '$in':
-            return sensorValue && sensorValue.indexOf(rule.value) > -1
+            return sensorValue && new RegExp(rule.value, 'i').test(sensorValue)
           case '$nin':
-            return sensorValue && sensorValue.indexOf(rule.value) < 0
+            return sensorValue && !new RegExp(rule.value, 'i').test(sensorValue)
           case '$eq':
             return rule.value === sensorValue
           case '$ne':
