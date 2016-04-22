@@ -94,6 +94,7 @@
     "faker": "3.1.0",
     "geojson-extent": "0.3.2",
     "geojson-random": "0.2.2",
+    "geojson-utils": "1.1.0",
     "jsforce": "1.6.0",
     "knex": "0.10.0",
     "lodash": "4.11.1",

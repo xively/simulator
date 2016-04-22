@@ -2,6 +2,7 @@
 
 const _ = require('lodash')
 const faker = require('faker')
+const geojsonUtils = require('geojson-utils')
 const geojsonExtent = require('geojson-extent')
 const geojsonRandom = require('geojson-random')
 const map = require('./map')
@@ -106,11 +107,20 @@ const commercialDeviceChannels = _.map({
  * devices
  */
 
+function getLocation () {
+  const feature = _.sample(map.features)
+  const bbox = geojsonExtent(feature)
+  const coordinates = geojsonRandom.position(bbox)
+  if (geojsonUtils.pointInMultiPolygon({ coordinates }, feature.geometry)) {
+    return coordinates
+  }
+  return getLocation()
+}
+
 const homeDevices = _.reduce(homeOrganizations, (devices, organization, orgIdx) => {
   const DEVICES_PER_ORGANIZATION = 3
   return _.times(DEVICES_PER_ORGANIZATION, (idx) => {
-    const bbox = geojsonExtent(_.sample(map.features))
-    const location = geojsonRandom.position(bbox)
+    const location = getLocation()
     return {
       deviceTemplate: NAMES.HOME_DEVICE_TEMPLATE,
       organization: organization.name,
@@ -132,8 +142,7 @@ const homeDevices = _.reduce(homeOrganizations, (devices, organization, orgIdx) 
 const commercialDevices = _.reduce(warehouseOrganizations, (devices, organization, orgIdx) => {
   const DEVICES_PER_ORGANIZATION = 10
   return _.times(DEVICES_PER_ORGANIZATION, (idx) => {
-    const bbox = geojsonExtent(_.sample(map.features))
-    const location = geojsonRandom.position(bbox)
+    const location = getLocation()
     return {
       deviceTemplate: NAMES.COMMERCIAL_DEVICE_TEMPLATE,
       organization: organization.name,
