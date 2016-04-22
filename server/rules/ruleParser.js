@@ -45,7 +45,7 @@ class RuleParser {
     this.mqtt = mqtt.connect(host, options)
 
     this.mqtt.on('connect', () => {
-      logger.debug(`rule parser#mqtt connection success for device ${this.device.id}`)
+      logger.silly(`rule parser#mqtt connection success for device ${this.device.id}`)
     })
     this.mqtt.on('error', (error) => {
       logger.debug('rule parser#mqtt connection error', error)

@@ -247,7 +247,7 @@ class Device {
 
     logger.debug('virtual device#device unsubscribing from topic', topic, 'channelName', channelName)
 
-    this.mqtt && this.mqtt.unsubscribe(topic)
+    topic && this.mqtt && this.mqtt.unsubscribe(topic)
     this.channels.delete(channelName)
   }
 
@@ -346,54 +346,60 @@ class Device {
     }
   }
 
+  simulationTick () {
+    const event = _.random(10)
+
+    switch (event) {
+      case 1: // hight temp warning
+        if (this.connected && this.ok) {
+          this.sendDeviceLog({
+            level: 'warning',
+            message: 'High Temperature',
+            details: '100 F'
+          })
+        }
+        break
+      case 2: // malfunction
+        if (this.connected && this.ok) {
+          this.sendDeviceLog({
+            level: 'error',
+            message: 'Fan overheated',
+            details: 'Shutting down	Filter internal temperature over 150 F'
+          })
+          this.triggerMalfunction()
+        }
+        break
+      case 3: // factory reset
+        if (!this.connected && !this.ok) {
+          this.factoryReset()
+        }
+        break
+      case 4:
+      case 5: // disconnect
+        this.sendDeviceLog({
+          level: 'error',
+          message: 'Network connection failed',
+          details: 'Failed to initialize network connection. DNS lookup to concaria.broker.xively.com failed. SSID: HomeWifi'
+        })
+        if (this.connected) {
+          this.disconnect('simulation')
+        }
+        break
+      default: // connect
+        if (!this.connected) {
+          this.connect('simulation')
+        }
+    }
+  }
+
   startSimulation (stopSimulationSignal) {
     this.simulationCounter = 0
 
     if (!this.simulation) {
-      this.simulation = setInterval(() => {
-        const event = _.random(10)
+      this.simulationTick()
 
-        switch (event) {
-          case 1: // hight temp warning
-            if (this.connected && this.ok) {
-              this.sendDeviceLog({
-                level: 'warning',
-                message: 'High Temperature',
-                details: '100 F'
-              })
-            }
-            break
-          case 2: // malfunction
-            if (this.connected && this.ok) {
-              this.sendDeviceLog({
-                level: 'error',
-                message: 'Fan overheated',
-                details: 'Shutting down	Filter internal temperature over 150 F'
-              })
-              this.triggerMalfunction()
-            }
-            break
-          case 3: // factory reset
-            if (!this.connected && !this.ok) {
-              this.factoryReset()
-            }
-            break
-          case 4:
-          case 5: // disconnect
-            this.sendDeviceLog({
-              level: 'error',
-              message: 'Network connection failed',
-              details: 'Failed to initialize network connection. DNS lookup to concaria.broker.xively.com failed. SSID: HomeWifi'
-            })
-            if (this.connected) {
-              this.disconnect('simulation')
-            }
-            break
-          default: // connect
-            if (!this.connected) {
-              this.connect('simulation')
-            }
-        }
+      this.simulation = setInterval(() => {
+        this.simulationTick()
 
         if (this.simulationCounter++ === 100) {
           stopSimulationSignal()
@@ -403,11 +409,15 @@ class Device {
   }
 
   stopSimulation () {
+    clearInterval(this.simulation)
+    this.stopInterval()
+
+    this.ok = true
+    this.simulation = false
+
     if (this.connected) {
       this.disconnect('simulation')
     }
-    this.ok = true
-    clearInterval(this.simulation)
   }
 
   startInterval (interval) {

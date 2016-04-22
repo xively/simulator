@@ -30,7 +30,7 @@ module.exports = function configureSocket (app) {
       _.each(firmwares, (firmware) => {
         const device = new Device(firmware)
         devices.set(firmware.deviceId, device)
-        logger.debug('socket.io#creating device', firmware.deviceId)
+        logger.silly('socket.io#creating device', firmware.deviceId)
       })
     })
 
@@ -38,6 +38,10 @@ module.exports = function configureSocket (app) {
   io.on('connection', (socket) => {
     logger.debug('socket.io#connection from', socket.client.conn.remoteAddress)
     const deviceIds = new Set()
+
+    socket.on('error', (err) => {
+      logger.error('socket.io#error', err)
+    })
 
     socket.on('connectDevice', (data, cb) => {
       logger.debug('socket.io#connectDevice')
@@ -52,8 +56,11 @@ module.exports = function configureSocket (app) {
     })
 
     socket.on('startSimulation', (data) => {
-      simulationRunning = true
+      logger.debug('socket.io#start simulation', data)
+
       const thermometerFaliure = _.sample(devices.keys())
+      simulationRunning = true
+
       devices.forEach((device, deviceId) => {
         if (deviceId !== data.deviceId) {
           device.startSimulation(() => {
