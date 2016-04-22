@@ -31,7 +31,8 @@ class Device {
 
     if (!this.connections.size) {
       this.connectMqtt()
-      this.start()
+      this.startInterval()
+      this.subscribe('control')
     }
 
     this.connections.add(socketId)
@@ -54,19 +55,9 @@ class Device {
     this.connections.delete(socketId)
 
     if (!this.connections.size && this.connected) {
-      this.shutDown()
+      this.stopInterval()
       this.disconnectMqtt()
     }
-  }
-
-  shutDown () {
-    this.stopInterval()
-    this.unsubscribe('control')
-  }
-
-  start () {
-    this.startInterval()
-    this.subscribe('control')
   }
 
   connectFallbackMqtt () {
@@ -330,7 +321,7 @@ class Device {
     })
 
     this.ok = false
-    this.shutDown()
+    this.stopInterval()
   }
 
   factoryReset () {
@@ -343,7 +334,7 @@ class Device {
     this.ok = true
 
     if (this.connected) {
-      this.start()
+      this.startInterval()
     }
 
     logger.info('virtual device#factory reset complete')
