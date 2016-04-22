@@ -162,6 +162,7 @@ class Device {
           message: `${Date.now()}, 'fan', ${fanValues.indexOf(message.option)}, , \n`
         }
       case 'factory-reset':
+        logger.info('virtual device#factory reset command received')
         this.factoryReset()
         return
       case 'filter':
@@ -344,6 +345,8 @@ class Device {
     if (this.connected) {
       this.start()
     }
+
+    logger.info('virtual device#factory reset complete')
   }
 
   simulationTick () {
