@@ -30,6 +30,7 @@ class Device {
     logger.debug('virtual device#connecting to device', this.firmware.deviceId)
 
     if (!this.connections.size) {
+      this.connectMqtt()
       this.start()
     }
 
@@ -54,17 +55,16 @@ class Device {
 
     if (!this.connections.size && this.connected) {
       this.shutDown()
+      this.disconnectMqtt()
     }
   }
 
   shutDown () {
-    this.disconnectMqtt()
     this.stopInterval()
     this.unsubscribe('control')
   }
 
   start () {
-    this.connectMqtt()
     this.startInterval()
     this.subscribe('control')
   }
