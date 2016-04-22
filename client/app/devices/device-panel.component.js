@@ -55,7 +55,9 @@ const devicePanelComponent = {
         $log.error(err)
       }
       this.device.simulate = simulate
-      this.device.ok = ok
+      // TODO not sure if we need this later
+      // this.device.ok = ok
+      this.device.ok = true
     })
     // subscribe for mqtt messages
     const unsubscribe = this.device.subscribe()
