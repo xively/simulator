@@ -63,7 +63,7 @@ Before you submit your pull request consider the following guidelines:
 
 - make your changes in a new git branch:
   ```shell
-   git checkout -b my-branch staging
+   git checkout -b my-branch development
   ```
 
 - create your patch. Include test cases.
@@ -75,7 +75,7 @@ Before you submit your pull request consider the following guidelines:
   git push origin my-branch
   ```
 
-- in GitHub, send a pull request to `concaria:staging`.
+- in GitHub, send a pull request to `concaria:development`.
 
 - if we suggest changes then:
   - make the required updates.
@@ -84,7 +84,7 @@ Before you submit your pull request consider the following guidelines:
 
 If the PR gets too outdated we may ask you to rebase, squash and force push to update the PR:
   ```shell
-  git rebase staging -i
+  git rebase development -i
   git push origin my-branch -f
   ```
 
