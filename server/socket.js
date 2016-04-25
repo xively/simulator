@@ -51,7 +51,7 @@ module.exports = function configureSocket (app) {
       const device = devices.get(deviceId)
       if (device) {
         device.connect(socket.id)
-        cb(null, { ok: device.ok, simulate: simulationRunning })
+        _.isFunction(cb) && cb(null, { ok: device.ok, simulate: simulationRunning })
       }
     })
 
