@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 require('./filter.component.less')
 
 /* @ngInject */
@@ -10,7 +12,7 @@ const filterComponent = {
           <path class="progress-indicator" d="M 0,100 A 100,100 0 1,1 0,100.01" ng-attr-stroke-dashoffset="{{ filter.dashOffset }}" stroke-dasharray="630"></path>
         </svg>
         <div class="filter-status-days">
-          <span>{{ filter.lifeLeft }}</span>
+          <span>{{ filter.lifeLeft || 'N/A' }}</span>
           <div class="label">{{ filter.measure }}</div>
         </div>
       </div>
@@ -23,10 +25,9 @@ const filterComponent = {
   controllerAs: 'filter',
   /* @ngInject */
   controller ($scope, $interval) {
-    this.dashOffset = 0
     const dasharray = 630
+    this.dashOffset = dasharray
     const max = 1000
-    this.value = max
     this.lifeLeft = Math.round(this.value / 24)
 
     const setFilterValue = (value) => {
@@ -52,10 +53,10 @@ const filterComponent = {
 
       let actual = parseInt(filter.numericValue, 10)
       if (Number.isNaN(actual)) {
-        actual = 1000
+        return
       }
 
-      if (this.value > actual) {
+      if (!_.isUndefined(this.value) && this.value > actual) {
         let step = () => Math.min(50, this.value - actual)
         setFilterValue(this.value - step())
         interval = $interval(() => {
