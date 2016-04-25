@@ -1,8 +1,8 @@
 /* @ngInject */
 function loginFactory ($log, $http, $timeout, $q, CONFIG) {
   // private
-  const TOKEN_KEY = 'concaria.token'
-  const ACCOUNT_ID_KEY = 'concaria.account_id'
+  const TOKEN_KEY = 'simulator.token'
+  const ACCOUNT_ID_KEY = 'simulator.account_id'
 
   // public
   return {

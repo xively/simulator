@@ -4,7 +4,7 @@ const request = require('request-promise')
 const logger = require('winston')
 const db = require('../database')
 const config = require('../../config/server')
-const RuleParser = require('./ruleParser')
+const RuleParser = require('./rule-parser')
 
 class RulesEngine {
   constructor () {

@@ -1,6 +1,6 @@
 const EVENTS = {
-  LOADING: 'concaria.loading',
-  NOTIFICATION: 'concaria.notification'
+  LOADING: 'simulator.loading',
+  NOTIFICATION: 'simulator.notification'
 }
 
 module.exports = EVENTS

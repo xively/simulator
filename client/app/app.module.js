@@ -11,7 +11,7 @@ const config = require('./app.config')
 // custom widgets module
 const widgetsModule = require('../../config/devices/widgets')
 
-const app = angular.module('concaria', [
+const app = angular.module('simulator', [
   require('angular-ui-router'),
   commonModule,
   navigationModule,

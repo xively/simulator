@@ -1,7 +1,7 @@
 /* @ngInject */
 function bindHtmlCompile ($compile) {
   return {
-    restrict: 'EA',
+    restrict: 'A',
     link (scope, element, attrs) {
       scope.$watch(() => {
         return scope.$eval(attrs.bindHtmlCompile)

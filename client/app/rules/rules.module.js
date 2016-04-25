@@ -6,7 +6,7 @@ const rulesRoute = require('./rules.route')
 const rulesManageRoute = require('./rules-manage.route')
 const run = require('./rules.run')
 
-const rulesModule = angular.module('concaria.rules', [
+const rulesModule = angular.module('simulator.rules', [
   require('angular-ui-router')
 ])
   .factory('rulesService', rulesService)

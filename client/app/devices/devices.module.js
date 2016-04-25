@@ -12,7 +12,7 @@ const shareModalComponent = require('./share-modal.component')
 const notificationComponent = require('./notification.component')
 const boldchatComponent = require('./boldchat.component')
 
-const devicesModule = angular.module('concaria.devies', [
+const devicesModule = angular.module('simulator.devies', [
   require('angular-animate'),
   require('angular-ui-router'),
   commonModule

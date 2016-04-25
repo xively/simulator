@@ -3,8 +3,8 @@
 const mqtt = require('mqtt')
 const _ = require('lodash')
 const logger = require('winston')
-const serverConfig = require('../config/server')
-const deviceConfigs = require('../config/devices')
+const serverConfig = require('../../config/server')
+const deviceConfigs = require('../../config/devices')
 
 class Device {
   constructor (firmware) {

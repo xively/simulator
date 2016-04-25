@@ -14,10 +14,10 @@ const bindHtmlCompileDirective = require('./bind-html-compile.directive')
 const config = require('./common.config')
 const run = require('./common.run')
 
-const common = angular.module('concaria.common', [
+const common = angular.module('simulator.common', [
   require('angular-ui-router')
 ])
-  .constant('CONFIG', window.CONCARIA_CONFIG || {})
+  .constant('CONFIG', window.APP_CONFIG || {})
   .constant('DEVICES_CONFIG', window.DEVICES_CONFIG || {})
   .constant('EVENTS', EVENTS)
   .factory('authService', authService)

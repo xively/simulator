@@ -24,7 +24,7 @@ app.use(routes)
 
 app.use('/script/config.js', (req, res) => {
   res.status(200).send(`
-    window.CONCARIA_CONFIG = ${JSON.stringify(config)}
+    window.APP_CONFIG = ${JSON.stringify(config)}
     window.DEVICES_CONFIG = ${JSON.stringify(devicesConfig)}
   `)
 })
