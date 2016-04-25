@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 require('./device-panel.component.less')
 
 const devicePanelComponent = {
@@ -73,9 +75,10 @@ const devicePanelComponent = {
 
     const timeseriesChannels = this.device.channels
       .filter((channel) => channel.persistenceType === 'timeSeries')
+    const selectedOption = deviceConfig.defaultSensor ? _.find(timeseriesChannels, { channelTemplateName: deviceConfig.defaultSensor }) : timeseriesChannels[0]
     this.timeseries = {
       availableOptions: timeseriesChannels,
-      selectedOption: timeseriesChannels[0]
+      selectedOption
     }
   }
 }
