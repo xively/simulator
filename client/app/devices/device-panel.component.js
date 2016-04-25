@@ -28,7 +28,6 @@ const devicePanelComponent = {
           </div>
         </div>
         <div class="content">
-          <h2>Health Stats:</h2>
           <select
             ng-model="devicePanel.timeseries.selectedOption"
             ng-options="channel.channelTemplateName for channel in devicePanel.timeseries.availableOptions track by channel.channelTemplateId">
