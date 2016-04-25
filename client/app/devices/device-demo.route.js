@@ -59,7 +59,7 @@ function deviceDemoRoute ($stateProvider) {
             </div>
           </div>
           <div class="device-controls">
-            <div class="device-container" style="width: {{ ::device.config.width }}px">
+            <div class="device-container" style="width: {{ ::device.config.width }}px" ng-if="device.config.image">
               <div ng-repeat="(name, sensor) in ::device.config.sensors">
                 <tooltip ng-if="sensor.tooltip"
                   options="sensor"
@@ -71,6 +71,9 @@ function deviceDemoRoute ($stateProvider) {
                 <div ng-if="sensor.widget" bind-html-compile="device.getHtml(sensor.widget)"></div>
               </div>
               <img class="device-image" src="{{ device.config.image }}" />
+            </div>
+            <div class="no-image" ng-if="!device.config.image">
+              <h2>No image available</h2>
             </div>
             <div class="device-control-sliders" ng-if="device.sensorsNotConfigured">
               <div class="header row">
