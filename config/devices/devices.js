@@ -43,6 +43,7 @@ const config = {
     image: '/devices/images/home-air-purifier.png',
     width: 680,
     widgets: ['fan-state-control', 'filter'],
+    defaultSensor: 'dust',
     sensors: {
       dust: {
         min: 0,
@@ -200,6 +201,7 @@ const config = {
     image: '/devices/images/industrial-hvac.png',
     width: 1000,
     widgets: ['fan-state-control', 'filter'],
+    defaultSensor: 'dust',
     sensors: {
       dust: {
         min: 0,
