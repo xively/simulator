@@ -15,6 +15,11 @@ const notificationComponent = {
     this.items = []
     $scope.$on(EVENTS.NOTIFICATION, (event, item) => {
       if (item) {
+        // remove error notifications on success
+        if (item.type === 'success') {
+          _.remove(this.items, { type: 'error' })
+        }
+
         this.items.push(item)
         item.remove = () => _.remove(this.items, item)
 
