@@ -9,8 +9,7 @@ const devicePanelComponent = {
         <div class="section">
           <h1 class="type">{{ ::devicePanel.device.template.name }}</h1>
           <p class="name">{{ ::devicePanel.device.serialNumber }}</p>
-          <!-- TODO: replace with real end user name -->
-          <p class="username">Jane Smith</p>
+          <p class="username">{{ ::devicePanel.endUser.name }}</p>
           <p class="email">{{ ::devicePanel.config.account.emailAddress }}</p>
         </div>
         <div class="section" bind-html-compile="devicePanel.widgets()">
@@ -44,10 +43,16 @@ const devicePanelComponent = {
   },
   controllerAs: 'devicePanel',
   /* @ngInject */
-  controller ($log, $scope, socketService, CONFIG, DEVICES_CONFIG, EVENTS) {
+  controller ($log, $scope, socketService, blueprintService, CONFIG, DEVICES_CONFIG, EVENTS) {
     this.config = CONFIG
     const deviceConfig = DEVICES_CONFIG[this.device.template.name]
     this.deviceConfig = deviceConfig
+    blueprintService.getV1('end-users', { organizationId: this.device.organizationId }).then((response) => {
+      if (response.data) {
+        const endUsers = response.data.endUsers.results
+        this.endUser = endUsers[0]
+      }
+    })
 
     // start virtual device
     socketService.connect(this.device, (err, { ok = true, simulate = false } = {}) => {
