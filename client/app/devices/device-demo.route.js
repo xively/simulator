@@ -19,6 +19,28 @@ function deviceDemoRoute ($stateProvider) {
     url: '/:id/demo?header',
     template: `
       <div class="device-demo">
+        <div class="modal" ng-click="device.closeModals()" ng-show="device.modals.rules">
+          <div class="content modal-body" ng-click="device.block($event)">
+            <div class="modal-header">
+              <div class="close" ng-click="device.toggleModal('rules')">✕</div>
+            </div>
+            <div class="modal-content">
+              <rules-component></rules-component>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal" ng-click="device.closeModals()" ng-show="device.modals.settings">
+          <div class="content modal-body" ng-click="device.block($event)">
+            <div class="modal-header">
+              <div class="close" ng-click="device.toggleModal('settings')">✕</div>
+            </div>
+            <div class="modal-content">
+              <settings-component></settings-component>
+            </div>
+          </div>
+        </div>
+
         <div class="left-side" ng-show="demo.mobileView">
           <div class="chevron-left" ng-click="demo.toggleMobileView()" ng-show="demo.mobileView"> ${chevronLeft} </div>
           <iphone-frame>
@@ -51,11 +73,11 @@ function deviceDemoRoute ($stateProvider) {
                   <span class="navigation-item-icon pause-button" ng-show="demo.device.simulate">${buttonPause}</span>
                   <span class="navigation-item-text">{{ demo.device.simulate ? 'Stop' : 'Start' }} simulation</span>
                 </div>
-                <div class="navigation-item" ui-sref="rules" ui-sref-active="active">
+                <div class="navigation-item" ng-click="device.toggleModal('rules')">
                   <span class="navigation-item-icon">${rulesIcon}</span>
                   <span class="navigation-item-text">Rules</span>
                 </div>
-                <div class="navigation-item" ui-sref="settings" ui-sref-active="active">
+                <div class="navigation-item" ng-click="device.toggleModal('settings')">
                   <span class="navigation-item-icon">${settingsIcon}</span>
                   <span class="navigation-item-text">Settings</span>
                 </div>
@@ -143,6 +165,11 @@ function deviceDemoRoute ($stateProvider) {
       }, true)
       this.device = device
 
+      this.modals = {
+        settings: false,
+        rules: false
+      }
+
       $scope.$watch(() => this.device.ok, (ok, wasOk) => {
         if (!ok) {
           $rootScope.$broadcast(EVENTS.NOTIFICATION, {
@@ -175,6 +202,19 @@ function deviceDemoRoute ($stateProvider) {
           selectedOption
         }
       })
+
+      this.toggleModal = (modal) => {
+        this.modals[modal] = !this.modals[modal]
+      }
+
+      this.block = ($event) => { $event.stopPropagation() }
+
+      this.closeModals = () => {
+        this.modals = {
+          settings: false,
+          rules: false
+        }
+      }
 
       // simulate
       this.toggleSimulation = () => {

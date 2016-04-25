@@ -13,6 +13,35 @@
   flex-direction: row;
   background: @navy-blue;
 
+  .modal {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    background: fade(#000000, 30%);
+
+    .modal-body {
+      z-index: 101;
+      position: absolute;
+      top: 20%;
+      left: 20%;
+      width: 60%;
+      height: 60%;
+      overflow: scroll;
+
+      .modal-header {
+
+        .close {
+          position: absolute;
+          right: 15px;
+          top: 15px;
+          font-size: 1.2em;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
   .iphone-frame-scrollable {
     position: absolute;
     top: 0;
