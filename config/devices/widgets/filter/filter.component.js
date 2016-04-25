@@ -23,8 +23,8 @@ const filterComponent = {
   controllerAs: 'filter',
   /* @ngInject */
   controller ($scope, $interval) {
-    this.dashOffset = 0
     const dasharray = 630
+    this.dashOffset = dasharray
     const max = 1000
     this.value = 0
     this.lifeLeft = Math.round(this.value / 24)
@@ -52,7 +52,7 @@ const filterComponent = {
 
       let actual = parseInt(filter.numericValue, 10)
       if (Number.isNaN(actual)) {
-        actual = 1000
+        return
       }
 
       if (this.value > actual) {
