@@ -108,12 +108,10 @@ function deviceDemoRoute ($stateProvider) {
     /* @ngInject */
     controller ($log, $scope, $rootScope, $state, $location, device, templates, devicesService, socketService, DEVICES_CONFIG, CONFIG, EVENTS) {
       device.template = templates[device.deviceTemplateId]
-      this.config = DEVICES_CONFIG[device.template.name]
-      if (this.config) {
-        this.sensorsNotConfigured = _.omit(device.sensors, Object.keys(this.config.sensors))
-        if (!Object.keys(this.sensorsNotConfigured).length) {
-          this.sensorsNotConfigured = null
-        }
+      this.config = DEVICES_CONFIG[device.template.name] || {}
+      this.sensorsNotConfigured = _.omit(device.sensors, Object.keys(this.config.sensors || {}))
+      if (!Object.keys(this.sensorsNotConfigured).length) {
+        this.sensorsNotConfigured = null
       }
       this.device = device
 
