@@ -181,7 +181,7 @@ function deviceDemoRoute ($stateProvider) {
       }
 
       // FIXME workaround
-      this.cpmLink = `https://${CONFIG.account.idmHost.replace('id.', 'app.')}`
+      this.cpmLink = `https://${CONFIG.account.idmHost.replace('id.', 'app.')}/login?accountId=${CONFIG.account.accountId}`
     }
   })
 }
