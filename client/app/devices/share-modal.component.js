@@ -11,8 +11,8 @@ const shareModalComponent = {
         <span class="copy-button" data-label="copy" ng-click="shareModal.share.copy()" ng-class="{copying: shareModal.share.copying}">copy</span>
       </div>
       <div class="send-link">
-        <input type="text" ng-model="shareModal.share.phone">
-        <span class="send-button" data-label="send" ng-click="shareModal.share.send()" ng-class="{sending: shareModal.share.sending}">send</span>
+        <input type="text" placeholder="Phone Number" ng-model="shareModal.share.phone">
+        <span class="send-button" data-label="text" ng-click="shareModal.share.send()" ng-class="{sending: shareModal.share.sending}">text</span>
       </div>
     </div>
   `,
