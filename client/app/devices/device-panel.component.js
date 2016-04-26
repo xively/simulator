@@ -45,7 +45,7 @@ const devicePanelComponent = {
   /* @ngInject */
   controller ($log, $scope, socketService, blueprintService, CONFIG, DEVICES_CONFIG, EVENTS) {
     this.config = CONFIG
-    const deviceConfig = DEVICES_CONFIG[this.device.template.name]
+    const deviceConfig = DEVICES_CONFIG[this.device.template.name] || {}
     this.deviceConfig = deviceConfig
     blueprintService.getV1('end-users', { organizationId: this.device.organizationId }).then((response) => {
       if (response.data) {
