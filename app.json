@@ -11,7 +11,8 @@
   "logo": "https://ws.cubbyusercontent.com/p/_344ac3084abc47d4b0e52faf56494903/xively_by-LMI-under_habanero_logo.png/1505747296",
   "image": "https://ws.cubbyusercontent.com/p/_344ac3084abc47d4b0e52faf56494903/xively_by-LMI-under_habanero_logo.png/1505747296",
   "addons": [
-    "heroku-postgresql:hobby-dev"
+    "heroku-postgresql:hobby-dev",
+    "heroku-redis:hobby-dev"
   ],
   "buildpacks": [
     {
@@ -29,10 +30,6 @@
     },
     "SALESFORCE_TOKEN": {
       "description": "Your Salesforce token",
-      "required": false
-    },
-    "HABANERO_HOST": {
-      "description": "Heroku domain or app id for habanero",
       "required": false
     }
   }
