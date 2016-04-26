@@ -26,7 +26,7 @@ const filterComponent = {
     this.dashOffset = 0
     const dasharray = 630
     const max = 1000
-    this.value = max
+    this.value = 0
     this.lifeLeft = Math.round(this.value / 24)
 
     const setFilterValue = (value) => {

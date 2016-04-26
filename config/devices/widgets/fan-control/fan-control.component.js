@@ -28,7 +28,10 @@ const fanControlComponent = {
         this.device.sensors.fan.numericValue = 0
       }
       this.device.sensors.fan.numericValue = (this.device.sensors.fan.numericValue + 1) % 3
-      this.device.update('fan', this.device.sensors.fan.numericValue)
+      this.device.update('speed', JSON.stringify({
+        command: 'speed',
+        option: ['off', 'low', 'high'][this.device.sensors.fan.numericValue]
+      }))
     }
   }
 }
