@@ -154,11 +154,45 @@
       }
     }
 
+    .device-header {
+      position: relative;
+      height: 90px;
+      max-width: 960px;
+      margin: 0 auto;
+      margin-top: 30px;
+
+      .device-serial {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-weight: bold;
+        color: @light-gray;
+        margin-left: 10px;
+      }
+
+      .xively-logo {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin-right: 10px;
+
+        .powered-by {
+          margin-bottom: 5px;
+          font-size: 13px;
+          font-weight: bold;
+          color: @light-gray;
+        }
+
+        img {
+          height: 60px;
+        }
+      }
+    }
+
     .device-container {
       position: relative;
       width: @width;
       margin: 0 auto;
-      margin-top: 100px;
 
       .device-image {
         width: 100%;
