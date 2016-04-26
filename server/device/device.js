@@ -325,13 +325,28 @@ class Device {
   }
 
   factoryReset () {
-    if (!this.ok) {
-      this.sendDeviceLog({
-        level: 'warning',
-        message: 'Factory reset',
-        details: 'Reset command received from remote'
-      })
+    this.sendDeviceLog({
+      level: 'informational',
+      message: 'Factory reset command received',
+      details: 'Factory reset command received',
+      tags: ['reset', 'received']
+    })
 
+    this.sendDeviceLog({
+      level: 'informational',
+      message: 'Device is being reset',
+      details: 'Device is being reset',
+      tags: ['reset', 'resetting']
+    })
+
+    this.sendDeviceLog({
+      level: 'informational',
+      message: 'Device recovered from error',
+      details: 'Device recovered from error',
+      tags: ['reset', 'recovery']
+    })
+
+    if (!this.ok) {
       this.ok = true
 
       if (this.connected) {
