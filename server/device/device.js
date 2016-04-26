@@ -114,7 +114,7 @@ class Device {
       response = this.handleCSV(message)
     }
 
-    if (response) {
+    if (response && this.ok) {
       this.mqtt.publish(response.topic, response.message)
     }
   }
@@ -325,19 +325,21 @@ class Device {
   }
 
   factoryReset () {
-    this.sendDeviceLog({
-      level: 'warning',
-      message: 'Factory reset',
-      details: 'Reset command received from remote'
-    })
+    if (!this.ok) {
+      this.sendDeviceLog({
+        level: 'warning',
+        message: 'Factory reset',
+        details: 'Reset command received from remote'
+      })
 
-    this.ok = true
+      this.ok = true
 
-    if (this.connected) {
-      this.startInterval()
+      if (this.connected) {
+        this.startInterval()
+      }
+
+      logger.info('virtual device#factory reset complete')
     }
-
-    logger.info('virtual device#factory reset complete')
   }
 
   simulationTick () {
