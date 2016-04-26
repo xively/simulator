@@ -4,6 +4,7 @@ const shareIcon = require('./images/share-icon.svg')
 const rulesIcon = require('../navigation/images/rules-icon.svg')
 const settingsIcon = require('../navigation/images/settings-icon.svg')
 const xiLogo = require('./images/xi-logo.svg')
+const xivelyLogo = require('./images/xively-logo.png')
 
 require('./device-demo.route.less')
 
@@ -59,6 +60,15 @@ function deviceDemoRoute ($stateProvider) {
             </div>
           </div>
           <div class="device-controls">
+            <div class="device-header">
+              <div class="device-serial">
+                {{ ::device.device.serialNumber }}
+              </div>
+              <div class="xively-logo">
+                <div class="powered-by">Powered by</div>
+                <img src="${xivelyLogo}"></img>
+              </div>
+            </div>
             <div class="device-container" style="width: {{ ::device.config.width }}px" ng-if="device.config.image">
               <div ng-repeat="(name, sensor) in ::device.config.sensors">
                 <tooltip ng-if="sensor.tooltip"
