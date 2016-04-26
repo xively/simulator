@@ -10,9 +10,16 @@ const database = require('./database')
 const app = require('./app')
 const socket = require('./socket')
 
+const orchestrator = require('../orchestrator')
+
 require('./rules')
 
 const server = socket(app)
+
+/*
+  Orchestrator
+ */
+orchestrator.init(server, app)
 
 /*
   Salesforce
