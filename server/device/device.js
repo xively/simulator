@@ -332,19 +332,23 @@ class Device {
       tags: ['reset', 'received']
     })
 
-    this.sendDeviceLog({
-      level: 'informational',
-      message: 'Device is being reset',
-      details: 'Device is being reset',
-      tags: ['reset', 'resetting']
-    })
+    setTimeout(() => {
+      this.sendDeviceLog({
+        level: 'informational',
+        message: 'Device is being reset',
+        details: 'Device is being reset',
+        tags: ['reset', 'resetting']
+      })
+    }, 1000)
 
-    this.sendDeviceLog({
-      level: 'informational',
-      message: 'Device recovered from error',
-      details: 'Device recovered from error',
-      tags: ['reset', 'recovery']
-    })
+    setTimeout(() => {
+      this.sendDeviceLog({
+        level: 'informational',
+        message: 'Device recovered from error',
+        details: 'Device recovered from error',
+        tags: ['reset', 'recovery']
+      })
+    }, 2000)
 
     if (!this.ok) {
       this.ok = true
