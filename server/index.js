@@ -18,7 +18,7 @@ const server = socket(app)
 /*
   Orchestrator
  */
-orchestrator.init(server, app)
+orchestrator.init(app)
 
 /*
   Salesforce
