@@ -10,7 +10,6 @@ const config = require('../config/server')
 const devicesConfig = require('../config/devices')
 
 const routes = require('./routes')
-const orchestrator = require('../orchestrator')
 
 const app = express()
 
@@ -22,9 +21,6 @@ app.use(cookieParser())
 
 // Routes
 app.use(routes)
-
-// Orchestrator
-orchestrator.init(app)
 
 app.use('/script/config.js', (req, res) => {
   res.status(200).send(`
