@@ -2,6 +2,7 @@ const _ = require('lodash')
 
 require('./navigation-bar.less')
 const xiLogo = require('./images/xi-logo.svg')
+const xivelyLogo = require('./images/xively-logo.png')
 const dashboardIcon = require('./images/dashboard-icon.svg')
 const devicesIcon = require('./images/devices-icon.svg')
 const rulesIcon = require('./images/rules-icon.svg')
@@ -18,8 +19,14 @@ const navComponent = {
     </div>
     <nav class="navigation-bar" ng-show="navigationBar.showHeader">
       <div class="navigation-items">
-        <div class="navigation-item logo">
+        <div class="navigation-item logo" ng-if="navigationBar.showNavigation">
           ${xiLogo}
+        </div>
+        <div class="navigation-item" ng-if="!navigationBar.showNavigation">
+          <div class="logo">
+            <img src="${xivelyLogo}"></img>
+            <div>Product Simulator</div>
+          </div>
         </div>
         <div class="navigation-item" ui-sref="devices" ui-sref-active="active" ng-show="navigationBar.showNavigation">
           <span class="navigation-item-icon">${devicesIcon}</span>

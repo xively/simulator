@@ -5,6 +5,7 @@ const rulesIcon = require('../navigation/images/rules-icon.svg')
 const settingsIcon = require('../navigation/images/settings-icon.svg')
 const xiLogo = require('./images/xi-logo.svg')
 const xivelyLogo = require('./images/xively-logo.png')
+const xivelyLogoSimple = require('./images/xively-logo-simple.png')
 
 require('./device-demo.route.less')
 
@@ -19,7 +20,10 @@ function deviceDemoRoute ($stateProvider) {
             <notification></notification>
             <div class="iphone-frame-scrollable">
               <div class="navigation-header">
-                <div class="logo">${xiLogo}</div>
+                <div class="logo">
+                  <img src="${xivelyLogoSimple}"></img>
+                  <div>Product Simulator</div>
+                </div>
               </div>
               <div class="icons">
                 <a class="share" ng-click="device.toggleShareModal()"> ${shareIcon} </a>
