@@ -14,5 +14,8 @@ services:
 before_script:
 - psql -d postgres -c 'CREATE DATABASE concaria;'
 - npm run syncdb
+script:
+- npm run lint
+- npm test
 after_success:
 - if [[ $TRAVIS_BRANCH != *"-build"* ]]; then bash ./scripts/push-build.sh; fi
