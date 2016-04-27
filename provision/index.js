@@ -7,7 +7,6 @@ const _ = require('lodash')
 const logger = require('winston')
 const blueprint = require('./blueprint')
 const salesforce = require('../server/salesforce')
-const integration = require('./integration')
 const database = require('../server/database')
 const config = require('../config/provision')
 
@@ -32,7 +31,6 @@ const createAccountUser = () => {
 }
 
 blueprint.getJwt()
-.then((jwt) => integration(jwt))
 .then(() => {
   return Promise.all([
     blueprint.createOrganizationTemplates(config.organizationTemplates),
