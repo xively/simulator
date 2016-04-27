@@ -38,6 +38,8 @@ try {
 
     salesforce.addAssets(devices)
   })
+
+  salesforce.integration()
 } catch (err) {
   logger.warn(`
     Skipping salesforce provisioning.

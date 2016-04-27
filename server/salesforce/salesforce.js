@@ -2,6 +2,7 @@
 
 const logger = require('winston')
 const jsforce = require('jsforce')
+const request = require('request-promise')
 const _ = require('lodash')
 const config = require('../../config/server')
 
@@ -120,6 +121,70 @@ class Salesforce {
     return this.loggedIn
       .then(() => this.connection.query(`SELECT Id, Email FROM User WHERE Id = '${this.connection.userInfo.id}'`))
       .then((result) => result.records[0].Email)
+  }
+
+  integration () {
+    const user = config.salesforce.user
+    const password = `${config.salesforce.pass}${config.salesforce.token}`
+
+    if (!user) {
+      return
+    }
+
+    return request({
+      url: `https://${config.account.idmHost}/api/v1/auth/login-user`,
+      method: 'POST',
+      headers: {
+        AccessToken: config.app.token
+      },
+      json: {
+        accountId: config.account.accountId,
+        emailAddress: config.account.emailAddress,
+        password: config.account.password
+      }
+    })
+    .then((res) => res.jwt)
+    .then((jwt) => {
+      return new jsforce.Connection().login(user, password)
+      .then((result) => ({
+        userId: result.id,
+        organizationId: result.organizationId
+      }))
+      .then((salesforce) => {
+        logger.info('Integrating with SalesForce')
+
+        const removeAccount = () => request({
+          url: `https://${config.app.integrationHost}/api/v1/accounts`,
+          method: 'DELETE',
+          auth: {
+            bearer: jwt
+          },
+          json: {
+            id: salesforce.organizationId
+          }
+        })
+
+        const addAccount = () => request({
+          url: `https://${config.app.integrationHost}/api/v1/accounts`,
+          method: 'POST',
+          auth: {
+            bearer: jwt
+          },
+          json: {
+            id: salesforce.organizationId,
+            accountId: config.account.accountId
+          }
+        })
+
+        return removeAccount()
+          .catch(() => Promise.resolve())
+          .then(() => addAccount())
+      })
+    })
+    .then(() => logger.info('Integrating with SalesForce success'))
+    .catch((err) => {
+      logger.error('Salesforce integration error:', JSON.stringify(err))
+    })
   }
 }
 
