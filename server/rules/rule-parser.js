@@ -108,13 +108,13 @@ class RuleParser {
           case '$ne':
             return rule.value !== sensorValue
           case '$gte':
-            return rule.value <= sensorValue
+            return parseFloat(rule.value) <= parseFloat(sensorValue)
           case '$gt':
-            return rule.value < sensorValue
+            return parseFloat(rule.value) < parseFloat(sensorValue)
           case '$lte':
-            return rule.value >= sensorValue
+            return parseFloat(rule.value) >= parseFloat(sensorValue)
           case '$lt':
-            return rule.value > sensorValue
+            return parseFloat(rule.value) > parseFloat(sensorValue)
         }
       })
       if (ruleResults[mode](Boolean) && !_.isUndefined(sensorValues[channelName]) && !entry.reported) {
