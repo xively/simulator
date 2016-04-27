@@ -55,28 +55,36 @@ const rulesComponent = {
       </div>
     </section>
 
-    <section class="container" ng-show="rules.selectedRule">
+    <section class="rules-manage container" ng-show="rules.selectedRule">
       <header>
         <h1 class="title">{{rules.title}}</h1>
       </header>
 
       <div class="content">
-        <form name="ruleForm">
-          <input class="wide-input" type="text" placeholder="Name" ng-model="rules.rule.name" required/>
+        <form name="ruleForm" novalidate>
+          <input class="wide-input" type="text" placeholder="Name" name="ruleName"
+            ng-model="rules.rule.name" ng-required="true"/>
 
           <div>
-            <h2 class="subtitle">Conditions</h2>
+            <h2 class="subtitle">
+              Conditions
+              <small class="error" ng-if="!rules.rule.conditions.rules.length">You need to specify at least one rule</small>
+            </h2>
             <condition-list conditions="rules.rule.conditions" templates="rules.templates"></condition-list>
           </div>
 
           <div>
-            <h2 class="subtitle">Actions</h2>
+            <h2 class="subtitle">
+              Actions
+              <small class="error" ng-if="!rules.rule.actions.salesforceCase.enabled">You have to select at least one action</small>
+            </h2>
             <div class="actions">
               <div class="form-row">
                 <label for="case">
-                  <input id="case" type="checkbox" ng-model="rules.rule.actions.salesforceCase.enabled" required/>
+                  <input id="case" type="checkbox" ng-model="rules.rule.actions.salesforceCase.enabled"/>
                   <span>Create a salesforce case titled:</span>
-                  <input type="text" class="wide-input" ng-model="rules.rule.actions.salesforceCase.value" required/>
+                  <input type="text" class="wide-input" ng-model="rules.rule.actions.salesforceCase.value"
+                    ng-required="rules.rule.actions.salesforceCase.enabled"/>
                 </label>
               </div>
 
