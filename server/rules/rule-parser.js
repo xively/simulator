@@ -57,7 +57,6 @@ class RuleParser {
       }
 
       const channel = this.channels.get(channelName)
-
       if (!channel) {
         return logger.debug('rule parser#failed to get channel', topic, message)
       }
@@ -95,7 +94,12 @@ class RuleParser {
           return false
         }
 
-        const sensorValue = this.channels.get(rule.channel.name).latestValue
+        const channel = this.channels.get(rule.channel.name)
+        if (!channel) {
+          return false
+        }
+
+        const sensorValue = channel.latestValue
         sensorValues[rule.channel.name] = sensorValue
 
         switch (rule.operator) {
