@@ -1,5 +1,3 @@
-require('./settings.less')
-
 /* @ngInject */
 function settingsRoute ($stateProvider) {
   $stateProvider.state('settings', {

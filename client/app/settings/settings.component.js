@@ -1,4 +1,4 @@
-require('./settings.less')
+require('./settings.component.less')
 
 /* @ngInject */
 const settingsComponent = {
@@ -9,10 +9,16 @@ const settingsComponent = {
       </header>
       <div class="content">
         <div class="group" ng-repeat="(name, value) in ::settings.config">
-          <h2 class="name">{{ name }}</h2>
+          <h2 class="name">
+            <span>{{ name }}</span>
+            <span ng-if="::value.link">
+              &nbsp;|&nbsp;
+              <a class="link" href="{{ ::value.link.url }}" target="_blank">{{ ::value.link.text }}</a>
+            </span>
+          </h2>
           <ul class="settings-list">
-            <li class="form-row" ng-repeat="(subname, object) in ::value">
-              <label>{{ subname }}:</label>
+            <li class="form-row" ng-repeat="(subname, object) in ::value.items">
+              <label>{{ ::subname }}:</label>
               <span ng-if="!object.isPassword">
                 <input type="text"
                        value="{{object.text}}"
@@ -62,8 +68,17 @@ const settingsComponent = {
     }
 
     this.config = {
-      'Xively Account': account,
-      'Salesforce Settings': salesforce
+      'Xively Account': {
+        link: {
+          text: 'open the Xively platform',
+          // FIXME workaround
+          url: `https://${CONFIG.account.idmHost.replace('id.', 'app.')}/login?accountId=${CONFIG.account.accountId}`
+        },
+        items: account
+      },
+      'Salesforce Settings': {
+        items: salesforce
+      }
     }
 
     this.select = (event) => {
