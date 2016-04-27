@@ -9,7 +9,7 @@ const RuleParser = require('./rule-parser')
 class RulesEngine {
   constructor () {
     this.ruleParsers = new Map()
-    this.disabled = config.habanero.host || process.env.NODE_ENV === 'test'
+    this.disabled = config.habanero.embedded || process.env.NODE_ENV === 'test'
 
     this.init()
   }

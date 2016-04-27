@@ -152,7 +152,7 @@ function deviceDemoRoute ($stateProvider) {
       }
     },
     /* @ngInject */
-    controller ($log, $scope, $rootScope, $state, $location, device, templates, devicesService, socketService, DEVICES_CONFIG, CONFIG, EVENTS) {
+    controller ($log, $scope, $rootScope, $state, $location, $window, device, templates, devicesService, socketService, DEVICES_CONFIG, CONFIG, EVENTS) {
       device.template = templates[device.deviceTemplateId]
       this.config = DEVICES_CONFIG[device.template.name] || {}
       this.sensorsNotConfigured = _.pullAll(Object.keys(device.sensors), Object.keys(this.config.sensors || {}))
@@ -204,6 +204,9 @@ function deviceDemoRoute ($stateProvider) {
       })
 
       this.toggleModal = (modal) => {
+        if (modal === 'rules' && CONFIG.habanero.embedded) {
+          return $window.open('/goto-orchestrator', '_blank')
+        }
         this.modals[modal] = !this.modals[modal]
       }
 

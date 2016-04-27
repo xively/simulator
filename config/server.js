@@ -10,7 +10,7 @@ const config = {
     pgUri: process.env.DATABASE_URL || 'postgres://localhost:5432/concaria'
   },
   habanero: {
-    host: process.env.HABANERO_HOST
+    embedded: !(process.env.HABANERO_EMBEDDED === 'false')
   },
   server: {
     port: process.env.PORT || 5000
@@ -37,6 +37,8 @@ const config = {
     blueprintHost: process.env.XIVELY_BLUEPRINT_HOST,
     accountId: process.env.XIVELY_ACCOUNT_ID,
     emailAddress: process.env.XIVELY_ACCOUNT_USER_NAME,
+    idmUserId: process.env.XIVELY_ACCOUNT_USER_IDM_ID,
+    blueprintUserId: process.env.XIVELY_ACCOUNT_USER_BP_ID,
     password: process.env.XIVELY_ACCOUNT_USER_PASSWORD,
     airnow: {
       apikey: '640AA087-B3E7-4098-B3F3-9F8EF81C0BC7',
