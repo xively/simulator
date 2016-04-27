@@ -4,6 +4,7 @@ This document contains everything you need to contribute to this project.
 Here are the guidelines we'd like you to follow:
 - [Project structure](#project-structure)
 - [Coding rules](#coding-rules)
+- [The rebase team policy](#the-rebase-team-policy)
 - [Submitting a Pull Request](#submitting-a-pull-request)
 - [Commit Message Format](#commit-message-format)
 
@@ -57,6 +58,11 @@ For the entire project follow the [JavaScript Standard Style](http://standardjs.
 - write tests
 - keep the modular pattern of the project
 
+## The rebase team policy
+ 
+> When a feature branch’s development is complete, rebase/squash all the work down to the minimum number of meaningful commits and avoid creating a merge commit – either making sure the changes fast-forward (or simply cherry-pick those commits into the target branch).
+> While the work is still in progress and a feature branch needs to be brought up to date with the upstream target branch, use rebase – as opposed to pull or merge – not to pollute the history with spurious merges.
+
 ## Submitting a Pull Request
 
 Before you submit your pull request consider the following guidelines:
@@ -66,9 +72,9 @@ Before you submit your pull request consider the following guidelines:
    git checkout -b my-branch development
   ```
 
-- create your patch. Include test cases.
+- create your patch, include test cases
 
-- commit your changes using a descriptive commit message that follows our [commit message conventions](#commit-message-format).
+- commit your changes using a descriptive commit message that follows our [commit message conventions](#commit-message-format)
 
 - push your branch to GitHub:
   ```shell
@@ -78,22 +84,38 @@ Before you submit your pull request consider the following guidelines:
 - in GitHub, send a pull request to `concaria:development`.
 
 - if we suggest changes then:
-  - make the required updates.
-  - commit your changes to your branch (e.g. `my-branch`).
-  - push the changes to your GitHub repository (this will update your Pull Request).
+  - make the required updates
+  - commit your changes to your branch (e.g. `my-branch`)
+  - push the changes to your GitHub repository (this will update your Pull Request)
 
 If the PR gets too outdated we may ask you to rebase, squash and force push to update the PR:
+
+- using CLI:
   ```shell
   git rebase development -i
   git push origin my-branch -f
   ```
+  
+- using a git client, [SourceTree](https://www.sourcetreeapp.com/):
+
+  - The first step is to rebase on the current `development` branch: right click on `development` then select `Rebase`. If you face conflicts you need to resolve them before the next step. If you finished resolving the conflicts, you can select `Actions/Continue` in the menubar (you can always abort the rebase with `Actions/Abort` and start again).
+  ![rebase](https://www.dropbox.com/s/0fjxkiy7r45jcjq/rebase.png?dl=1)
+  - If you have multiple commits or you need to change the commit message, you can use interactive rebase: Right click on the last commit of `development` then select `Rebase children of .... interactively`. Here you can:
+    - squash commits by selecting the newest commit in the list and clicking on the `Squash with previous` button or using drag-and-drop
+    - change the commit messages by selecting the commit and clicking on the `Edit message` button
+    - click `OK` once you are done with your changes
+  ![rebase-interactively](https://www.dropbox.com/s/jfwasz6jtg4rj9o/rebase-interactively.png?dl=1)
+  - You need to force push your changes to your work branch (in this example `development-modal`), you might need to enable it in the Prefences under the General tab: `Allow force push`.
+  ![force-push](https://www.dropbox.com/s/lds1anq6cjdrpqc/force-push.png?dl=1)
+  
+When we have reviewed your code it's ready to be pulled in. For this step we never use the `Merge` button on Github, because it would create a merge commit. We checkout your branch locally and push it to the `development` branch. It will automatically close your Pull Request as well.   
 
 ## Commit Message Format
 
 The commit message has a special format that includes a type, a scope and a subject:
 ```
 <type>(<scope>): <subject>
-```
+``` 
 
 ### Type
 
