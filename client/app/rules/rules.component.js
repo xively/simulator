@@ -2,14 +2,6 @@ require('./rules.less')
 
 const _ = require('lodash')
 
-function removeBlankLines (rule) {
-  rule.conditions.rules = rule.conditions.rules.filter((rule) => rule.template)
-  if (rule.conditions.additionalRules) {
-    rule.conditions.additionalRules = rule.conditions.additionalRules.filter((rule) => rule.template)
-  }
-  return rule
-}
-
 function getDeviceTemplates (devicesService) {
   return devicesService.getDeviceTemplates()
     .then((templates) => {
@@ -69,8 +61,8 @@ const rulesComponent = {
       </header>
 
       <div class="content">
-        <form>
-          <input class="wide-input" type="text" placeholder="Name" ng-model="rules.rule.name"/>
+        <form name="ruleForm">
+          <input class="wide-input" type="text" placeholder="Name" ng-model="rules.rule.name" required/>
 
           <div>
             <h2 class="subtitle">Conditions</h2>
@@ -82,9 +74,9 @@ const rulesComponent = {
             <div class="actions">
               <div class="form-row">
                 <label for="case">
-                  <input id="case" type="checkbox" ng-model="rules.rule.actions.salesforceCase.enabled"/>
+                  <input id="case" type="checkbox" ng-model="rules.rule.actions.salesforceCase.enabled" required/>
                   <span>Create a salesforce case titled:</span>
-                  <input type="text" class="wide-input" ng-model="rules.rule.actions.salesforceCase.value"/>
+                  <input type="text" class="wide-input" ng-model="rules.rule.actions.salesforceCase.value" required/>
                 </label>
               </div>
 
@@ -107,7 +99,11 @@ const rulesComponent = {
           </div>
 
           <div>
-            <button class="button primary" type="submit" ng-click="rules.save()">Save</button>
+            <button class="button primary" type="submit"
+              ng-click="rules.save()"
+              ng-disabled="ruleForm.$invalid || !rules.rule.conditions.rules.length">
+              Save
+            </button>
             <button class="button" ng-click="rules.clearSelection()">Cancel</button>
           </div>
         </form>
@@ -121,10 +117,7 @@ const rulesComponent = {
       name: '',
       conditions: {
         mode: 'all',
-        rules: [{
-          operator: '$eq',
-          editing: false
-        }],
+        rules: [],
         additionalRules: []
       },
       actions: {
@@ -154,7 +147,7 @@ const rulesComponent = {
 
       this.save = () => {
         if (this.selectedRule === 'new') {
-          return rulesService.createRule(removeBlankLines(this.rule))
+          return rulesService.createRule(this.rule)
             .then(() => {
               this.selectedRule = false
               rulesService.getRules()
@@ -164,7 +157,7 @@ const rulesComponent = {
             })
         }
 
-        rulesService.updateRule(this.selectedRule, removeBlankLines(this.rule))
+        rulesService.updateRule(this.selectedRule, this.rule)
           .then(() => {
             this.selectedRule = false
             rulesService.getRules()
