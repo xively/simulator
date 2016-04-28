@@ -8,6 +8,8 @@ const xivelyLogo = require('./images/xively-logo.png')
 const xivelyLogoSimple = require('./images/xively-logo-simple.png')
 const chevronLeft = require('./images/chevron-left.svg')
 const chevronRight = require('./images/chevron-right.svg')
+const buttonPlay = require('./images/button-play.svg')
+const buttonPause = require('./images/button-pause.svg')
 
 require('./device-demo.route.less')
 
@@ -40,17 +42,15 @@ function deviceDemoRoute ($stateProvider) {
         <div class="right-side">
           <div class="navigation">
             <div class="navigation-container">
-              <div class="navigation-dropdown">
-                <select
-                  ng-model="demo.navigation.selectedOption"
-                  ng-change="demo.navigation.selectedOption.navigate()"
-                  ng-options="deviceLink.name for deviceLink in demo.navigation.availableOptions track by deviceLink.device.deviceTemplateId">
-                </select>
-                <div class="simulate-button" ng-click="demo.toggleSimulation()">
-                  {{ demo.device.simulate ? 'Stop' : 'Start' }} simulation
-                </div>
+              <div class="logo">
+                <img src="${xivelyLogo}"></img>
               </div>
               <div class="navigation-items">
+                <div class="navigation-item" ng-click="demo.toggleSimulation()">
+                  <span class="navigation-item-icon" ng-hide="demo.device.simulate">${buttonPlay}</span>
+                  <span class="navigation-item-icon pause-button" ng-show="demo.device.simulate">${buttonPause}</span>
+                  <span class="navigation-item-text">{{ demo.device.simulate ? 'Stop' : 'Start' }} simulation</span>
+                </div>
                 <div class="navigation-item" ui-sref="rules" ui-sref-active="active">
                   <span class="navigation-item-icon">${rulesIcon}</span>
                   <span class="navigation-item-text">Rules</span>
@@ -59,7 +59,7 @@ function deviceDemoRoute ($stateProvider) {
                   <span class="navigation-item-icon">${settingsIcon}</span>
                   <span class="navigation-item-text">Settings</span>
                 </div>
-                <a class="navigation-item logo" href="{{ demo.cpmLink }}" target="_blank">
+                <a class="navigation-item" href="{{ demo.cpmLink }}" target="_blank">
                   <span class="navigation-item-icon">${xiLogo}</span>
                   <span class="navigation-item-text">CPM</span>
                 </a>
@@ -72,9 +72,12 @@ function deviceDemoRoute ($stateProvider) {
               <div class="device-serial">
                 {{ ::demo.device.serialNumber }}
               </div>
-              <div class="xively-logo">
-                <div class="powered-by">Powered by</div>
-                <img src="${xivelyLogo}"></img>
+               <div class="navigation-dropdown">
+                <select
+                  ng-model="demo.navigation.selectedOption"
+                  ng-change="demo.navigation.selectedOption.navigate()"
+                  ng-options="deviceLink.name for deviceLink in demo.navigation.availableOptions track by deviceLink.device.deviceTemplateId">
+                </select>
               </div>
             </div>
             <div class="device-container" style="width: {{ ::demo.config.width }}px" ng-if="demo.config.image">
