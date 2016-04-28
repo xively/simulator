@@ -6,6 +6,8 @@ const settingsIcon = require('../navigation/images/settings-icon.svg')
 const xiLogo = require('./images/xi-logo.svg')
 const xivelyLogo = require('./images/xively-logo.png')
 const xivelyLogoSimple = require('./images/xively-logo-simple.png')
+const chevronLeft = require('./images/chevron-left.svg')
+const chevronRight = require('./images/chevron-right.svg')
 
 require('./device-demo.route.less')
 
@@ -15,7 +17,8 @@ function deviceDemoRoute ($stateProvider) {
     url: '/:id/demo?header',
     template: `
       <div class="device-demo">
-        <div class="left-side">
+        <div class="left-side" ng-show="demo.mobileView">
+          <div class="chevron-left" ng-click="demo.toggleMobileView()" ng-show="demo.mobileView"> ${chevronLeft} </div>
           <iphone-frame>
             <notification></notification>
             <div class="iphone-frame-scrollable">
@@ -26,11 +29,11 @@ function deviceDemoRoute ($stateProvider) {
                 </div>
               </div>
               <div class="icons">
-                <a class="share" ng-click="device.toggleShareModal()"> ${shareIcon} </a>
+                <a class="share" ng-click="demo.toggleShareModal()"> ${shareIcon} </a>
               </div>
-              <device-panel device="device.device"></device-panel>
+              <device-panel device="demo.device"></device-panel>
             </div>
-            <share-modal link="device.shareLink" toggle="device.toggleShareModal()" ng-show="device.shareModal"></share-modal>
+            <share-modal link="demo.shareLink" toggle="demo.toggleShareModal()" ng-show="demo.shareModal"></share-modal>
             <boldchat></boldchat>
           </iphone-frame>
         </div>
@@ -39,12 +42,12 @@ function deviceDemoRoute ($stateProvider) {
             <div class="navigation-container">
               <div class="navigation-dropdown">
                 <select
-                  ng-model="device.navigation.selectedOption"
-                  ng-change="device.navigation.selectedOption.navigate()"
-                  ng-options="deviceLink.name for deviceLink in device.navigation.availableOptions track by deviceLink.device.deviceTemplateId">
+                  ng-model="demo.navigation.selectedOption"
+                  ng-change="demo.navigation.selectedOption.navigate()"
+                  ng-options="deviceLink.name for deviceLink in demo.navigation.availableOptions track by deviceLink.device.deviceTemplateId">
                 </select>
-                <div class="simulate-button" ng-click="device.toggleSimulation()">
-                  {{ device.device.simulate ? 'Stop' : 'Start' }} simulation
+                <div class="simulate-button" ng-click="demo.toggleSimulation()">
+                  {{ demo.device.simulate ? 'Stop' : 'Start' }} simulation
                 </div>
               </div>
               <div class="navigation-items">
@@ -56,7 +59,7 @@ function deviceDemoRoute ($stateProvider) {
                   <span class="navigation-item-icon">${settingsIcon}</span>
                   <span class="navigation-item-text">Settings</span>
                 </div>
-                <a class="navigation-item logo" href="{{ device.cpmLink }}" target="_blank">
+                <a class="navigation-item logo" href="{{ demo.cpmLink }}" target="_blank">
                   <span class="navigation-item-icon">${xiLogo}</span>
                   <span class="navigation-item-text">CPM</span>
                 </a>
@@ -64,44 +67,45 @@ function deviceDemoRoute ($stateProvider) {
             </div>
           </div>
           <div class="device-controls">
+            <div class="chevron-right" ng-click="demo.toggleMobileView()" ng-show="!demo.mobileView"> ${chevronRight} </div>
             <div class="device-header">
               <div class="device-serial">
-                {{ ::device.device.serialNumber }}
+                {{ ::demo.device.serialNumber }}
               </div>
               <div class="xively-logo">
                 <div class="powered-by">Powered by</div>
                 <img src="${xivelyLogo}"></img>
               </div>
             </div>
-            <div class="device-container" style="width: {{ ::device.config.width }}px" ng-if="device.config.image">
-              <div ng-repeat="(name, sensor) in ::device.config.sensors">
+            <div class="device-container" style="width: {{ ::demo.config.width }}px" ng-if="demo.config.image">
+              <div ng-repeat="(name, sensor) in ::demo.config.sensors">
                 <tooltip ng-if="sensor.tooltip"
                   options="sensor"
                   label="name"
-                  value="device.device.sensors[name].numericValue"
-                  update="device.update(name, value)"
-                  device="device.device">
+                  value="demo.device.sensors[name].numericValue"
+                  update="demo.update(name, value)"
+                  device="demo.device">
                 </tooltip>
-                <div ng-if="sensor.widget" bind-html-compile="device.getHtml(sensor.widget)"></div>
+                <div ng-if="sensor.widget" bind-html-compile="demo.getHtml(sensor.widget)"></div>
               </div>
-              <img class="device-image" src="{{ device.config.image }}" />
+              <img class="device-image" src="{{ demo.config.image }}" />
             </div>
-            <div class="no-image" ng-if="!device.config.image">
+            <div class="no-image" ng-if="!demo.config.image">
               <h2>No image available</h2>
             </div>
-            <div class="device-control-sliders" ng-if="device.sensorsNotConfigured.length">
+            <div class="device-control-sliders" ng-if="demo.sensorsNotConfigured.length">
               <div class="header row">
                 <div class="channel-name">Channel name</div>
                 <div class="control">Control</div>
                 <div class="value">Value</div>
               </div>
-              <div class="row" ng-repeat="(name, sensor) in device.device.sensors" ng-if="device.sensorsNotConfigured.indexOf(name) > -1">
+              <div class="row" ng-repeat="(name, sensor) in demo.device.sensors" ng-if="demo.sensorsNotConfigured.indexOf(name) > -1">
                 <div class="channel-name">{{ name }}</div>
                 <div class="control">
-                  <input type="range" min="0" max="100" ng-model="device.sensors[name]" ng-change="device.update(name, device.sensors[name])" ng-disabled="!device.device.ok">
+                  <input type="range" min="0" max="100" ng-model="demo.sensors[name]" ng-change="demo.update(name, demo.sensors[name])" ng-disabled="!demo.device.ok">
                 </div>
                 <div class="value">
-                  {{ device.sensors[name] }}
+                  {{ demo.sensors[name] }}
                 </div>
               </div>
             </div>
@@ -109,7 +113,7 @@ function deviceDemoRoute ($stateProvider) {
         </div>
       </div>
     `,
-    controllerAs: 'device',
+    controllerAs: 'demo',
     resolve: {
       /* @ngInject */
       templates (devicesService) {
@@ -189,17 +193,22 @@ function deviceDemoRoute ($stateProvider) {
       // get html for a widget element
       this.getHtml = (widget) => {
         const { name, position } = widget
-        return `<${name} device="device.device" style="position: absolute; top: ${position.top}px; left: ${position.left}px"></${name}>`
+        return `<${name} device="demo.device" style="position: absolute; top: ${position.top}px; left: ${position.left}px"></${name}>`
       }
 
       this.shareLink = $location.absUrl().replace(/\/demo.*/, '?navigation=0')
-      this.shareModal = false
       this.toggleShareModal = () => {
         this.shareModal = !this.shareModal
       }
 
       // FIXME workaround
       this.cpmLink = `https://${CONFIG.account.idmHost.replace('id.', 'app.')}/login?accountId=${CONFIG.account.accountId}`
+
+      // toggle mobile visibility
+      this.mobileView = true
+      this.toggleMobileView = () => {
+        this.mobileView = !this.mobileView
+      }
     }
   })
 }
