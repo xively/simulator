@@ -64,7 +64,7 @@ class RuleParser {
       channel.latestValue = this.parseMessage(channel.persistenceType, message)
       this.channels.set(channelName, channel)
 
-      this.checkValues(channelName)
+      this.checkValues(channelName, message.toString())
     })
   }
 
@@ -82,7 +82,7 @@ class RuleParser {
     return _.trim(fragments[2] || fragments[3] || '', '"').trim()
   }
 
-  checkValues (channelName) {
+  checkValues (channelName, message) {
     this.rules.forEach((entry) => {
       const mode = entry.conditions.mode === 'all' ? 'every' : 'some'
       const sensorValues = {}
@@ -122,10 +122,10 @@ class RuleParser {
         }
       })
       if (ruleResults[mode](Boolean) && !_.isUndefined(sensorValues[channelName]) && !entry.reported) {
-        logger.debug(`rule parser#creating SalesForce ticket for rule ${entry.name}`)
+        logger.debug(`rule parser#creating SalesForce ticket for rule ${entry.name} because of message: ${message}`)
         salesforce.addCases([{
           subject: entry.actions.salesforceCase.value,
-          description: 'Test description',
+          description: message,
           deviceId: this.device.id,
           orgId: this.device.organizationId
         }])
