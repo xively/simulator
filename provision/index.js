@@ -157,6 +157,10 @@ blueprint.getJwt()
         return database.insertApplicationConfig(appConfig)
       }))
     })
+    .then(() => {
+      logger.info('Initiating: device config')
+      return database.initDeviceConfig()
+    })
 })
 .then(() => {
   console.log('Provision done')

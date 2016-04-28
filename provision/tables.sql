@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS inventory, firmware, application_config, rules;
+DROP TABLE IF EXISTS inventory, firmware, application_config, rules, device_config;
 
 CREATE TABLE inventory
 (
@@ -31,6 +31,14 @@ CREATE TABLE firmware
   CONSTRAINT firmware_id_fkey FOREIGN KEY (id)
       REFERENCES inventory (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+CREATE TABLE device_config
+(
+  "deviceConfig" json
 )
 WITH (
   OIDS=FALSE

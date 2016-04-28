@@ -5,9 +5,11 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const favicon = require('serve-favicon')
+const _ = require('lodash')
 
 const config = require('../config/server')
-const devicesConfig = require('../config/devices')
+const devicesConfigFile = require('../config/devices')
+const db = require('./database')
 
 const routes = require('./routes')
 
@@ -23,10 +25,16 @@ app.use(cookieParser())
 app.use(routes)
 
 app.use('/script/config.js', (req, res) => {
-  res.status(200).send(`
-    window.APP_CONFIG = ${JSON.stringify(config)}
-    window.DEVICES_CONFIG = ${JSON.stringify(devicesConfig)}
-  `)
+  db.selectDeviceConfig()
+    .then((data) => {
+      const devicesConfigDb = data[0].deviceConfig
+      const devicesConfig = _.merge({}, devicesConfigFile, devicesConfigDb)
+
+      res.status(200).send(`
+        window.APP_CONFIG = ${JSON.stringify(config)}
+        window.DEVICES_CONFIG = ${JSON.stringify(devicesConfig)}
+      `)
+    })
 })
 
 // Serve up favicon

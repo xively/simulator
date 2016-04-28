@@ -19,10 +19,10 @@ function deviceDemoRoute ($stateProvider) {
     url: '/:id/demo?header',
     template: `
       <div class="device-demo">
-        <div class="modal" ng-click="device.closeModals()" ng-show="device.modals.rules">
-          <div class="content modal-body" ng-click="device.block($event)">
+        <div class="modal" ng-click="demo.closeModals()" ng-show="demo.modals.rules">
+          <div class="content modal-body" ng-click="demo.block($event)">
             <div class="modal-header">
-              <div class="close" ng-click="device.toggleModal('rules')">✕</div>
+              <div class="close" ng-click="demo.toggleModal('rules')">✕</div>
             </div>
             <div class="modal-content">
               <rules-component></rules-component>
@@ -30,10 +30,10 @@ function deviceDemoRoute ($stateProvider) {
           </div>
         </div>
 
-        <div class="modal" ng-click="device.closeModals()" ng-show="device.modals.settings">
-          <div class="content modal-body" ng-click="device.block($event)">
+        <div class="modal" ng-click="demo.closeModals()" ng-show="demo.modals.settings">
+          <div class="content modal-body" ng-click="demo.block($event)">
             <div class="modal-header">
-              <div class="close" ng-click="device.toggleModal('settings')">✕</div>
+              <div class="close" ng-click="demo.toggleModal('settings')">✕</div>
             </div>
             <div class="modal-content">
               <settings-component></settings-component>
@@ -73,15 +73,15 @@ function deviceDemoRoute ($stateProvider) {
                   <span class="navigation-item-icon pause-button" ng-show="demo.device.simulate">${buttonPause}</span>
                   <span class="navigation-item-text">{{ demo.device.simulate ? 'Stop' : 'Start' }} simulation</span>
                 </div>
-                <div class="navigation-item" ng-click="device.toggleModal('settings')">
+                <div class="navigation-item" ng-click="demo.toggleModal('settings')">
                   <span class="navigation-item-icon">${settingsIcon}</span>
                   <span class="navigation-item-text">Settings</span>
                 </div>
-                <div class="navigation-item" ng-click="device.toggleModal('rules')">
+                <div class="navigation-item" ng-click="demo.toggleModal('rules')">
                   <span class="navigation-item-icon">${rulesIcon}</span>
                   <span class="navigation-item-text">Rules</span>
                 </div>
-                <a class="navigation-item logo" href="{{ device.cpmLink }}" target="_blank">
+                <a class="navigation-item logo" href="{{ demo.cpmLink }}" target="_blank">
                   <span class="navigation-item-icon">${xiLogo}</span>
                   <span class="navigation-item-text">CPM</span>
                 </a>

@@ -24,6 +24,24 @@ function insertApplicationConfig (data) {
     .returning('*')
 }
 
+// Device config
+function initDeviceConfig () {
+  return knex('device_config')
+    .insert({ deviceConfig: {} })
+    .returning('*')
+}
+
+function selectDeviceConfig () {
+  return knex('device_config')
+    .select()
+}
+
+function updateDeviceConfig (deviceConfig) {
+  return knex('device_config')
+    .update({ deviceConfig })
+    .returning('*')
+}
+
 // Firmware
 function selectFirmwares () {
   return knex('firmware')
@@ -111,13 +129,18 @@ function truncateTables () {
     knex('firmware').del(),
     knex('inventory').del(),
     knex('rules').del(),
-    knex('application_config').del()
+    knex('application_config').del(),
+    knex('device_config').del()
   ])
 }
 
 module.exports = {
   selectApplicationConfig,
   insertApplicationConfig,
+
+  initDeviceConfig,
+  selectDeviceConfig,
+  updateDeviceConfig,
 
   selectFirmwares,
   selectFirmware,

@@ -21,6 +21,9 @@ describe('Database', () => {
       name: 'endUser'
     }
   }
+  const deviceConfigMock = {
+    config: 'config'
+  }
   const inventoryMock = {
     serial: 'serial1234567',
     soldDate: moment.utc().toDate(),
@@ -64,6 +67,28 @@ describe('Database', () => {
 
       expect(config.length).to.eql(1)
       expect(config).to.eql(appConfigData)
+    })
+  })
+
+  describe('device_config', () => {
+    it('should create empty device config', function * () {
+      const config = yield database.initDeviceConfig()
+
+      expect(config[0]).to.eql({ deviceConfig: {} })
+    })
+
+    it('should find device config', function * () {
+      yield database.initDeviceConfig()
+      const config = yield database.selectDeviceConfig()
+
+      expect(config[0]).to.eql({ deviceConfig: {} })
+    })
+
+    it('should update device config', function * () {
+      yield database.initDeviceConfig()
+      const config = yield database.updateDeviceConfig(deviceConfigMock)
+
+      expect(config[0]).to.eql({ deviceConfig: deviceConfigMock })
     })
   })
 

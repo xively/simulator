@@ -5,7 +5,7 @@
     .name {
       font-size: 1.1em;
       font-weight: 400;
-      
+
       .link {
         text-decoration: none;
         color: @dark-gray;
@@ -38,7 +38,7 @@
           border: none;
           border-radius: 0;
           background: @light-gray;
-          box-shadow: 2px 2px 3px 1px rgba(209, 210, 211, 0.35);
+          box-shadow: 2px 2px 3px 1px @box-shadow;
           appearance: none;
         }
       }
@@ -56,6 +56,39 @@
             width: 100%;
           }
         }
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      width: 100%;
+      min-height: 500px;
+      margin-bottom: 10px;
+      padding: 0;
+      border: none;
+      border-radius: 0;
+      background: @light-gray;
+      box-shadow: 2px 2px 3px 1px @box-shadow;
+      appearance: none;
+    }
+
+    .config-guide {
+      width: 100%;
+      background: @light-gray;
+      box-shadow: 2px 2px 3px 1px @box-shadow;
+      transition: all 0.5s;
+      height: 530px;
+      overflow: hidden;
+      margin-bottom: 20px;
+
+      &.ng-hide {
+        height: 0;
+      }
+
+      pre {
+        font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+        padding: 10px;
+        margin: 0;
       }
     }
   }

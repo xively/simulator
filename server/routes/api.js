@@ -61,6 +61,16 @@ function updateRule (req, res) {
     })
 }
 
+function getDeviceConfig (req, res) {
+  database.selectDeviceConfig()
+    .then((rows) => res.json(rows[0]))
+}
+
+function updateDeviceConfig (req, res) {
+  database.updateDeviceConfig(req.body)
+    .then((rows) => res.json(rows[0]))
+}
+
 module.exports = {
   getFirmwareById,
   updateInventory,
@@ -68,5 +78,7 @@ module.exports = {
   getRuleById,
   createRule,
   removeRule,
-  updateRule
+  updateRule,
+  getDeviceConfig,
+  updateDeviceConfig
 }
