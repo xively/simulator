@@ -73,15 +73,15 @@ function deviceDemoRoute ($stateProvider) {
                   <span class="navigation-item-icon pause-button" ng-show="demo.device.simulate">${buttonPause}</span>
                   <span class="navigation-item-text">{{ demo.device.simulate ? 'Stop' : 'Start' }} simulation</span>
                 </div>
-                <div class="navigation-item" ng-click="device.toggleModal('rules')">
-                  <span class="navigation-item-icon">${rulesIcon}</span>
-                  <span class="navigation-item-text">Rules</span>
-                </div>
                 <div class="navigation-item" ng-click="device.toggleModal('settings')">
                   <span class="navigation-item-icon">${settingsIcon}</span>
                   <span class="navigation-item-text">Settings</span>
                 </div>
-                <a class="navigation-item" href="{{ demo.cpmLink }}" target="_blank">
+                <div class="navigation-item" ng-click="device.toggleModal('rules')">
+                  <span class="navigation-item-icon">${rulesIcon}</span>
+                  <span class="navigation-item-text">Rules</span>
+                </div>
+                <a class="navigation-item logo" href="{{ device.cpmLink }}" target="_blank">
                   <span class="navigation-item-icon">${xiLogo}</span>
                   <span class="navigation-item-text">CPM</span>
                 </a>
