@@ -23,11 +23,107 @@
     height: 100%;
     overflow-y: scroll;
   }
+  
+  .navigation {
+    width: 100%;
+    height: @navigation-height;
+    border-bottom: @border;
+
+    .navigation-container {
+      max-width: 960px;
+      height: 100%;
+      margin: 0 auto;
+      display: flex;
+    }
+
+    .navigation-dropdown {
+      line-height: @navigation-height;
+
+      select {
+        display: inline-block;
+        vertical-align: middle;
+        width: 300px;
+        height: 34px;
+        line-height: 34px;
+        padding-right: 45px;
+        padding-left: 10px;
+        font-size: 1.1em;
+        text-overflow: ellipsis;
+        border: 1px solid @light-gray;
+        color: @light-gray;
+        border-radius: 0;
+        background: url('./images/arrow-down-white.png') no-repeat @navy-blue;
+        background-position: right 20px top 6px;
+        background-size: 20px 20px;
+        box-shadow: 2px 2px 3px 1px rgba(209, 210, 211, 0.35);
+        appearance: none;
+      }
+
+      .simulate-button {
+        display: inline-block;
+        height: 34px;
+        width: 150px;
+        margin-left: 10px;
+        text-align: center;
+        line-height: 34px;
+        vertical-align: middle;
+        border: 1px solid @light-gray;
+        color: @light-gray;
+        background: @navy-blue;
+        box-shadow: 2px 2px 3px 1px rgba(209, 210, 211, 0.35);
+        cursor: pointer;
+      }
+    }
+
+    .navigation-items {
+      display: flex;
+      width: 300px;
+      height: 100%;
+      margin-left: auto;
+      margin-right: 20px;
+
+      .navigation-item {
+        cursor: pointer;
+        height: 100%;
+        display: flex;
+        flex: 1 1;
+        align-items: center;
+        justify-content: center;
+        text-transform: uppercase;
+        flex-direction: column;
+
+        .navigation-item-icon {
+          height: 26px;
+          width: 26px;
+
+          svg {
+            fill: @light-gray;
+            stroke: @light-gray;
+          }
+        }
+
+        .navigation-item-text {
+          padding-top: 5px;
+          color: @light-gray;
+          font-size: 0.75em;
+          font-weight: 300;
+        }
+      }
+    }
+  }
 
   .left-side {
+    position: relative;
     width: 510px;
     min-width: 510px;
     border-right: @border;
+    overflow: hidden;
+    transition: 300ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+    
+    &.ng-hide {
+      min-width: 0px;
+      width: 0px;
+    }
 
     .navigation-header {
       position: relative;
@@ -73,96 +169,9 @@
   }
 
   .right-side {
+    position: relative;
     flex: 1;
     height: 100%;
-
-    .navigation {
-      width: 100%;
-      height: @navigation-height;
-      border-bottom: @border;
-
-      .navigation-container {
-        max-width: 960px;
-        height: 100%;
-        margin: 0 auto;
-        display: flex;
-      }
-
-      .navigation-dropdown {
-        line-height: @navigation-height;
-
-        select {
-          display: inline-block;
-          vertical-align: middle;
-          width: 300px;
-          height: 34px;
-          line-height: 34px;
-          padding-right: 45px;
-          padding-left: 10px;
-          font-size: 1.1em;
-          text-overflow: ellipsis;
-          border: 1px solid @light-gray;
-          color: @light-gray;
-          border-radius: 0;
-          background: url('./images/arrow-down-white.png') no-repeat @navy-blue;
-          background-position: right 20px top 6px;
-          background-size: 20px 20px;
-          box-shadow: 2px 2px 3px 1px rgba(209, 210, 211, 0.35);
-          appearance: none;
-        }
-
-        .simulate-button {
-          display: inline-block;
-          height: 34px;
-          width: 150px;
-          margin-left: 10px;
-          text-align: center;
-          line-height: 34px;
-          vertical-align: middle;
-          border: 1px solid @light-gray;
-          color: @light-gray;
-          background: @navy-blue;
-          box-shadow: 2px 2px 3px 1px rgba(209, 210, 211, 0.35);
-          cursor: pointer;
-        }
-      }
-
-      .navigation-items {
-        display: flex;
-        width: 300px;
-        height: 100%;
-        margin-left: auto;
-        margin-right: 20px;
-
-        .navigation-item {
-          cursor: pointer;
-          height: 100%;
-          display: flex;
-          flex: 1 1;
-          align-items: center;
-          justify-content: center;
-          text-transform: uppercase;
-          flex-direction: column;
-
-          .navigation-item-icon {
-            height: 26px;
-            width: 26px;
-
-            svg {
-              fill: @light-gray;
-              stroke: @light-gray;
-            }
-          }
-
-          .navigation-item-text {
-            padding-top: 5px;
-            color: @light-gray;
-            font-size: 0.75em;
-            font-weight: 300;
-          }
-        }
-      }
-    }
 
     .device-header {
       position: relative;
@@ -266,4 +275,26 @@
       }
     }
   }
+}
+
+.chevron-left, .chevron-right {
+  position: absolute;
+  width: 20px;
+  z-index: 99999;
+  cursor: pointer;
+
+  svg {
+    fill: @light-gray;
+    width: 100%;
+  }
+}
+
+.chevron-left {
+  top: 5px;
+  right: 5px;
+}
+
+.chevron-right {
+  top: 5px;
+  left: 5px;
 }
