@@ -89,19 +89,19 @@ function deviceDemoRoute ($stateProvider) {
             <div class="no-image" ng-if="!device.config.image">
               <h2>No image available</h2>
             </div>
-            <div class="device-control-sliders" ng-if="device.sensorsNotConfigured">
+            <div class="device-control-sliders" ng-if="device.sensorsNotConfigured.length">
               <div class="header row">
                 <div class="channel-name">Channel name</div>
                 <div class="control">Control</div>
                 <div class="value">Value</div>
               </div>
-              <div class="row" ng-repeat="(name, sensor) in device.sensorsNotConfigured">
+              <div class="row" ng-repeat="(name, sensor) in device.device.sensors" ng-if="device.sensorsNotConfigured.indexOf(name) > -1">
                 <div class="channel-name">{{ name }}</div>
                 <div class="control">
-                  <input type="range" min="0" max="100" ng-model="value" ng-init="value = 0" ng-change="device.update(name, value)" ng-disabled="!device.device.ok">
+                  <input type="range" min="0" max="100" ng-model="device.sensors[name]" ng-change="device.update(name, device.sensors[name])" ng-disabled="!device.device.ok">
                 </div>
                 <div class="value">
-                  {{ value }}
+                  {{ device.sensors[name] }}
                 </div>
               </div>
             </div>
@@ -126,10 +126,14 @@ function deviceDemoRoute ($stateProvider) {
     controller ($log, $scope, $rootScope, $state, $location, device, templates, devicesService, socketService, DEVICES_CONFIG, CONFIG, EVENTS) {
       device.template = templates[device.deviceTemplateId]
       this.config = DEVICES_CONFIG[device.template.name] || {}
-      this.sensorsNotConfigured = _.omit(device.sensors, Object.keys(this.config.sensors || {}))
-      if (!Object.keys(this.sensorsNotConfigured).length) {
-        this.sensorsNotConfigured = null
-      }
+      this.sensorsNotConfigured = _.pullAll(Object.keys(device.sensors), Object.keys(this.config.sensors || {}))
+      this.sensors = this.sensorsNotConfigured.reduce((sensors, key) => {
+        sensors[key] = 50
+        return sensors
+      }, {})
+      $scope.$watch(() => device.sensors, (sensors) => {
+        _.forEach(sensors, (sensor, name) => { this.sensors[name] = sensor.numericValue })
+      }, true)
       this.device = device
 
       $scope.$watch(() => this.device.ok, (ok, wasOk) => {
