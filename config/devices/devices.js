@@ -39,7 +39,7 @@ const filterRule = (latestValue, sensors) => {
 const config = {
   hiddenChannels: ['sensor', 'control'],
   widgets: [],
-  ['Home Air Purifier']: {
+  'Home Air Purifier': {
     image: '/devices/images/home-air-purifier.png',
     width: 680,
     widgets: ['fan-state-control', 'filter'],
@@ -197,7 +197,7 @@ const config = {
       }
     }
   },
-  ['Industrial HVAC']: {
+  'Industrial HVAC': {
     image: '/devices/images/industrial-hvac.png',
     width: 1000,
     widgets: ['fan-state-control', 'filter'],
@@ -358,7 +358,7 @@ const config = {
       }
     }
   },
-  ['Jacket']: {
+  Jacket: {
     image: '/devices/images/jacket.png',
     width: 510,
     sensors: {
@@ -414,6 +414,84 @@ const config = {
           },
           distance: 100,
           direction: 'top'
+        }
+      }
+    }
+  },
+  'Solar Panel': {
+    image: '/devices/images/solar-panel.png',
+    width: 790,
+    sensors: {
+      power: {
+        min: 0,
+        max: 717.3,
+        wiggle: true,
+        unit: 'W',
+        tooltip: {
+          position: {
+            top: 250,
+            left: 100
+          },
+          labelPosition: {
+            top: -8,
+            left: 15
+          },
+          distance: 100,
+          direction: 'top'
+        }
+      },
+      voltage: {
+        min: 0,
+        max: 112.5,
+        wiggle: true,
+        unit: 'V',
+        tooltip: {
+          position: {
+            top: 450,
+            left: 100
+          },
+          labelPosition: {
+            top: -8,
+            left: 15
+          },
+          distance: 100,
+          direction: 'bottom'
+        }
+      },
+      current: {
+        min: 0,
+        max: 25.8,
+        wiggle: true,
+        unit: 'A',
+        tooltip: {
+          position: {
+            top: 250,
+            left: 690
+          },
+          labelPosition: {
+            top: -8,
+            left: -73
+          },
+          distance: 100,
+          direction: 'top'
+        }
+      },
+      irradiance: {
+        min: 0,
+        max: 148.5,
+        wiggle: true,
+        unit: 'W/m²',
+        tooltip: {
+          position: {
+            top: 450,
+            left: 690
+          },
+          labelPosition: {
+            top: -8,
+            left: -90
+          },
+          distance: 100,
+          direction: 'bottom'
         }
       }
     }
