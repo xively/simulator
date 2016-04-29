@@ -9,11 +9,12 @@ const map = require('./map')
 
 const NAMES = {
   HOME_ORG_TEMPLATE: 'Home',
-  HOME_DEVICE_TEMPLATE: 'Home Air Purifier',
+  HOME_AIR_PUTIFIER: 'Home Air Purifier',
+  JACKET: 'Jacket',
   HOME_USER: 'Home User',
   WAREHOUSE_ORG_TEMPLATE: 'Warehouse',
   FACTORY_ORG_TEMPLATE: 'Factory',
-  COMMERCIAL_DEVICE_TEMPLATE: 'Industrial HVAC',
+  INDUSTRIAL_HVAC: 'Industrial HVAC',
   COMMERCIAL_OPERATIONS_MANAGER: 'Operations Manager',
   COMMERCIAL_SERVICE_TECHNICIAN: 'Service Technician'
 }
@@ -52,7 +53,7 @@ const homeDeviceFields = _.map({
 }, (fieldType, name) => ({
   name,
   fieldType,
-  deviceTemplate: NAMES.HOME_DEVICE_TEMPLATE
+  deviceTemplate: NAMES.HOME_AIR_PUTIFIER
 }))
 
 const commercialDeviceFields = _.map({
@@ -66,7 +67,19 @@ const commercialDeviceFields = _.map({
 }, (fieldType, name) => ({
   name,
   fieldType,
-  deviceTemplate: NAMES.COMMERCIAL_DEVICE_TEMPLATE
+  deviceTemplate: NAMES.INDUSTRIAL_HVAC
+}))
+
+const jacketDeviceFields = _.map({
+  hardwareVersion: 'string',
+  includedSensors: 'string',
+  color: 'string',
+  productionRun: 'string',
+  activatedDate: 'datetime'
+}, (fieldType, name) => ({
+  name,
+  fieldType,
+  deviceTemplate: NAMES.JACKET
 }))
 
 /*
@@ -85,7 +98,7 @@ const homeDeviceChannels = _.map({
   name,
   persistenceType,
   entityType: 'deviceTemplate',
-  deviceTemplate: NAMES.HOME_DEVICE_TEMPLATE
+  deviceTemplate: NAMES.HOME_AIR_PUTIFIER
 }))
 
 const commercialDeviceChannels = _.map({
@@ -100,7 +113,19 @@ const commercialDeviceChannels = _.map({
   name,
   persistenceType,
   entityType: 'deviceTemplate',
-  deviceTemplate: NAMES.COMMERCIAL_DEVICE_TEMPLATE
+  deviceTemplate: NAMES.INDUSTRIAL_HVAC
+}))
+
+const jacketDeviceChannels = _.map({
+  control: 'simple',
+  core: 'timeSeries',
+  'left-arm': 'timeSeries',
+  'right-arm': 'timeSeries'
+}, (persistenceType, name) => ({
+  name,
+  persistenceType,
+  entityType: 'deviceTemplate',
+  deviceTemplate: NAMES.JACKET
 }))
 
 /*
@@ -117,15 +142,15 @@ function getLocation () {
   return getLocation()
 }
 
-const homeDevices = _.reduce(homeOrganizations, (devices, organization, orgIdx) => {
+const homeAirPurifiers = _.reduce(homeOrganizations, (devices, organization, orgIdx) => {
   const DEVICES_PER_ORGANIZATION = 3
   return _.times(DEVICES_PER_ORGANIZATION, (idx) => {
     const location = getLocation()
     return {
-      deviceTemplate: NAMES.HOME_DEVICE_TEMPLATE,
+      deviceTemplate: NAMES.HOME_AIR_PUTIFIER,
       organization: organization.name,
-      name: `${NAMES.HOME_DEVICE_TEMPLATE.replace(/\s/g, '-')}-${idx}`,
-      serialNumber: `${NAMES.HOME_DEVICE_TEMPLATE.replace(/\s/g, '-')}-${_.padStart(DEVICES_PER_ORGANIZATION * orgIdx + idx + 1, 6, '0')}`,
+      name: `${NAMES.HOME_AIR_PUTIFIER.replace(/\s/g, '-')}-${idx}`,
+      serialNumber: `${NAMES.HOME_AIR_PUTIFIER.replace(/\s/g, '-')}-${_.padStart(DEVICES_PER_ORGANIZATION * orgIdx + idx + 1, 6, '0')}`,
       hardwareVersion: `1.1.${idx}`,
       includedSensors: 'Temperature, Humidity, VoC, CO, Dust, Filter',
       color: 'white',
@@ -139,15 +164,15 @@ const homeDevices = _.reduce(homeOrganizations, (devices, organization, orgIdx) 
   }).concat(devices)
 }, [])
 
-const commercialDevices = _.reduce(warehouseOrganizations, (devices, organization, orgIdx) => {
+const industrialHVACs = _.reduce(warehouseOrganizations, (devices, organization, orgIdx) => {
   const DEVICES_PER_ORGANIZATION = 10
   return _.times(DEVICES_PER_ORGANIZATION, (idx) => {
     const location = getLocation()
     return {
-      deviceTemplate: NAMES.COMMERCIAL_DEVICE_TEMPLATE,
+      deviceTemplate: NAMES.INDUSTRIAL_HVAC,
       organization: organization.name,
-      name: `${NAMES.COMMERCIAL_DEVICE_TEMPLATE.replace(/\s/g, '-')}-${idx}`,
-      serialNumber: `${NAMES.COMMERCIAL_DEVICE_TEMPLATE.replace(/\s/g, '-')}-${_.padStart(DEVICES_PER_ORGANIZATION * orgIdx + idx + 1, 6, '0')}`,
+      name: `${NAMES.INDUSTRIAL_HVAC.replace(/\s/g, '-')}-${idx}`,
+      serialNumber: `${NAMES.INDUSTRIAL_HVAC.replace(/\s/g, '-')}-${_.padStart(DEVICES_PER_ORGANIZATION * orgIdx + idx + 1, 6, '0')}`,
       hardwareVersion: `1.1.${idx}`,
       includedSensors: 'Temperature, Humidity, VoC, CO, Dust, Filter',
       color: 'white',
@@ -155,6 +180,26 @@ const commercialDevices = _.reduce(warehouseOrganizations, (devices, organizatio
       powerVersion: '12VDC',
       filterType: 'carbonHEPA',
       firmwareVersion: `2.0.${idx}`,
+      longitude: location[0],
+      latitude: location[1]
+    }
+  }).concat(devices)
+}, [])
+
+const jackets = _.reduce(homeOrganizations, (devices, organization, orgIdx) => {
+  const DEVICES_PER_ORGANIZATION = 1
+  return _.times(DEVICES_PER_ORGANIZATION, (idx) => {
+    const location = getLocation()
+    return {
+      deviceTemplate: NAMES.JACKET,
+      organization: organization.name,
+      name: `${NAMES.JACKET.replace(/\s/g, '-')}-${idx}`,
+      serialNumber: `${NAMES.JACKET.replace(/\s/g, '-')}-${_.padStart(DEVICES_PER_ORGANIZATION * orgIdx + idx + 1, 6, '0')}`,
+      hardwareVersion: `1.1.${idx}`,
+      includedSensors: 'Core, Left arm, Right arm',
+      color: 'white',
+      productionRun: 'DEC2016',
+      firmwareVersion: `1.0.${idx}`,
       longitude: location[0],
       latitude: location[1]
     }
@@ -199,9 +244,11 @@ const config = {
     name: NAMES.FACTORY_ORG_TEMPLATE
   }],
   deviceTemplates: [{
-    name: NAMES.HOME_DEVICE_TEMPLATE
+    name: NAMES.HOME_AIR_PUTIFIER
   }, {
-    name: NAMES.COMMERCIAL_DEVICE_TEMPLATE
+    name: NAMES.INDUSTRIAL_HVAC
+  }, {
+    name: NAMES.JACKET
   }],
   endUserTemplates: [{
     name: NAMES.HOME_USER
@@ -211,9 +258,9 @@ const config = {
     name: NAMES.COMMERCIAL_SERVICE_TECHNICIAN
   }],
   organizations: [].concat(homeOrganizations).concat(warehouseOrganizations).concat(factoryOrganizations),
-  deviceFields: [].concat(homeDeviceFields).concat(commercialDeviceFields),
-  channelTemplates: [].concat(homeDeviceChannels).concat(commercialDeviceChannels),
-  devices: [].concat(homeDevices).concat(commercialDevices),
+  deviceFields: [].concat(homeDeviceFields).concat(commercialDeviceFields).concat(jacketDeviceFields),
+  channelTemplates: [].concat(homeDeviceChannels).concat(commercialDeviceChannels).concat(jacketDeviceChannels),
+  devices: [].concat(homeAirPurifiers).concat(industrialHVACs).concat(jackets),
   endUsers: [].concat(homeUsers).concat(commercialUsers)
 }
 

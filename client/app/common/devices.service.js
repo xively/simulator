@@ -29,6 +29,9 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
           }
         })
         device.update = (name, value) => {
+          if (!device.controlChannel) {
+            return $log.error('control channel is missing for device', device)
+          }
           const channel = device.controlChannel.channel
           const numericValue = _.parseInt(value)
           if (!_.isNaN(numericValue)) {
