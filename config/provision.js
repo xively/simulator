@@ -11,6 +11,7 @@ const NAMES = {
   HOME_ORG_TEMPLATE: 'Home',
   HOME_AIR_PUTIFIER: 'Home Air Purifier',
   JACKET: 'Jacket',
+  SOLAR_PANEL: 'Solar Panel',
   HOME_USER: 'Home User',
   WAREHOUSE_ORG_TEMPLATE: 'Warehouse',
   FACTORY_ORG_TEMPLATE: 'Factory',
@@ -82,6 +83,18 @@ const jacketDeviceFields = _.map({
   deviceTemplate: NAMES.JACKET
 }))
 
+const solarPanelDeviceFields = _.map({
+  hardwareVersion: 'string',
+  includedSensors: 'string',
+  color: 'string',
+  productionRun: 'string',
+  activatedDate: 'datetime'
+}, (fieldType, name) => ({
+  name,
+  fieldType,
+  deviceTemplate: NAMES.SOLAR_PANEL
+}))
+
 /*
  * device channels
  */
@@ -126,6 +139,19 @@ const jacketDeviceChannels = _.map({
   persistenceType,
   entityType: 'deviceTemplate',
   deviceTemplate: NAMES.JACKET
+}))
+
+const solarPanelDeviceChannels = _.map({
+  control: 'simple',
+  power: 'timeSeries',
+  voltage: 'timeSeries',
+  current: 'timeSeries',
+  irradiance: 'timeSeries'
+}, (persistenceType, name) => ({
+  name,
+  persistenceType,
+  entityType: 'deviceTemplate',
+  deviceTemplate: NAMES.SOLAR_PANEL
 }))
 
 /*
@@ -206,6 +232,26 @@ const jackets = _.reduce(homeOrganizations, (devices, organization, orgIdx) => {
   }).concat(devices)
 }, [])
 
+const solarPanels = _.reduce(warehouseOrganizations, (devices, organization, orgIdx) => {
+  const DEVICES_PER_ORGANIZATION = 1
+  return _.times(DEVICES_PER_ORGANIZATION, (idx) => {
+    const location = getLocation()
+    return {
+      deviceTemplate: NAMES.SOLAR_PANEL,
+      organization: organization.name,
+      name: `${NAMES.SOLAR_PANEL.replace(/\s/g, '-')}-${idx}`,
+      serialNumber: `${NAMES.SOLAR_PANEL.replace(/\s/g, '-')}-${_.padStart(DEVICES_PER_ORGANIZATION * orgIdx + idx + 1, 6, '0')}`,
+      hardwareVersion: `1.1.${idx}`,
+      includedSensors: 'Core, Left arm, Right arm',
+      color: 'white',
+      productionRun: 'DEC2016',
+      firmwareVersion: `1.0.${idx}`,
+      longitude: location[0],
+      latitude: location[1]
+    }
+  }).concat(devices)
+}, [])
+
 /*
  * users
  */
@@ -249,6 +295,8 @@ const config = {
     name: NAMES.INDUSTRIAL_HVAC
   }, {
     name: NAMES.JACKET
+  }, {
+    name: NAMES.SOLAR_PANEL
   }],
   endUserTemplates: [{
     name: NAMES.HOME_USER
@@ -258,9 +306,9 @@ const config = {
     name: NAMES.COMMERCIAL_SERVICE_TECHNICIAN
   }],
   organizations: [].concat(homeOrganizations).concat(warehouseOrganizations).concat(factoryOrganizations),
-  deviceFields: [].concat(homeDeviceFields).concat(commercialDeviceFields).concat(jacketDeviceFields),
-  channelTemplates: [].concat(homeDeviceChannels).concat(commercialDeviceChannels).concat(jacketDeviceChannels),
-  devices: [].concat(homeAirPurifiers).concat(industrialHVACs).concat(jackets),
+  deviceFields: [].concat(homeDeviceFields).concat(commercialDeviceFields).concat(jacketDeviceFields).concat(solarPanelDeviceFields),
+  channelTemplates: [].concat(homeDeviceChannels).concat(commercialDeviceChannels).concat(jacketDeviceChannels).concat(solarPanelDeviceChannels),
+  devices: [].concat(homeAirPurifiers).concat(industrialHVACs).concat(jackets).concat(solarPanels),
   endUsers: [].concat(homeUsers).concat(commercialUsers)
 }
 
