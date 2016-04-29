@@ -73,7 +73,7 @@ const devicePanelComponent = {
     })
 
     this.widgets = () => {
-      if (deviceConfig) {
+      if (deviceConfig && deviceConfig.widgets) {
         return deviceConfig.widgets.map((name) => `<${name} device="devicePanel.device"></${name}>`).join('')
       }
     }
