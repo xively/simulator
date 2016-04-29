@@ -284,7 +284,7 @@ class Device {
       } catch (ex) {
         newValue = latestValue
       }
-    } else if (sensorSettings.wiggle) {
+    } else if (this.simulation && sensorSettings.wiggle) {
       newValue = this.wiggle(latestValue, sensorSettings.min, sensorSettings.max)
     } else {
       newValue = latestValue
