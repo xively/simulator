@@ -173,8 +173,8 @@ const settingsComponent = {
                 left: 'distance of the yellow dot on the device image from left side of device image in pixels [Number]'
               },
               labelPosition: {
-                top: 'distance of the label box on the device image from top of device image in pixels [Number]',
-                left: 'distance of the label box on the device image from left side of device image in pixels [Number]'
+                top: 'distance of the top of the label box from the yellow dot in pixels [Number]',
+                left: 'distance of the left side of the label box from the yellow dot in pixels [Number]'
               },
               distance: 'distance of the label box and the yellow dot in pixels [Number]',
               direction: 'orientation of the tooltip [top | right | bottom | left]'
