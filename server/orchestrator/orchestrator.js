@@ -46,6 +46,11 @@ const orchestrator = {
   HABANERO_ADMIN_ROOT,
   HABANERO_NODE_ROOT,
   init (server, app) {
+    const disabled = !config.habanero.embedded || process.env.NODE_ENV === 'test'
+    if (disabled) {
+      return
+    }
+
     habaneroSettings.httpAdminRoot = HABANERO_ADMIN_ROOT
     habaneroSettings.httpNodeRoot = HABANERO_NODE_ROOT
     habaneroSettings.verbose = true

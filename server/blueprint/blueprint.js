@@ -2,29 +2,20 @@
 
 const logger = require('winston')
 const request = require('request-promise')
+const config = require('../../config/server')
 
 class Blueprint {
   constructor () {
-    this.idmHost = process.env.XIVELY_IDM_HOST
-    this.host = process.env.XIVELY_BLUEPRINT_HOST
-    this.accountId = process.env.XIVELY_ACCOUNT_ID
-    this.appToken = process.env.XIVELY_APP_TOKEN
-    this.user = process.env.XIVELY_ACCOUNT_USER_NAME
-    this.password = process.env.XIVELY_ACCOUNT_USER_PASSWORD
-    this.salesforce = {
-      user: process.env.SALESFORCE_USER
-    }
-
     this.jwt = request({
-      url: `https://${this.idmHost}/api/v1/auth/login-user`,
+      url: `https://${config.account.idmHost}/api/v1/auth/login-user`,
       method: 'POST',
       headers: {
-        AccessToken: this.appToken
+        AccessToken: config.account.appToken
       },
       json: {
-        accountId: this.accountId,
-        emailAddress: this.user,
-        password: this.password
+        accountId: config.account.accountId,
+        emailAddress: config.account.emailAddress,
+        password: config.account.password
       }
     })
     .then((res) => res.jwt)
@@ -40,13 +31,13 @@ class Blueprint {
 
   create (options) {
     return this.jwt.then((jwt) => {
-      const url = `https://${this.host}/api/v1/${options.url}`
+      const url = `https://${config.account.blueprintHost}/api/v1/${options.url}`
       const method = options.method || 'POST'
       const responseField = options.responseField
       const items = options.items
 
       return Promise.all(items.map((item) => {
-        const json = Object.assign({ accountId: this.accountId }, item)
+        const json = Object.assign({ accountId: config.account.accountId }, item)
         return request({
           url,
           method,
@@ -54,6 +45,21 @@ class Blueprint {
           json
         }).then((response) => response[responseField])
       }))
+    })
+  }
+
+  get (options) {
+    return this.jwt.then((jwt) => {
+      const url = `https://${config.account.blueprintHost}/api/v1/${options.url}`
+      const responseField = options.responseField
+
+      return request({
+        url,
+        method: 'GET',
+        auth: { bearer: jwt },
+        qs: { accountId: config.account.accountId, pageSize: 1000 },
+        json: true
+      }).then((response) => response[responseField].results)
     })
   }
 
@@ -144,6 +150,22 @@ class Blueprint {
       url: 'account-users',
       responseField: 'accountUser',
       items: accountUsers
+    })
+  }
+
+  getDevices () {
+    logger.debug('Get: devices')
+    return this.get({
+      url: 'devices',
+      responseField: 'devices'
+    })
+  }
+
+  getDeviceTemplates () {
+    logger.debug('Get: device templates')
+    return this.get({
+      url: 'devices/templates',
+      responseField: 'deviceTemplates'
     })
   }
 }

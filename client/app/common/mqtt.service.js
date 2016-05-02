@@ -11,7 +11,7 @@ function mqttFactory ($log, $q, $rootScope, CONFIG, utils) {
       this.channels = new Map()
 
       try {
-        const host = `wss://${CONFIG.account.brokerHost}:${CONFIG.account.brokerPort}`
+        const host = `wss://${CONFIG.account.brokerHost}:${CONFIG.account.brokerPort}/mqtt`
         const options = {
           username: CONFIG.account.brokerUser,
           password: CONFIG.account.brokerPassword
@@ -19,12 +19,18 @@ function mqttFactory ($log, $q, $rootScope, CONFIG, utils) {
         $log.debug('MQTT#constructor open Xively client with options:', host, options)
         this.client = mqtt.connect(host, options)
 
+        this.client.on('open', () => {
+          $log.debug('MQTT#connection open')
+        })
         this.client.on('message', (channel, message) => {
           this.handleMessage(channel, message.toString())
         })
-      } catch (err) {
-        $log.error('MQTT#constructor error:', err)
-        this.connected = $q.reject(err)
+        this.client.on('error', (error) => {
+          $log.error('MQTT#connection error:', error)
+        })
+      } catch (error) {
+        $log.error('MQTT#constructor error:', error)
+        this.connected = $q.reject(error)
       }
     }
 
@@ -136,6 +142,7 @@ function mqttFactory ($log, $q, $rootScope, CONFIG, utils) {
         } = payload
         message = [timestamp, name, numericValue, stringValue].join(',')
       }
+      $log.debug('MQTT#sendMessage:', channel, message)
       this.client.publish(channel, message)
     }
   }

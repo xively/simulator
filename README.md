@@ -90,6 +90,7 @@ There are a handful of npm scripts to aid in development.
 - CONCARIA_ID
 - XIVELY_MQTT_USERNAME
 - XIVELY_MQTT_PASSWORD
+- HABANERO_EMBEDDED
 
 ### Salesforce Integration
 
