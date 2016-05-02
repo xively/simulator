@@ -24,7 +24,7 @@ const notificationComponent = {
         item.remove = () => _.remove(this.items, item)
 
         if (!item.sticky) {
-          $timeout(item.remove, item.timeout || 3000)
+          $timeout(item.remove, item.timeout || 20000)
         }
       }
     })
