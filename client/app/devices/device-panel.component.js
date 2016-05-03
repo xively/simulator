@@ -17,7 +17,7 @@ const devicePanelComponent = {
       </div>
       <div class="status-panel">
         <div class="content">
-          <h2>Right now:</h2>
+          <h2>Right now</h2>
           <div class="sensor-panels">
             <div class="panel" ng-repeat="(name, sensor) in devicePanel.device.sensors">
               <p class="name">{{ ::name }}</p>
@@ -28,6 +28,20 @@ const devicePanelComponent = {
             </div>
           </div>
         </div>
+
+        <div class="content device-info">
+          <h2 ng-click="devicePanel.toggleInfoPanel()">
+            Device info
+            <span class="pull-right chevron" ng-class="{bottom: devicePanel.infoPanelOpen}"></span>
+          </h2>
+          <div class="device-fields" ng-show="devicePanel.infoPanelOpen">
+            <div class="row" ng-repeat="(key, value) in devicePanel.device" ng-if="devicePanel.device.infoFields.indexOf(key) > -1">
+              <div class="field-name">{{ ::key }}</div>
+              <div class="field-value">{{ value }}</div>
+            </div>
+          </div>
+        </div>
+
         <div class="content">
           <select
             ng-model="devicePanel.timeseries.selectedOption"
@@ -76,6 +90,11 @@ const devicePanelComponent = {
       if (deviceConfig && deviceConfig.widgets) {
         return deviceConfig.widgets.map((name) => `<${name} device="devicePanel.device"></${name}>`).join('')
       }
+    }
+
+    this.infoPanelOpen = false
+    this.toggleInfoPanel = () => {
+      this.infoPanelOpen = !this.infoPanelOpen
     }
 
     const timeseriesChannels = this.device.channels
