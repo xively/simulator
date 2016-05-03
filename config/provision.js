@@ -87,6 +87,7 @@ const solarPanelDeviceFields = _.map({
   hardwareVersion: 'string',
   includedSensors: 'string',
   color: 'string',
+  weather: 'string',
   productionRun: 'string',
   activatedDate: 'datetime'
 }, (fieldType, name) => ({
