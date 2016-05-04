@@ -2,7 +2,10 @@
 
 const logger = require('winston')
 const request = require('request-promise')
+const promiseDebounce = require('../util').promiseDebounce
 const config = require('../../config/server')
+
+const DEBOUNCE_WAIT = 100
 
 class Blueprint {
   constructor () {
@@ -21,10 +24,6 @@ class Blueprint {
     .then((res) => res.jwt)
   }
 
-  /**
-   * Authorize with the IDM server and yield a new state object with a `jwt` property.
-   * @return {String}
-   */
   getJwt () {
     return this.jwt
   }
@@ -64,7 +63,7 @@ class Blueprint {
   }
 
   createOrganizationTemplates (organizationTemplates) {
-    logger.info('Creating: organization templates')
+    logger.debug('Creating: organization templates')
     return this.create({
       url: 'organizations/templates',
       responseField: 'organizationTemplate',
@@ -73,7 +72,7 @@ class Blueprint {
   }
 
   createDeviceTemplates (deviceTemplates) {
-    logger.info('Creating: device templates')
+    logger.debug('Creating: device templates')
     return this.create({
       url: 'devices/templates',
       responseField: 'deviceTemplate',
@@ -82,7 +81,7 @@ class Blueprint {
   }
 
   createOrganizations (organizations) {
-    logger.info('Creating: organizations')
+    logger.debug('Creating: organizations')
     return this.create({
       url: 'organizations',
       responseField: 'organization',
@@ -91,7 +90,7 @@ class Blueprint {
   }
 
   createDevices (devices) {
-    logger.info('Creating: devices')
+    logger.debug('Creating: devices')
     return this.create({
       url: 'devices',
       responseField: 'device',
@@ -100,7 +99,7 @@ class Blueprint {
   }
 
   createDeviceFields (fields) {
-    logger.info('Creating: device fields')
+    logger.debug('Creating: device fields')
     return this.create({
       url: 'devices/custom-fields',
       responseField: 'deviceField',
@@ -109,7 +108,7 @@ class Blueprint {
   }
 
   createChannelTemplates (channelTemplates) {
-    logger.info('Creating: channel templates')
+    logger.debug('Creating: channel templates')
     return this.create({
       url: 'channels/templates',
       responseField: 'channelTemplate',
@@ -118,7 +117,7 @@ class Blueprint {
   }
 
   createEndUserTemplates (endUserTemplates) {
-    logger.info('Creating: end user templates')
+    logger.debug('Creating: end user templates')
     return this.create({
       url: 'end-users/templates',
       responseField: 'endUserTemplate',
@@ -127,7 +126,7 @@ class Blueprint {
   }
 
   createEndUser (endUser) {
-    logger.info('Creating: end user')
+    logger.debug('Creating: end user')
     return this.create({
       url: 'end-users',
       responseField: 'endUser',
@@ -136,7 +135,7 @@ class Blueprint {
   }
 
   createMqttCredentials (entities) {
-    logger.info('Creating: mqtt credentials')
+    logger.debug('Creating: mqtt credentials')
     return this.create({
       url: 'access/mqtt-credentials',
       responseField: 'mqttCredential',
@@ -145,7 +144,7 @@ class Blueprint {
   }
 
   createAccountUsers (accountUsers) {
-    logger.info('Creating: account users')
+    logger.debug('Creating: account users')
     return this.create({
       url: 'account-users',
       responseField: 'accountUser',
@@ -154,19 +153,27 @@ class Blueprint {
   }
 
   getDevices () {
-    logger.debug('Get: devices')
-    return this.get({
+    logger.debug('Blueprint#getDevices')
+    return promiseDebounce(this.get.bind(this, {
       url: 'devices',
       responseField: 'devices'
-    })
+    }), DEBOUNCE_WAIT)()
   }
 
   getDeviceTemplates () {
-    logger.debug('Get: device templates')
-    return this.get({
+    logger.debug('Blueprint#getDeviceTemplates')
+    return promiseDebounce(this.get.bind(this, {
       url: 'devices/templates',
       responseField: 'deviceTemplates'
-    })
+    }), DEBOUNCE_WAIT)()
+  }
+
+  getEndUsers () {
+    logger.debug('Blueprint#getEndUsers')
+    return promiseDebounce(this.get.bind(this, {
+      url: 'end-users',
+      responseField: 'endUsers'
+    }), DEBOUNCE_WAIT)()
   }
 }
 

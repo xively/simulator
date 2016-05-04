@@ -1,13 +1,7 @@
 'use strict'
 
 const _ = require('lodash')
-const mqtt = require('mqtt')
-const config = require('../../config/server')
-
-const fallbackMqtt = mqtt.connect(`mqtts://${config.account.brokerHost}:${config.account.brokerPort}`, {
-  username: config.account.brokerUser,
-  password: config.account.brokerPassword
-})
+const mqtt = require('../mqtt')
 
 class DeviceLogger {
   constructor (device) {
@@ -85,7 +79,7 @@ class DeviceLogger {
       return
     }
 
-    fallbackMqtt.publish(logChannel, message)
+    mqtt.publish(logChannel, message)
   }
 }
 

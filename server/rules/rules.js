@@ -1,9 +1,9 @@
 'use strict'
 
-const request = require('request-promise')
 const logger = require('winston')
 const db = require('../database')
 const config = require('../../config/server')
+const devices = require('../devices')
 const RuleParser = require('./rule-parser')
 
 class RulesEngine {
@@ -11,34 +11,10 @@ class RulesEngine {
     this.ruleParsers = new Map()
     this.disabled = config.habanero.embedded || process.env.NODE_ENV === 'test'
 
-    this.init()
-  }
-
-  init () {
     if (this.disabled) {
       logger.debug('RulesEngine is disabled')
       return
     }
-
-    this.getToken()
-      .then((token) => {
-        return Promise.all([
-          this.getRules(),
-          this.getDevices({ token })
-        ])
-          .then((response) => {
-            this.rules = response[0]
-            this.devices = response[1]
-
-            this.devices.forEach((device) => {
-              const ruleParser = new RuleParser(device, this.rules)
-              this.ruleParsers.set(device.id, ruleParser)
-            })
-          })
-      })
-      .catch((error) => {
-        logger.error(error)
-      })
   }
 
   getRules () {
@@ -46,50 +22,27 @@ class RulesEngine {
   }
 
   updateRules () {
-    if (this.disabled) {
-      logger.debug('RulesEngine is disabled')
-      return
-    }
-
-    this.getRules()
-      .then((rules) => {
-        this.ruleParsers.forEach((ruleParser) => ruleParser.updateRules(rules))
-      })
+    this.getRules().then((rules) => {
+      this.ruleParsers.forEach((ruleParser) => ruleParser.updateRules(rules))
+    })
   }
 
-  getDevices (options) {
-    return request({
-      url: `https://${config.account.blueprintHost}/api/v1/devices`,
-      method: 'GET',
-      qs: {
-        accountId: config.account.accountId,
-        pageSize: 100 // FIXME: handle this in a more generic way
-      },
-      headers: {
-        authorization: `Bearer ${options.token}`
-      },
-      json: true
-    })
-      .then((response) => response.devices.results)
-      .catch((error) => {
-        logger.error(error)
-      })
-  }
+  update () {
+    this.getRules().then((rules) => {
+      devices.getAll().forEach((device) => {
+        let ruleParser = this.ruleParsers.get(device.id)
+        if (ruleParser) {
+          ruleParser.update(device, rules)
+          return
+        }
 
-  getToken () {
-    return request({
-      method: 'POST',
-      url: `https://${config.account.idmHost}/api/v1/auth/login-user`,
-      json: {
-        emailAddress: config.account.emailAddress,
-        password: config.account.password,
-        accountId: config.account.accountId
-      }
-    })
-      .then((response) => response.jwt)
-      .catch((error) => {
-        logger.error(error)
+        ruleParser = new RuleParser(device, rules)
+        this.ruleParsers.set(device.id, ruleParser)
       })
+    })
+    .catch((error) => {
+      logger.error('RulesEngine#update: error', error)
+    })
   }
 }
 

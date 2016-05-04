@@ -6,6 +6,9 @@ const socketIO = require('socket.io')
 const _ = require('lodash')
 
 const devices = require('../devices')
+const rules = require('../rules')
+const blueprint = require('../blueprint')
+const salesforce = require('../salesforce')
 
 let simulationRunning = false
 function stopSimulation () {
@@ -29,7 +32,29 @@ module.exports = function configureSocket (app) {
     const deviceIds = new Set()
 
     // fetch devices from blueprint
-    const ready = devices.update()
+    const updateDevices = devices.update()
+
+    // update rules
+    // TODO blueprint request?
+    updateDevices.then(() => {
+      try {
+        rules.update()
+      } catch (exception) {
+        logger.error(exception)
+      }
+    })
+
+    // update salesforce
+    Promise.all([
+      blueprint.getDevices(),
+      blueprint.getEndUsers()
+    ]).then((result) => {
+      const devices = result[0]
+      const endUsers = result[1]
+
+      salesforce.addContacts(endUsers)
+      salesforce.addAssets(devices)
+    })
 
     socket.on('error', (err) => {
       logger.error('socket.io#error', err)
@@ -38,7 +63,7 @@ module.exports = function configureSocket (app) {
     socket.on('connectDevice', (data, cb) => {
       logger.debug('socket.io#connectDevice')
 
-      ready.then(() => {
+      updateDevices.then(() => {
         const deviceId = data.deviceId
         deviceIds.add(deviceId)
         const device = devices.getOne(deviceId)
@@ -52,7 +77,7 @@ module.exports = function configureSocket (app) {
     socket.on('startSimulation', (data) => {
       logger.debug('socket.io#startSimulation', data)
 
-      ready.then(() => {
+      updateDevices.then(() => {
         const devices = devices.getAll()
         const thermometerFaliure = _.sample(devices.keys())
         simulationRunning = true

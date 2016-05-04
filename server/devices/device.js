@@ -52,10 +52,16 @@ class Device {
   }
 
   /**
-   * Initialize device
+   * Update device data
+   * Reinitalize
    * Fill sensors dinamically using the device channels
+   * @param  {Object} data
    */
-  init () {
+  update (data) {
+    Object.assign(this, data)
+    // TODO get config from DB too
+    this.config = devicesConfig[this.template.name] || {}
+
     _.forEach(this.channels, (channel) => {
       const name = channel.channel.split('/').pop()
 
@@ -64,18 +70,6 @@ class Device {
         this.addSensor(name, channel)
       }
     })
-  }
-
-  /**
-   * Update device data
-   * Reinitalize
-   * @param  {Object} data
-   */
-  update (data) {
-    Object.assign(this, data)
-    // TODO get config from DB too
-    this.config = devicesConfig[this.template.name] || {}
-    this.init()
   }
 
   /**

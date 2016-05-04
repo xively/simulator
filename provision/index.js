@@ -5,7 +5,7 @@ require('dotenv').config({ silent: true })
 const path = require('path')
 const _ = require('lodash')
 const logger = require('winston')
-const blueprint = require('./blueprint')
+const blueprint = require('../server/blueprint')
 const salesforce = require('../server/salesforce')
 const database = require('../server/database')
 const config = require('../config/provision')
@@ -122,43 +122,7 @@ blueprint.getJwt()
 
   return database.runScriptFile(tableScript)
     .then(() => {
-      logger.info('Inserting: firmwares')
-      return Promise.all(data.devices.map((device) => {
-        const mqttCredentials = data.mqttCredentials.find((mqttCredential) => mqttCredential.entityId === device.id)
-
-        const firmware = {
-          name: device.name,
-          serialNumber: device.serialNumber,
-          deviceId: device.id,
-          template: data.deviceTemplates.find((deviceTemplate) => deviceTemplate.id === device.deviceTemplateId),
-          organizationId: device.organizationId,
-          accountId: mqttCredentials.accountId,
-          entityId: mqttCredentials.entityId,
-          entityType: mqttCredentials.entityType,
-          secret: mqttCredentials.secret
-        }
-
-        return database.insertInventory({ serial: firmware.serial })
-          .then((rows) => {
-            firmware.id = rows[0].id
-            return database.insertFirmware(firmware)
-          })
-      }))
-    })
-    .then(() => {
-      logger.info('Inserting: application configs')
-      return Promise.all(data.endUsers.map((endUser) => {
-        const appConfig = {
-          endUser,
-          accountId: process.env.XIVELY_ACCOUNT_ID,
-          organization: data.organizations.find((organization) => organization.id === endUser.organizationId),
-          mqttUser: data.mqttCredentials.find((mqttCredential) => mqttCredential.entityId === endUser.id)
-        }
-        return database.insertApplicationConfig(appConfig)
-      }))
-    })
-    .then(() => {
-      logger.info('Initiating: device config')
+      logger.debug('Initiating: device config')
       return database.initDeviceConfig()
     })
 })
