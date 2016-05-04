@@ -81,11 +81,12 @@ const tooltipComponent = {
     this.getBoxStyle = () => {
       const { direction, distance } = this.options
       const sign = direction === 'right' || direction === 'bottom' ? '' : '-'
-      const axis = direction === 'left' || direction === 'right' ? 'X' : 'Y'
+      const position = direction === 'left' || direction === 'right' ? `${sign}${distance}px, 0` : `0, ${sign}${distance}px`
+
       return `
-        transform: -webkit-translat${axis}(${sign}${distance}px);
-        transform: -moz-translate${axis}(${sign}${distance}px);
-        transform: translate${axis}(${sign}${distance}px);
+        -webkit-transform: translate(${position});
+        -moz-transform: translate(${position});
+        transform: translate(${position});
       `
     }
 

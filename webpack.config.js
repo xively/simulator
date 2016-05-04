@@ -17,7 +17,7 @@ const CONFIG_FOLDER = path.join(ROOT_FOLDER, 'config')
 const DIST_FOLDER = path.join(ROOT_FOLDER, 'public')
 
 const entry = {
-  app: [path.join(SRC_FOLDER, 'app/index.js')]
+  app: ['babel-polyfill', path.join(SRC_FOLDER, 'app/index.js')]
 }
 
 const plugins = [

@@ -13,6 +13,10 @@
   flex-direction: row;
   background: @navy-blue;
 
+  @media only screen and (min-device-width : 768px) and (max-device-width : 1024px)  {
+    min-width: 1490px;
+  }
+
   .modal {
     position: fixed;
     top: 0;
@@ -211,6 +215,10 @@
       position: relative;
       width: @width;
       margin: 0 auto;
+
+      @media only screen and (min-device-width : 768px) and (max-device-width : 1024px)  {
+        zoom: 90%;
+      }
 
       .device-image {
         width: 100%;

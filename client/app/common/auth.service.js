@@ -11,8 +11,10 @@ function loginFactory ($log, $http, $timeout, $q, CONFIG) {
      * @param {String} token
      */
     setToken (token) {
-      localStorage.setItem(TOKEN_KEY, token)
-      localStorage.setItem(ACCOUNT_ID_KEY, CONFIG.account.accountId)
+      try {
+        localStorage.setItem(TOKEN_KEY, token)
+        localStorage.setItem(ACCOUNT_ID_KEY, CONFIG.account.accountId)
+      } catch (ex) {}
     },
 
     /**

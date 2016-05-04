@@ -270,7 +270,7 @@ const config = {
             left: -45
           },
           distance: 100,
-          direction: 'top'
+          direction: 'bottom'
         }
       },
       humidity: {
