@@ -20,6 +20,13 @@ const NAMES = {
   COMMERCIAL_SERVICE_TECHNICIAN: 'Service Technician'
 }
 
+const DEVICES_PER_ORGANIZATION = {
+  HOME_AIR_PUTIFIER: 3,
+  INDUSTRIAL_HVAC: 10,
+  JACKET: 1,
+  SOLAR_PANEL: 1
+}
+
 /*
  * organizations
  */
@@ -169,89 +176,71 @@ function getLocation () {
   return getLocation()
 }
 
-const homeAirPurifiers = _.reduce(homeOrganizations, (devices, organization, orgIdx) => {
-  const DEVICES_PER_ORGANIZATION = 3
-  return _.times(DEVICES_PER_ORGANIZATION, (idx) => {
-    const location = getLocation()
-    return {
-      deviceTemplate: NAMES.HOME_AIR_PUTIFIER,
-      organization: organization.name,
-      name: `${NAMES.HOME_AIR_PUTIFIER.replace(/\s/g, '-')}-${idx}`,
-      serialNumber: `${NAMES.HOME_AIR_PUTIFIER.replace(/\s/g, '-')}-${_.padStart(DEVICES_PER_ORGANIZATION * orgIdx + idx + 1, 6, '0')}`,
-      hardwareVersion: `1.1.${idx}`,
+function generateGenericDevice (deviceType, idx, organization, orgIdx) {
+  orgIdx = !_.isNaN(orgIdx) ? orgIdx : 100
+  const location = getLocation()
+  return {
+    deviceTemplate: NAMES[deviceType],
+    organization: organization.name,
+    name: `${NAMES[deviceType].replace(/\s/g, '-')}-${idx}`,
+    serialNumber: `${NAMES[deviceType].replace(/\s/g, '-')}-${_.padStart(DEVICES_PER_ORGANIZATION[deviceType] * orgIdx + idx + 1, 6, '0')}`,
+    hardwareVersion: `1.1.${idx}`,
+    includedSensors: 'Temperature, Humidity, VoC, CO, Dust, Filter',
+    color: 'white',
+    productionRun: 'DEC2016',
+    powerVersion: '12VDC',
+    filterType: 'carbonHEPA',
+    firmwareVersion: `2.0.${idx}`,
+    longitude: location[0],
+    latitude: location[1]
+  }
+}
+
+const rawDevices = [{
+  name: NAMES.HOME_AIR_PUTIFIER,
+  count: DEVICES_PER_ORGANIZATION.HOME_AIR_PUTIFIER,
+  organizations: homeOrganizations,
+  generator: (idx, organization, orgIdx) => {
+    const generic = generateGenericDevice('HOME_AIR_PUTIFIER', idx, organization, orgIdx)
+    return _.merge(generic, {
       includedSensors: 'Temperature, Humidity, VoC, CO, Dust, Filter',
-      color: 'white',
-      productionRun: 'DEC2016',
       powerVersion: '12VDC',
-      filterType: 'carbonHEPA',
-      firmwareVersion: `2.0.${idx}`,
-      longitude: location[0],
-      latitude: location[1]
-    }
-  }).concat(devices)
-}, [])
-
-const industrialHVACs = _.reduce(warehouseOrganizations, (devices, organization, orgIdx) => {
-  const DEVICES_PER_ORGANIZATION = 10
-  return _.times(DEVICES_PER_ORGANIZATION, (idx) => {
-    const location = getLocation()
-    return {
-      deviceTemplate: NAMES.INDUSTRIAL_HVAC,
-      organization: organization.name,
-      name: `${NAMES.INDUSTRIAL_HVAC.replace(/\s/g, '-')}-${idx}`,
-      serialNumber: `${NAMES.INDUSTRIAL_HVAC.replace(/\s/g, '-')}-${_.padStart(DEVICES_PER_ORGANIZATION * orgIdx + idx + 1, 6, '0')}`,
-      hardwareVersion: `1.1.${idx}`,
+      filterType: 'carbonHEPA'
+    })
+  }
+}, {
+  name: NAMES.JACKET,
+  count: DEVICES_PER_ORGANIZATION.JACKET,
+  organizations: homeOrganizations,
+  generator: (idx, organization, orgIdx) => {
+    const generic = generateGenericDevice('JACKET', idx, organization, orgIdx)
+    return _.merge(generic, {
+      includedSensors: 'Core, Left arm, Right arm'
+    })
+  }
+}, {
+  name: NAMES.INDUSTRIAL_HVAC,
+  count: DEVICES_PER_ORGANIZATION.INDUSTRIAL_HVAC,
+  organizations: warehouseOrganizations,
+  generator: (idx, organization, orgIdx) => {
+    const generic = generateGenericDevice('INDUSTRIAL_HVAC', idx, organization, orgIdx)
+    return _.merge(generic, {
       includedSensors: 'Temperature, Humidity, VoC, CO, Dust, Filter',
-      color: 'white',
-      productionRun: 'DEC2016',
       powerVersion: '12VDC',
-      filterType: 'carbonHEPA',
-      firmwareVersion: `2.0.${idx}`,
-      longitude: location[0],
-      latitude: location[1]
-    }
-  }).concat(devices)
-}, [])
-
-const jackets = _.reduce(homeOrganizations, (devices, organization, orgIdx) => {
-  const DEVICES_PER_ORGANIZATION = 1
-  return _.times(DEVICES_PER_ORGANIZATION, (idx) => {
-    const location = getLocation()
-    return {
-      deviceTemplate: NAMES.JACKET,
-      organization: organization.name,
-      name: `${NAMES.JACKET.replace(/\s/g, '-')}-${idx}`,
-      serialNumber: `${NAMES.JACKET.replace(/\s/g, '-')}-${_.padStart(DEVICES_PER_ORGANIZATION * orgIdx + idx + 1, 6, '0')}`,
-      hardwareVersion: `1.1.${idx}`,
-      includedSensors: 'Core, Left arm, Right arm',
-      color: 'white',
-      productionRun: 'DEC2016',
-      firmwareVersion: `1.0.${idx}`,
-      longitude: location[0],
-      latitude: location[1]
-    }
-  }).concat(devices)
-}, [])
-
-const solarPanels = _.reduce(warehouseOrganizations, (devices, organization, orgIdx) => {
-  const DEVICES_PER_ORGANIZATION = 1
-  return _.times(DEVICES_PER_ORGANIZATION, (idx) => {
-    const location = getLocation()
-    return {
-      deviceTemplate: NAMES.SOLAR_PANEL,
-      organization: organization.name,
-      name: `${NAMES.SOLAR_PANEL.replace(/\s/g, '-')}-${idx}`,
-      serialNumber: `${NAMES.SOLAR_PANEL.replace(/\s/g, '-')}-${_.padStart(DEVICES_PER_ORGANIZATION * orgIdx + idx + 1, 6, '0')}`,
-      hardwareVersion: `1.1.${idx}`,
-      includedSensors: 'Core, Left arm, Right arm',
-      color: 'white',
-      productionRun: 'DEC2016',
-      firmwareVersion: `1.0.${idx}`,
-      longitude: location[0],
-      latitude: location[1]
-    }
-  }).concat(devices)
-}, [])
+      filterType: 'carbonHEPA'
+    })
+  }
+}, {
+  name: NAMES.SOLAR_PANEL,
+  count: DEVICES_PER_ORGANIZATION.SOLAR_PANEL,
+  organizations: warehouseOrganizations,
+  generator: (idx, organization, orgIdx) => {
+    const generic = generateGenericDevice('SOLAR_PANEL', idx, organization, orgIdx)
+    return _.merge(generic, {
+      includedSensors: 'Power, Voltage, Current, Irradiance'
+    })
+  }
+}]
 
 /*
  * users
@@ -309,8 +298,13 @@ const config = {
   organizations: [].concat(homeOrganizations).concat(warehouseOrganizations).concat(factoryOrganizations),
   deviceFields: [].concat(homeDeviceFields).concat(commercialDeviceFields).concat(jacketDeviceFields).concat(solarPanelDeviceFields),
   channelTemplates: [].concat(homeDeviceChannels).concat(commercialDeviceChannels).concat(jacketDeviceChannels).concat(solarPanelDeviceChannels),
-  devices: [].concat(homeAirPurifiers).concat(industrialHVACs).concat(jackets).concat(solarPanels),
-  endUsers: [].concat(homeUsers).concat(commercialUsers)
+  devices: _.flattenDeep(_.map(rawDevices, (rawDevice) => {
+    return _.map(rawDevice.organizations, (organization, orgIdx) => {
+      return _.times(rawDevice.count, (idx) => rawDevice.generator(idx, organization, orgIdx))
+    })
+  })),
+  endUsers: [].concat(homeUsers).concat(commercialUsers),
+  rawDevices
 }
 
 module.exports = config
