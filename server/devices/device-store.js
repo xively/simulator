@@ -10,9 +10,7 @@ class DeviceStore {
     // key: id, value: Device
     this.devices = new Map()
     // fill store
-    if (process.env.NODE_ENV !== 'test') {
-      this.update()
-    }
+    this.update()
   }
 
   /**
@@ -21,6 +19,10 @@ class DeviceStore {
    * @return {Promise} ready
    */
   update () {
+    if (process.env.NODE_ENV === 'test') {
+      return Promise.resolve()
+    }
+
     if (!this.request) {
       this.request = Promise.all([
         blueprint.getDevices(),

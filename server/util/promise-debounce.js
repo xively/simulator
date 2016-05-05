@@ -1,17 +1,17 @@
 'use strict'
 
-function promiseDebounce (func, wait, immidiate) {
+function promiseDebounce (func, wait, immediate) {
   let timeout
   return function () {
     return new Promise((resolve, reject) => {
       const later = () => {
         timeout = null
-        if (!immidiate) {
+        if (!immediate) {
           resolve(func.apply(this, arguments))
         }
       }
 
-      const callNow = immidiate && !timeout
+      const callNow = immediate && !timeout
       clearTimeout(timeout)
       timeout = setTimeout(later, wait)
 

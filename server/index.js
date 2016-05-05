@@ -10,8 +10,8 @@ const salesforce = require('./salesforce')
 const app = require('./app')
 const socket = require('./socket')
 const orchestrator = require('./orchestrator')
-const devices = require('../devices')
-const rules = require('../rules')
+const devices = require('./devices')
+const rules = require('./rules')
 
 const server = socket(app, devices, rules)
 

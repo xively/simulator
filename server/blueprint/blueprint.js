@@ -8,28 +8,28 @@ const config = require('../../config/server')
 const DEBOUNCE_WAIT = 100
 
 class Blueprint {
-  constructor () {
-    this.jwt = request({
-      url: `https://${config.account.idmHost}/api/v1/auth/login-user`,
-      method: 'POST',
-      headers: {
-        AccessToken: config.account.appToken
-      },
-      json: {
-        accountId: config.account.accountId,
-        emailAddress: config.account.emailAddress,
-        password: config.account.password
-      }
-    })
-    .then((res) => res.jwt)
-  }
-
   getJwt () {
+    if (!this.jwt) {
+      this.jwt = request({
+        url: `https://${config.account.idmHost}/api/v1/auth/login-user`,
+        method: 'POST',
+        headers: {
+          AccessToken: config.account.appToken
+        },
+        json: {
+          accountId: config.account.accountId,
+          emailAddress: config.account.emailAddress,
+          password: config.account.password
+        }
+      })
+      .then((res) => res.jwt)
+    }
+
     return this.jwt
   }
 
   create (options) {
-    return this.jwt.then((jwt) => {
+    return this.getJwt().then((jwt) => {
       const url = `https://${config.account.blueprintHost}/api/v1/${options.url}`
       const method = options.method || 'POST'
       const responseField = options.responseField
@@ -48,7 +48,7 @@ class Blueprint {
   }
 
   get (options) {
-    return this.jwt.then((jwt) => {
+    return this.getJwt().then((jwt) => {
       const url = `https://${config.account.blueprintHost}/api/v1/${options.url}`
       const responseField = options.responseField
 

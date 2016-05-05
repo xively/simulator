@@ -34,11 +34,7 @@ module.exports = function configureSocket (app, devices, rules) {
     // update rules
     // TODO blueprint request?
     updateDevices.then(() => {
-      try {
-        rules.update()
-      } catch (exception) {
-        logger.error(exception)
-      }
+      rules.update()
     })
 
     // update salesforce
