@@ -8,6 +8,7 @@ const logger = require('winston')
 const blueprint = require('../server/xively').blueprint
 const database = require('../server/database')
 const config = require('../config/provision')
+const deviceConfig = require('../config/devices')
 
 Promise.all([
   blueprint.createOrganizationTemplates(config.organizationTemplates),
@@ -78,12 +79,8 @@ Promise.all([
     entityType: 'endUser'
   }))
 
-  return Promise.all([
-    blueprint.createMqttCredentials(endUsers)
-  ])
-  .then((arr) => Object.assign({
-    mqttCredentials: arr[0]
-  }, data))
+  return blueprint.createMqttCredentials(endUsers)
+    .then((mqttCredentials) => Object.assign({ mqttCredentials }, data))
 })
 .then((data) => {
   const tableScript = path.join(__dirname, 'tables.sql')
@@ -92,6 +89,7 @@ Promise.all([
     .then(() => {
       logger.debug('Initiating: device config')
       return database.initDeviceConfig()
+        .then(() => database.updateDeviceConfig(deviceConfig))
     })
 })
 .then(() => {
