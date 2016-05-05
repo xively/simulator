@@ -9,14 +9,11 @@ const blueprint = require('../server/xively').blueprint
 const database = require('../server/database')
 const config = require('../config/provision')
 
-blueprint.getJwt()
-.then(() => {
-  return Promise.all([
-    blueprint.createOrganizationTemplates(config.organizationTemplates),
-    blueprint.createDeviceTemplates(config.deviceTemplates),
-    blueprint.createEndUserTemplates(config.endUserTemplates)
-  ])
-})
+Promise.all([
+  blueprint.createOrganizationTemplates(config.organizationTemplates),
+  blueprint.createDeviceTemplates(config.deviceTemplates),
+  blueprint.createEndUserTemplates(config.endUserTemplates)
+])
 .then((arr) => ({
   organizationTemplates: arr[0],
   deviceTemplates: arr[1],
@@ -76,20 +73,13 @@ blueprint.getJwt()
   }, data))
 })
 .then((data) => {
-  const devices = data.devices.map((device) => ({
-    entityId: device.id,
-    entityType: 'device'
-  }))
-
   const endUsers = data.endUsers.map((endUser) => ({
     entityId: endUser.id,
     entityType: 'endUser'
   }))
 
-  const entities = devices.concat(endUsers)
-
   return Promise.all([
-    blueprint.createMqttCredentials(entities)
+    blueprint.createMqttCredentials(endUsers)
   ])
   .then((arr) => Object.assign({
     mqttCredentials: arr[0]
