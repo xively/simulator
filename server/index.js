@@ -7,6 +7,7 @@ const logger = require('winston')
 
 const config = require('../config/server')
 const salesforce = require('./salesforce')
+// const blueprint = require('./xively').blueprint
 const app = require('./app')
 const socket = require('./socket')
 const orchestrator = require('./orchestrator')
@@ -24,6 +25,26 @@ orchestrator.init(server, app)
   Salesforce
  */
 salesforce.integration()
+
+// const createAccountUser = () => {
+//   const salesforceUser = config.salesforce.user
+//   const account = {
+//     accountId: config.account.accountId
+//   }
+//
+//   if (!salesforceUser) {
+//     return blueprint.createAccountUsers([account])
+//   }
+//
+//   return salesforce.getUserEmail().then((idmUserEmail) => {
+//     Object.assign(account, {
+//       createIdmUser: true,
+//       idmUserEmail
+//     })
+//
+//     return blueprint.createAccountUsers([account])
+//   })
+// }
 
 /*
   Server

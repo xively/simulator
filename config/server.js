@@ -29,6 +29,7 @@ const config = {
   },
   account: {
     idmHost: process.env.XIVELY_IDM_HOST,
+    integrationHost: process.env.XIVELY_INTEGRATION_HOST,
     timeSeriesHost: process.env.XIVELY_TIMESERIES_HOST,
     brokerHost: process.env.XIVELY_BROKER_HOST,
     brokerPort: process.env.XIVELY_BROKER_WS_PORT,

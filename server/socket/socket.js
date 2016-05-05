@@ -5,7 +5,7 @@ const logger = require('winston')
 const socketIO = require('socket.io')
 const _ = require('lodash')
 
-const blueprint = require('../blueprint')
+const blueprint = require('../xively').blueprint
 const salesforce = require('../salesforce')
 /**
  * Configure socket.io connection.

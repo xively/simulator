@@ -4,32 +4,13 @@ const logger = require('winston')
 const request = require('request-promise')
 const promiseDebounce = require('../util').promiseDebounce
 const config = require('../../config/server')
+const idm = require('./idm')
 
 const DEBOUNCE_WAIT = 100
 
-class Blueprint {
-  getJwt () {
-    if (!this.jwt) {
-      this.jwt = request({
-        url: `https://${config.account.idmHost}/api/v1/auth/login-user`,
-        method: 'POST',
-        headers: {
-          AccessToken: config.account.appToken
-        },
-        json: {
-          accountId: config.account.accountId,
-          emailAddress: config.account.emailAddress,
-          password: config.account.password
-        }
-      })
-      .then((res) => res.jwt)
-    }
-
-    return this.jwt
-  }
-
+const blueprint = {
   create (options) {
-    return this.getJwt().then((jwt) => {
+    return idm.login().then((jwt) => {
       const url = `https://${config.account.blueprintHost}/api/v1/${options.url}`
       const method = options.method || 'POST'
       const responseField = options.responseField
@@ -45,10 +26,10 @@ class Blueprint {
         }).then((response) => response[responseField])
       }))
     })
-  }
+  },
 
   get (options) {
-    return this.getJwt().then((jwt) => {
+    return idm.login().then((jwt) => {
       const url = `https://${config.account.blueprintHost}/api/v1/${options.url}`
       const responseField = options.responseField
 
@@ -60,7 +41,7 @@ class Blueprint {
         json: true
       }).then((response) => response[responseField].results)
     })
-  }
+  },
 
   createOrganizationTemplates (organizationTemplates) {
     logger.debug('Creating: organization templates')
@@ -69,7 +50,7 @@ class Blueprint {
       responseField: 'organizationTemplate',
       items: organizationTemplates
     })
-  }
+  },
 
   createDeviceTemplates (deviceTemplates) {
     logger.debug('Creating: device templates')
@@ -78,7 +59,7 @@ class Blueprint {
       responseField: 'deviceTemplate',
       items: deviceTemplates
     })
-  }
+  },
 
   createOrganizations (organizations) {
     logger.debug('Creating: organizations')
@@ -87,7 +68,7 @@ class Blueprint {
       responseField: 'organization',
       items: organizations
     })
-  }
+  },
 
   createDevices (devices) {
     logger.debug('Creating: devices')
@@ -96,7 +77,7 @@ class Blueprint {
       responseField: 'device',
       items: devices
     })
-  }
+  },
 
   createDeviceFields (fields) {
     logger.debug('Creating: device fields')
@@ -105,7 +86,7 @@ class Blueprint {
       responseField: 'deviceField',
       items: fields
     })
-  }
+  },
 
   createChannelTemplates (channelTemplates) {
     logger.debug('Creating: channel templates')
@@ -114,7 +95,7 @@ class Blueprint {
       responseField: 'channelTemplate',
       items: channelTemplates
     })
-  }
+  },
 
   createEndUserTemplates (endUserTemplates) {
     logger.debug('Creating: end user templates')
@@ -123,7 +104,7 @@ class Blueprint {
       responseField: 'endUserTemplate',
       items: endUserTemplates
     })
-  }
+  },
 
   createEndUser (endUser) {
     logger.debug('Creating: end user')
@@ -132,7 +113,7 @@ class Blueprint {
       responseField: 'endUser',
       items: endUser
     })
-  }
+  },
 
   createMqttCredentials (entities) {
     logger.debug('Creating: mqtt credentials')
@@ -141,7 +122,7 @@ class Blueprint {
       responseField: 'mqttCredential',
       items: entities
     })
-  }
+  },
 
   createAccountUsers (accountUsers) {
     logger.debug('Creating: account users')
@@ -150,7 +131,7 @@ class Blueprint {
       responseField: 'accountUser',
       items: accountUsers
     })
-  }
+  },
 
   getDevices () {
     logger.debug('Blueprint#getDevices')
@@ -158,7 +139,7 @@ class Blueprint {
       url: 'devices',
       responseField: 'devices'
     }), DEBOUNCE_WAIT)()
-  }
+  },
 
   getDeviceTemplates () {
     logger.debug('Blueprint#getDeviceTemplates')
@@ -166,7 +147,7 @@ class Blueprint {
       url: 'devices/templates',
       responseField: 'deviceTemplates'
     }), DEBOUNCE_WAIT)()
-  }
+  },
 
   getEndUsers () {
     logger.debug('Blueprint#getEndUsers')
@@ -177,4 +158,4 @@ class Blueprint {
   }
 }
 
-module.exports = Blueprint
+module.exports = blueprint

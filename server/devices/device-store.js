@@ -2,7 +2,7 @@
 
 const logger = require('winston')
 const _ = require('lodash')
-const blueprint = require('../blueprint')
+const blueprint = require('../xively').blueprint
 const Device = require('./device')
 
 class DeviceStore {

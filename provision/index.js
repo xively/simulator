@@ -5,38 +5,16 @@ require('dotenv').config({ silent: true })
 const path = require('path')
 const _ = require('lodash')
 const logger = require('winston')
-const blueprint = require('../server/blueprint')
-const salesforce = require('../server/salesforce')
+const blueprint = require('../server/xively').blueprint
 const database = require('../server/database')
 const config = require('../config/provision')
-
-const createAccountUser = () => {
-  const salesforceUser = process.env.SALESFORCE_USER
-  const account = {
-    accountId: process.env.XIVELY_ACCOUNT_ID
-  }
-
-  if (!salesforceUser) {
-    return blueprint.createAccountUsers([account])
-  }
-
-  return salesforce.getUserEmail().then((idmUserEmail) => {
-    Object.assign(account, {
-      createIdmUser: true,
-      idmUserEmail
-    })
-
-    return blueprint.createAccountUsers([account])
-  })
-}
 
 blueprint.getJwt()
 .then(() => {
   return Promise.all([
     blueprint.createOrganizationTemplates(config.organizationTemplates),
     blueprint.createDeviceTemplates(config.deviceTemplates),
-    blueprint.createEndUserTemplates(config.endUserTemplates),
-    createAccountUser()
+    blueprint.createEndUserTemplates(config.endUserTemplates)
   ])
 })
 .then((arr) => ({
