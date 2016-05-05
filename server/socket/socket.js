@@ -2,11 +2,11 @@
 
 const http = require('http')
 const logger = require('winston')
-const socketIO = require('socket.io')
 const _ = require('lodash')
-
+const socketIO = require('socket.io')
 const blueprint = require('../xively').blueprint
 const salesforce = require('../salesforce')
+
 /**
  * Configure socket.io connection.
  * @param  {express.Server} app   Express Server
@@ -31,22 +31,23 @@ module.exports = function configureSocket (app, devices, rules) {
     // fetch devices from blueprint
     const updateDevices = devices.update()
 
-    // update rules
-    // TODO blueprint request?
-    updateDevices.then(() => {
-      rules.update()
-    })
-
-    // update salesforce
-    Promise.all([
+    // update salesforce && rules engine
+    const blueprintPromise = Promise.all([
       blueprint.getDevices(),
       blueprint.getEndUsers()
-    ]).then((result) => {
-      const devices = result[0]
-      const endUsers = result[1]
+    ]).then((response) => ({
+      devices: response[0],
+      endUsers: response[1]
+    }))
 
-      salesforce.addContacts(endUsers)
-      salesforce.addAssets(devices)
+    blueprintPromise.then((response) => {
+      rules.update(response.devices)
+      return response
+    })
+
+    blueprintPromise.then((result) => {
+      salesforce.addContacts(result.endUsers)
+      salesforce.addAssets(result.devices)
     })
 
     socket.on('error', (err) => {

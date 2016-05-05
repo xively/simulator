@@ -19,10 +19,6 @@ class DeviceStore {
    * @return {Promise} ready
    */
   update () {
-    if (process.env.NODE_ENV === 'test') {
-      return Promise.resolve()
-    }
-
     if (!this.request) {
       this.request = Promise.all([
         blueprint.getDevices(),

@@ -14,7 +14,8 @@ class RuleParser {
 
     this.mqtt = mqtt.connect(`mqtts://${config.account.brokerHost}:${config.account.brokerPort}`, {
       username: config.account.brokerUser,
-      password: config.account.brokerPassword
+      password: config.account.brokerPassword,
+      rejectUnauthorized: false
     })
 
     this.subscribe()
@@ -24,7 +25,7 @@ class RuleParser {
     })
 
     this.mqtt.on('error', (error) => {
-      logger.debug('RuleParser#error: mqtt connection error', error)
+      logger.debug('RuleParser#error: mqtt connection error', error.message)
     })
 
     this.mqtt.on('message', (topic, message) => {

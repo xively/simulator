@@ -115,13 +115,14 @@ class Device {
     const host = `mqtts://${serverConfig.account.brokerHost}:${serverConfig.account.brokerPort}`
     const options = {
       username: this.id,
-      password: this.secret
+      password: this.secret,
+      rejectUnauthorized: false
     }
 
     this.mqtt = mqtt.connect(host, options)
 
     this.mqtt.on('connect', () => logger.debug('Device#connectMqtt: connected'))
-    this.mqtt.on('error', (error) => logger.error('Device#connectMqtt: error', error))
+    this.mqtt.on('error', (error) => logger.error('Device#connectMqtt: error', error.message))
     this.mqtt.on('message', (channel, message) => {
       // we only need to handle messages on the `control` channel
       if (channel.endsWith('control')) {

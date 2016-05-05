@@ -1,5 +1,6 @@
 'use strict'
 
+const logger = require('winston')
 const _ = require('lodash')
 const mqtt = require('mqtt')
 const config = require('../../config/server')
@@ -10,8 +11,11 @@ class DeviceLogger {
 
     this.fallbackMqtt = mqtt.connect(`mqtts://${config.account.brokerHost}:${config.account.brokerPort}`, {
       username: config.account.brokerUser,
-      password: config.account.brokerPassword
+      password: config.account.brokerPassword,
+      rejectUnauthorized: false
     })
+
+    this.fallbackMqtt.on('error', (error) => logger.error('DeviceLogger#constructor error', error.message))
   }
 
   onBoot () {

@@ -3,7 +3,6 @@
 const logger = require('winston')
 const db = require('../database')
 const config = require('../../config/server')
-const devices = require('../devices')
 const RuleParser = require('./rule-parser')
 
 class RulesEngine {
@@ -30,13 +29,13 @@ class RulesEngine {
     })
   }
 
-  update () {
+  update (devices) {
     if (this.disabled) {
       return
     }
 
     this.getRules().then((rules) => {
-      devices.getAll().forEach((device) => {
+      devices.forEach((device) => {
         let ruleParser = this.ruleParsers.get(device.id)
         if (ruleParser) {
           ruleParser.update(device, rules)
