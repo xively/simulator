@@ -1,28 +1,34 @@
 'use strict'
 
 const _ = require('lodash')
-const mqtt = require('../mqtt')
+const mqtt = require('mqtt')
+const config = require('../../config/server')
 
 class DeviceLogger {
   constructor (device) {
     this.device = device
+
+    this.fallbackMqtt = mqtt.connect(`mqtts://${config.account.brokerHost}:${config.account.brokerPort}`, {
+      username: config.account.brokerUser,
+      password: config.account.brokerPassword
+    })
   }
 
   onBoot () {
-    this.send({
+    this.sendLog({
       level: 'informational',
       message: 'Device boot complete'
     })
 
     _.forEach(this.device.sensors, (options, name) => {
       if (options.deviceLog && options.deviceLog.connect) {
-        this.send(options.deviceLog.connect)
+        this.sendLog(options.deviceLog.connect)
       }
     })
   }
 
   onFactoryReset () {
-    this.send({
+    this.sendLog({
       level: 'informational',
       message: 'Factory reset command received',
       details: 'Factory reset command received',
@@ -30,7 +36,7 @@ class DeviceLogger {
     })
 
     setTimeout(() => {
-      this.send({
+      this.sendLog({
         level: 'informational',
         message: 'Device is being reset',
         details: 'Device is being reset',
@@ -39,7 +45,7 @@ class DeviceLogger {
     }, 1000)
 
     setTimeout(() => {
-      this.send({
+      this.sendLog({
         level: 'informational',
         message: 'Device recovered from error',
         details: 'Device recovered from error',
@@ -49,7 +55,7 @@ class DeviceLogger {
   }
 
   onMalfunction () {
-    this.send({
+    this.sendLog({
       level: 'error',
       message: 'Sensor malfunction occured',
       details: 'Sensor malfunction occured',
@@ -57,7 +63,7 @@ class DeviceLogger {
     })
   }
 
-  send (log) {
+  sendLog (log) {
     const logChannel = `xi/blue/v1/${this.device.accountId}/d/${this.device.id}/_log`
 
     const message = JSON.stringify({
@@ -79,7 +85,7 @@ class DeviceLogger {
       return
     }
 
-    mqtt.publish(logChannel, message)
+    this.fallbackMqtt.publish(logChannel, message)
   }
 }
 

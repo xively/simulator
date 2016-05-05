@@ -36,7 +36,6 @@ class RuleParser {
 
       const channel = this.channels.get(channelName)
       if (!channel) {
-        console.log(this.channels)
         return logger.debug('RuleParser#message: failed to get channel', channelName)
       }
 

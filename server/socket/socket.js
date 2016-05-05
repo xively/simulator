@@ -5,26 +5,23 @@ const logger = require('winston')
 const socketIO = require('socket.io')
 const _ = require('lodash')
 
-const devices = require('../devices')
-const rules = require('../rules')
 const blueprint = require('../blueprint')
 const salesforce = require('../salesforce')
-
-let simulationRunning = false
-function stopSimulation () {
-  logger.debug('socket.io#startSimulation')
-  simulationRunning = false
-  devices.getAll().forEach((device) => device.stopSimulation())
-}
-
 /**
  * Configure socket.io connection.
  * @param  {express.Server} app   Express Server
  * @return {http.Server}          HTTP Server with socket.io
  */
-module.exports = function configureSocket (app) {
+module.exports = function configureSocket (app, devices, rules) {
   const server = http.createServer(app)
   const io = socketIO(server)
+
+  let simulationRunning = false
+  function stopSimulation () {
+    logger.debug('socket.io#startSimulation')
+    simulationRunning = false
+    devices.getAll().forEach((device) => device.stopSimulation())
+  }
 
   // handle `connection` event
   io.on('connection', (socket) => {

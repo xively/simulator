@@ -4,13 +4,16 @@
 require('dotenv').config({ silent: true })
 
 const logger = require('winston')
+
 const config = require('../config/server')
 const salesforce = require('./salesforce')
 const app = require('./app')
 const socket = require('./socket')
 const orchestrator = require('./orchestrator')
+const devices = require('../devices')
+const rules = require('../rules')
 
-const server = socket(app)
+const server = socket(app, devices, rules)
 
 /*
   Orchestrator
@@ -20,14 +23,11 @@ orchestrator.init(server, app)
 /*
   Salesforce
  */
-
 salesforce.integration()
 
 /*
   Server
  */
-
-// start http server
 server.listen(config.server.port, (err) => {
   logger.info(`Server is listening on ${config.server.port}`)
   if (err) {

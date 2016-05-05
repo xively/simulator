@@ -10,7 +10,9 @@ class DeviceStore {
     // key: id, value: Device
     this.devices = new Map()
     // fill store
-    this.update()
+    if (process.env.NODE_ENV !== 'test') {
+      this.update()
+    }
   }
 
   /**

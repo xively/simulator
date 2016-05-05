@@ -108,7 +108,7 @@ class Device {
    * Open MQTT connection using the device credentials
    */
   connectMqtt () {
-    if (this.mqtt && this.connected) {
+    if (this.mqtt && this.mqtt.connected) {
       return
     }
 
@@ -180,7 +180,7 @@ class Device {
    * Disconnect MQTT connection
    */
   disconnectMqtt () {
-    if (this.mqtt) {
+    if (this.mqtt && this.mqtt.connected && !this.mqtt.disconnecting) {
       logger.debug('Device#disconnectMqtt')
       this.mqtt.end()
       this.mqtt.on('close', () => {

@@ -13,7 +13,6 @@ class RulesEngine {
 
     if (this.disabled) {
       logger.debug('RulesEngine is disabled')
-      return
     }
   }
 
@@ -22,12 +21,20 @@ class RulesEngine {
   }
 
   updateRules () {
+    if (this.disabled) {
+      return
+    }
+
     this.getRules().then((rules) => {
       this.ruleParsers.forEach((ruleParser) => ruleParser.updateRules(rules))
     })
   }
 
   update () {
+    if (this.disabled) {
+      return
+    }
+
     this.getRules().then((rules) => {
       devices.getAll().forEach((device) => {
         let ruleParser = this.ruleParsers.get(device.id)
