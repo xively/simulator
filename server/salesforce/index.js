@@ -1,5 +1,5 @@
 'use strict'
 
-const Salesforce = require('./salesforce')
+const salesforce = require('./salesforce')
 
-module.exports = new Salesforce()
+module.exports = salesforce

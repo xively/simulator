@@ -2,7 +2,6 @@
 
 const logger = require('winston')
 const jsforce = require('jsforce')
-const request = require('request-promise')
 const _ = require('lodash')
 const config = require('../../config/server')
 
@@ -10,21 +9,24 @@ const DEVICE_FIELD_NAME = `${config.salesforce.namespace}__XI_Device_ID__c`
 const DEVICE_FIELD_NAME_WITHOUT_XI = `${config.salesforce.namespace}__Device_ID__c`
 const END_USER_FIELD_NAME = `${config.salesforce.namespace}__XI_End_User_ID__c`
 
-class Salesforce {
-  /**
-   * @param  {Object} options
-   */
-  constructor () {
+const salesforce = {
+  login () {
     this.connection = new jsforce.Connection()
 
-    if (!(config.salesforce.user && config.salesforce.pass && config.salesforce.token)) {
-      this.loggedIn = Promise.reject('Environment variables are missing')
-      return
+    if (!this.loggedIn) {
+      if (!(config.salesforce.user && config.salesforce.pass && config.salesforce.token)) {
+        this.loggedIn = Promise.reject('Environment variables are missing')
+      } else {
+        this.loggedIn = this.connection.login(config.salesforce.user, `${config.salesforce.pass}${config.salesforce.token}`)
+      }
+
+      this.loggedIn
+        .then(() => logger.info('salesforce#login: success'))
+        .catch((err) => logger.error('salesforce#login: error', err))
     }
 
-    this.loggedIn = this.connection.login(config.salesforce.user, `${config.salesforce.pass}${config.salesforce.token}`)
-    logger.info('salesforce#connecting')
-  }
+    return this.loggedIn
+  },
 
   /**
    * @param {Array} assets
@@ -37,7 +39,7 @@ class Salesforce {
       Contact: { [END_USER_FIELD_NAME]: a.orgId }
     }))
 
-    return this.loggedIn
+    return this.login()
       .then(() => this.connection.sobject('Asset').upsertBulk(assets, DEVICE_FIELD_NAME_WITHOUT_XI))
       .then((results) => {
         results.forEach((result, idx) => {
@@ -52,7 +54,7 @@ class Salesforce {
         logger.error('Salesforce #addAssets', err)
         throw new Error(err)
       })
-  }
+  },
 
   /**
    * @param {Array} cases
@@ -64,7 +66,7 @@ class Salesforce {
       [DEVICE_FIELD_NAME]: c.deviceId
     }))
 
-    return this.loggedIn
+    return this.login()
       .then(() => this.connection.sobject('Case').insert(cases))
       .then((results) => {
         results.forEach((result, idx) => {
@@ -77,7 +79,7 @@ class Salesforce {
       .catch((err) => {
         logger.error('Salesforce #addCases', err)
       })
-  }
+  },
 
   /**
    * @param {Array} contacts
@@ -90,7 +92,7 @@ class Salesforce {
 
     const chunksOfContacts = _.chunk(contacts, 10)
 
-    return this.loggedIn
+    return this.login()
       .then(() => Promise.all(chunksOfContacts.map((chunk) => this.connection.sobject('Contact').upsert(chunk, END_USER_FIELD_NAME))))
       .then((chunkOfResults) => _.flatten(chunkOfResults))
       .then((results) => {
@@ -104,88 +106,24 @@ class Salesforce {
       .catch((err) => {
         logger.error('Salesforce #addContacts', err)
       })
-  }
+  },
 
   /**
    * @param {String} id
    */
   retrieveContact (id) {
-    return this.loggedIn
+    return this.login()
       .then(() => this.connection.sobject('Contact').retrieve(id))
-  }
+  },
 
   /**
    * @return {Promise} user email as a promise
    */
   getUserEmail () {
-    return this.loggedIn
+    return this.login()
       .then(() => this.connection.query(`SELECT Id, Email FROM User WHERE Id = '${this.connection.userInfo.id}'`))
       .then((result) => result.records[0].Email)
   }
-
-  integration () {
-    const user = config.salesforce.user
-    const password = `${config.salesforce.pass}${config.salesforce.token}`
-
-    if (!user) {
-      return
-    }
-
-    return request({
-      url: `https://${config.account.idmHost}/api/v1/auth/login-user`,
-      method: 'POST',
-      headers: {
-        AccessToken: config.app.token
-      },
-      json: {
-        accountId: config.account.accountId,
-        emailAddress: config.account.emailAddress,
-        password: config.account.password
-      }
-    })
-    .then((res) => res.jwt)
-    .then((jwt) => {
-      return new jsforce.Connection().login(user, password)
-      .then((result) => ({
-        userId: result.id,
-        organizationId: result.organizationId
-      }))
-      .then((salesforce) => {
-        logger.info('Integrating with SalesForce')
-
-        const removeAccount = () => request({
-          url: `https://${config.app.integrationHost}/api/v1/accounts`,
-          method: 'DELETE',
-          auth: {
-            bearer: jwt
-          },
-          json: {
-            id: salesforce.organizationId
-          }
-        })
-
-        const addAccount = () => request({
-          url: `https://${config.app.integrationHost}/api/v1/accounts`,
-          method: 'POST',
-          auth: {
-            bearer: jwt
-          },
-          json: {
-            id: salesforce.organizationId,
-            accountId: config.account.accountId
-          }
-        })
-
-        return removeAccount()
-          .catch(() => Promise.resolve())
-          .then(() => addAccount())
-      })
-    })
-    .then(() => logger.info('Integrating with SalesForce success'))
-    .catch((err) => {
-      logger.error('Salesforce integration error:', JSON.stringify(err))
-    })
-  }
 }
 
-module.exports = Salesforce
+module.exports = salesforce

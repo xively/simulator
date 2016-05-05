@@ -7,7 +7,8 @@ const logger = require('winston')
 
 const config = require('../config/server')
 const salesforce = require('./salesforce')
-// const blueprint = require('./xively').blueprint
+const integration = require('./xively').integration
+const blueprint = require('./xively').blueprint
 const app = require('./app')
 const socket = require('./socket')
 const orchestrator = require('./orchestrator')
@@ -22,29 +23,32 @@ const server = socket(app, devices, rules)
 orchestrator.init(server, app)
 
 /*
-  Salesforce
+  Salesforce integration
  */
-salesforce.integration()
 
-// const createAccountUser = () => {
-//   const salesforceUser = config.salesforce.user
-//   const account = {
-//     accountId: config.account.accountId
-//   }
-//
-//   if (!salesforceUser) {
-//     return blueprint.createAccountUsers([account])
-//   }
-//
-//   return salesforce.getUserEmail().then((idmUserEmail) => {
-//     Object.assign(account, {
-//       createIdmUser: true,
-//       idmUserEmail
-//     })
-//
-//     return blueprint.createAccountUsers([account])
-//   })
-// }
+// create account user
+salesforce.getUserEmail()
+  .then((idmUserEmail) => {
+    return blueprint.createAccountUsers([{
+      accountId: config.account.accountId,
+      createIdmUser: true,
+      idmUserEmail
+    }])
+  })
+  .catch(() => {
+    blueprint.createAccountUsers([{
+      accountId: config.account.accountId
+    }])
+  })
+
+// integrating with salesforce
+salesforce.login()
+  .then((user) => {
+    return integration.removeAccount(user.organizationId)
+      .catch(() => Promise.resolve())
+      .then(() => integration.addAccount(user.organizationId))
+  })
+.then(() => logger.info('Integrating with SalesForce success'))
 
 /*
   Server
