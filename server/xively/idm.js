@@ -24,6 +24,10 @@ const idm = {
     }
 
     return this.jwt
+  },
+
+  logout () {
+    this.jwt = null
   }
 }
 

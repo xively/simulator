@@ -10,37 +10,47 @@ const DEBOUNCE_WAIT = 100
 
 const blueprint = {
   create (options) {
-    return idm.login().then((jwt) => {
-      const url = `https://${config.account.blueprintHost}/api/v1/${options.url}`
-      const method = options.method || 'POST'
-      const responseField = options.responseField
-      const items = options.items
+    return idm.login()
+      .then((jwt) => {
+        const url = `https://${config.account.blueprintHost}/api/v1/${options.url}`
+        const method = options.method || 'POST'
+        const responseField = options.responseField
+        const items = options.items
 
-      return Promise.all(items.map((item) => {
-        const json = Object.assign({ accountId: config.account.accountId }, item)
-        return request({
-          url,
-          method,
-          auth: { bearer: jwt },
-          json
-        }).then((response) => response[responseField])
-      }))
-    })
+        return Promise.all(items.map((item) => {
+          const json = Object.assign({ accountId: config.account.accountId }, item)
+          return request({
+            url,
+            method,
+            auth: { bearer: jwt },
+            json
+          }).then((response) => response[responseField])
+        }))
+      })
+      .catch((err) => {
+        idm.logout()
+        throw err
+      })
   },
 
   get (options) {
-    return idm.login().then((jwt) => {
-      const url = `https://${config.account.blueprintHost}/api/v1/${options.url}`
-      const responseField = options.responseField
+    return idm.login()
+      .then((jwt) => {
+        const url = `https://${config.account.blueprintHost}/api/v1/${options.url}`
+        const responseField = options.responseField
 
-      return request({
-        url,
-        method: 'GET',
-        auth: { bearer: jwt },
-        qs: { accountId: config.account.accountId, pageSize: 1000 },
-        json: true
-      }).then((response) => response[responseField].results)
-    })
+        return request({
+          url,
+          method: 'GET',
+          auth: { bearer: jwt },
+          qs: { accountId: config.account.accountId, pageSize: 1000 },
+          json: true
+        }).then((response) => response[responseField].results)
+      })
+      .catch((err) => {
+        idm.logout()
+        throw err
+      })
   },
 
   createOrganizationTemplates (organizationTemplates) {

@@ -48,7 +48,7 @@ salesforce.login()
       .catch(() => Promise.resolve())
       .then(() => integration.addAccount(user.organizationId))
   })
-.then(() => logger.info('Integrating with SalesForce success'))
+  .then(() => logger.info('Integrating with SalesForce success'))
 
 /*
   Server
