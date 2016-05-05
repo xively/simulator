@@ -40,25 +40,21 @@ function mqttFactory ($log, $q, $rootScope, CONFIG, utils) {
      * @param  {Object} message
      * @return {Object}
      */
-    parseMessage (message, channel) {
-      const payloadString = message || ''
+    parseMessage (message = '', channel) {
+      if (_.isObject(message)) {
+        message = message.toString()
+      }
       const channelName = channel ? channel.split('/').pop() : null
 
       // JSON format
-      try {
-        const obj = JSON.parse(payloadString)
-        if (_.isNumber(obj) && channelName) {
-          return {
-            [channelName]: {
-              numericValue: obj
-            }
-          }
-        }
-        return obj
-      } catch (e) { /* ignore */ }
+      if (message.startsWith('{') || message.startsWith('[')) {
+        try {
+          return JSON.parse(message)
+        } catch (e) { /* ignore */ }
+      }
 
       // CSV format
-      const csvRows = payloadString.split('/n')
+      const csvRows = message.split('/n')
       return _.fromPairs(csvRows.map((row) => {
         const parts = row.split(',').map((string) => _.trim(string, '"').trim())
         let timestamp = utils.numberOrString(parts[0]) || Date.now()

@@ -68,6 +68,16 @@ module.exports = function configureSocket (app, devices, rules) {
       })
     })
 
+    socket.on('update', (data) => {
+      const deviceId = data.deviceId
+      const device = devices.getOne(deviceId)
+      if (device) {
+        const name = data.name
+        const value = data.value
+        device.updateSensor(name, value)
+      }
+    })
+
     socket.on('startSimulation', (data) => {
       logger.debug('socket.io#startSimulation', data)
 

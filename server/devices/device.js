@@ -72,6 +72,16 @@ class Device {
     })
   }
 
+  updateSensor (name, value) {
+    const options = this.sensors.get(name)
+    if (options) {
+      options.latestValue = value
+      this.sensors.set(name, options)
+      const message = `${Date.now()}, ${name}, ${value}, , \n`
+      this.publishMqtt(options.channel, message)
+    }
+  }
+
   /**
    * Handle socket connection
    * @param  {String} socketId

@@ -1,7 +1,7 @@
 const _ = require('lodash')
 
 /* @ngInject */
-function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeseriesService, CONFIG, DEVICES_CONFIG) {
+function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeseriesService, socketService, CONFIG, DEVICES_CONFIG) {
   const unsubscribeCallback = Symbol('unsubscribeCallback')
 
   return new class DevicesService {
@@ -17,7 +17,6 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
       if (!this.devices[device.id]) {
         device.ok = true
         device.sensors = {}
-        device.controlChannel = _.find(device.channels, { channelTemplateName: 'control' })
         device.channels = device.channels
           .filter((channel) => !(DEVICES_CONFIG.hiddenChannels || []).includes(channel.channelTemplateName))
         device.channels.forEach((channel) => {
@@ -29,17 +28,8 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
           }
         })
         device.update = (name, value) => {
-          if (!device.controlChannel) {
-            return $log.error('control channel is missing for device', device)
-          }
-          const channel = device.controlChannel.channel
-          const numericValue = _.parseInt(value)
-          if (!_.isNaN(numericValue)) {
-            return mqttService.sendMessage(channel, {
-              name, numericValue
-            })
-          }
-          mqttService.sendMessage(channel, value)
+          value = _.parseInt(value)
+          socketService.sendMessage(device.id, 'update', { name, value })
         }
         device.subscribe = this.subscribeDevice.bind(this, device)
         this.devices[device.id] = device

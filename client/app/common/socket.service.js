@@ -48,7 +48,10 @@ function socketFactory ($q, $rootScope) {
 
     sendMessage (device, name, value) {
       const deviceId = _.isString(device) ? device : device.id
-      this.client.emit(name, { deviceId, value })
+      if (!_.isObject(value)) {
+        value = { value }
+      }
+      this.client.emit(name, Object.assign({ deviceId }, value))
     }
   }
 }
