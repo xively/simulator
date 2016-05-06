@@ -18,7 +18,7 @@ module.exports = function configureSocket (app, devices, rules) {
 
   let simulationRunning = false
   function stopSimulation () {
-    logger.debug('socket.io#startSimulation')
+    logger.debug('socket.io#stopSimulation')
     simulationRunning = false
     devices.getAll().forEach((device) => device.stopSimulation())
   }
@@ -42,7 +42,6 @@ module.exports = function configureSocket (app, devices, rules) {
 
     blueprintPromise.then((response) => {
       rules.update(response.devices)
-      return response
     })
 
     blueprintPromise.then((result) => {
