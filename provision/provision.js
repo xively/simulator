@@ -23,17 +23,17 @@ Promise.all([
   const organizationTemplates = data.organizationTemplates
   const deviceTemplates = data.deviceTemplates
 
-  config.organizations = config.organizations.map((organization) => Object.assign({
+  config.organizations = config.organizations.map((organization) => Object.assign(organization, {
     organizationTemplateId: _.find(organizationTemplates, { name: organization.organizationTemplate }).id
-  }, organization))
+  }))
 
-  config.channelTemplates = config.channelTemplates.map((channelTemplate) => Object.assign({
+  config.channelTemplates = config.channelTemplates.map((channelTemplate) => Object.assign(channelTemplate, {
     entityId: _.find(deviceTemplates, { name: channelTemplate.deviceTemplate }).id
-  }, channelTemplate))
+  }))
 
-  config.deviceFields = config.deviceFields.map((deviceFields) => Object.assign({
+  config.deviceFields = config.deviceFields.map((deviceFields) => Object.assign(deviceFields, {
     deviceTemplateId: _.find(deviceTemplates, { name: deviceFields.deviceTemplate }).id
-  }, deviceFields))
+  }))
 
   logger.info('Creating: organizations, channel templates, device fields')
   return Promise.all([
@@ -53,16 +53,16 @@ Promise.all([
   const endUserTemplates = data.endUserTemplates
   const deviceTemplates = data.deviceTemplates
 
-  config.endUsers = config.endUsers.map((endUser) => Object.assign({
+  config.endUsers = config.endUsers.map((endUser) => Object.assign(endUser, {
     organizationId: _.find(organizations, { name: endUser.organization }).id,
     organizationTemplateId: _.find(organizationTemplates, { name: endUser.organizationTemplate }).id,
     endUserTemplateId: _.find(endUserTemplates, { name: endUser.endUserTemplate }).id
-  }, endUser))
+  }))
 
-  config.devices = config.devices.map((device) => Object.assign({
+  config.devices = config.devices.map((device) => Object.assign(device, {
     deviceTemplateId: _.find(deviceTemplates, { name: device.deviceTemplate }).id,
     organizationId: _.find(organizations, { name: device.organization }).id
-  }, device))
+  }))
 
   logger.info('Creating: end users, devices')
   return Promise.all([

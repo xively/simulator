@@ -2,11 +2,13 @@
 
 const logger = require('winston')
 const _ = require('lodash')
+const uuid = require('uuid')
 const blueprint = require('../xively').blueprint
 const db = require('../database')
+const provisionConfig = require('../../config/provision')
 const Device = require('./device')
 
-const SIMULATION_INTERVAL = 5000
+const SIMULATION_INTERVAL = 500
 const SIMULATION_CICLES = 100
 const SIMULATION_LISTENER = 'simulation'
 
@@ -38,10 +40,12 @@ class DeviceStore {
 
           devices = devices
             .map((device) => {
-              device.template = _.find(deviceTemplates, { id: device.deviceTemplateId })
-              device.config = deviceConfig[device.template.name] || {}
-              device.SIMULATION_LISTENER = SIMULATION_LISTENER
-              return device
+              const template = _.find(deviceTemplates, { id: device.deviceTemplateId })
+              return Object.assign(device, {
+                template,
+                config: deviceConfig[template.name] || {},
+                SIMULATION_LISTENER: SIMULATION_LISTENER
+              })
             })
             .filter((device) => {
               const savedDevice = this.devices.get(device.id)
@@ -51,22 +55,7 @@ class DeviceStore {
               }
               return true
             })
-            .map((device) => Object.assign(device, {
-              entityId: device.id,
-              entityType: 'device'
-            }))
-
-          if (devices.length) {
-            return blueprint.createMqttCredentials(devices).then((mqttCredentials) => {
-              devices.forEach((device) => {
-                const mqttCredential = _.find(mqttCredentials, { entityId: device.id })
-                Object.assign(device, mqttCredential)
-                this.addDevice(device)
-              })
-            })
-          } else {
-            return Promise.resolve()
-          }
+            .forEach((device) => this.addDevice(device))
         })
         .catch((error) => {
           this.request = null
@@ -124,6 +113,12 @@ class DeviceStore {
    * @param  {Function} stopCallback  Called on simulation stop
    */
   startSimulation (deviceId, stopCallback) {
+    // TODO refactor, device specific: trigger thermometer faliure on one device
+    // const faliureDevice = _.find(this.devices, (device) => _.isFunction(device.triggerThermometerFaliure))
+    // if (faliureDevice) {
+      // faliureDevice.triggerThermometerFaliure()
+    // }
+
     let simulationCounter = 0
     if (!this.simulation) {
       logger.debug('DeviceStore#startSimulation')
@@ -133,6 +128,44 @@ class DeviceStore {
         simulationCounter += 1
         if (simulationCounter >= SIMULATION_CICLES) {
           stopCallback()
+        }
+
+        // spawn new devices
+        if (_.random(5) === 0) {
+          console.log('spawn devices')
+          const rawDevice = _.sample(provisionConfig.rawDevices)
+          const serialNumber = uuid.v4()
+          const newDevice = rawDevice.generate({
+            serialNumber,
+            idx: serialNumber,
+            deviceTemplate: rawDevice.name
+          })
+          const deviceWithMatchingTemplate = _.find(Array.from(this.devices.values()), (device) => device.template.name === newDevice.deviceTemplate)
+          if (!deviceWithMatchingTemplate) {
+            return
+          }
+
+          newDevice.deviceTemplateId = deviceWithMatchingTemplate.template.id
+          newDevice.organizationId = deviceWithMatchingTemplate.organizationId
+          Promise.all([
+            blueprint.createDevices([newDevice]),
+            db.selectDeviceConfig()
+              .then((data) => data[0].deviceConfig)
+          ])
+          .then((data) => {
+            const response = data[0]
+            const deviceConfig = data[1]
+            if (response.error) {
+              throw new Error(response.error)
+            }
+
+            const device = new Device(Object.assign(response[0], {
+              template: deviceWithMatchingTemplate.template,
+              config: deviceConfig[device.template.name] || {},
+              SIMULATION_LISTENER
+            }))
+            this.devices.set(device.id, device)
+          })
         }
       }, SIMULATION_INTERVAL)
     }

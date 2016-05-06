@@ -3,6 +3,7 @@
 const mqtt = require('mqtt')
 const _ = require('lodash')
 const logger = require('winston')
+const blueprint = require('../xively').blueprint
 const serverConfig = require('../../config/server')
 
 const DeviceLogger = require('./device-logger')
@@ -66,13 +67,13 @@ class Device {
   }
 
   updateSensor (name, value) {
-    const options = this.sensors.get(name)
-    if (options) {
-      options.latestValue = value
-      this.sensors.set(name, options)
-      const message = `${Date.now()}, ${name}, ${value}, , \n`
-      this.publishMqtt(options.channel, message)
+    let message
+    if (_.isNaN(_.parseInt(value))) {
+      message = value
+    } else {
+      message = `${Date.now()}, ${name}, ${value}, , \n`
     }
+    this.handleMessage(message)
   }
 
   /**
@@ -85,9 +86,10 @@ class Device {
     if (!this.connections.size) {
       this.logger.onBoot()
 
-      this.connectMqtt()
-      this.subscribeMqtt('control')
-      this.startGeneratingSensorValues()
+      this.connectMqtt().then(() => {
+        this.subscribeMqtt('control')
+        this.startGeneratingSensorValues()
+      })
     }
     this.connections.add(socketId)
   }
@@ -112,44 +114,65 @@ class Device {
    */
   connectMqtt () {
     if (this.mqtt && this.mqtt.connected) {
-      return
+      return Promise.resolve()
     }
 
-    const host = `mqtts://${serverConfig.account.brokerHost}:${serverConfig.account.brokerPort}`
-    const options = {
-      username: this.id,
-      password: this.secret,
-      rejectUnauthorized: false
+    return blueprint.createMqttCredentials([Object.assign(this, {
+      entityId: this.id,
+      entityType: 'device'
+    })]).then((mqttCredentials) => {
+      return new Promise((resolve, reject) => {
+        const mqttCredential = mqttCredentials[0]
+
+        const host = `mqtts://${serverConfig.account.brokerHost}:${serverConfig.account.brokerPort}`
+        const options = {
+          username: this.id,
+          password: mqttCredential.secret,
+          rejectUnauthorized: false
+        }
+
+        this.mqtt = mqtt.connect(host, options)
+
+        this.mqtt.on('connect', () => {
+          logger.debug('Device#connectMqtt: connected')
+          resolve()
+        })
+
+        this.mqtt.on('error', (error) => {
+          logger.error('Device#connectMqtt: error', error.message)
+          reject()
+        })
+
+        this.mqtt.on('message', (channel, message) => {
+          // we only need to handle messages on the `control` channel
+          if (channel.endsWith('control')) {
+            // message is a Buffer, convert it to a String
+            message = message.toString()
+            logger.silly('Device#mqtt: on message:', channel, message)
+
+            this.handleMessage(message)
+          }
+        })
+      })
+    }).catch((error) => logger.error('Device#connectMqtt: error', error))
+  }
+
+  handleMessage (message) {
+    let response
+    try {
+      // JSON
+      const parsed = JSON.parse(message)
+      response = this.handleJSON(parsed)
+    } catch (err) {
+      // CSV
+      try {
+        response = this.handleCSV(message)
+      } catch (err) { /* ignore */ }
     }
 
-    this.mqtt = mqtt.connect(host, options)
-
-    this.mqtt.on('connect', () => logger.debug('Device#connectMqtt: connected'))
-    this.mqtt.on('error', (error) => logger.error('Device#connectMqtt: error', error.message))
-    this.mqtt.on('message', (channel, message) => {
-      // we only need to handle messages on the `control` channel
-      if (channel.endsWith('control')) {
-        // message is a Buffer, convert it to a String
-        message = message.toString()
-        logger.silly('Device#mqtt: on message:', channel, message)
-
-        let response
-        try {
-          // JSON
-          const parsed = JSON.parse(message)
-          response = this.handleJSON(parsed)
-        } catch (err) {
-          // CSV
-          try {
-            response = this.handleCSV(message)
-          } catch (err) { /* ignore */ }
-        }
-
-        if (this.ok && response) {
-          this.publishMqtt(response.channel, response.message)
-        }
-      }
-    })
+    if (this.ok && response) {
+      this.publishMqtt(response.channel, response.message)
+    }
   }
 
   handleJSON (message) {
@@ -162,8 +185,8 @@ class Device {
 
   handleCSV (message) {
     const parts = message.split(',')
-    const timeStamp = parts[0]
-    const name = parts[1]
+    const timeStamp = parts[0].trim()
+    const name = parts[1].trim()
     const sensorValue = Number(parts[2])
 
     if (!this.sensors.has(name)) {

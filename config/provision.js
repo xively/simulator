@@ -176,21 +176,28 @@ function getLocation () {
   return getLocation()
 }
 
-function generateGenericDevice (deviceType, idx, organization, orgIdx) {
-  orgIdx = !_.isNaN(orgIdx) ? orgIdx : 100
+function generateGenericDevice (options) {
+  options = options || {}
+  const templateName = options.templateName
+  const idx = options.idx
+  const organization = options.organization || {}
+  const orgIdx = _.isNumber(options.orgIdx) ? options.orgIdx : 100
+  const name = options.name || `${(NAMES[templateName] || '').replace(/\s/g, '-')}-${idx}`
+  const serialNumber = options.serialNumber || `${(NAMES[templateName] || '').replace(/\s/g, '-')}-${_.padStart(DEVICES_PER_ORGANIZATION[templateName] * orgIdx + idx + 1, 6, '0')}`
+  const deviceTemplateId = options.deviceTemplateId
+
   const location = getLocation()
   return {
-    deviceTemplate: NAMES[deviceType],
+    name,
+    serialNumber,
+    deviceTemplateId,
+    deviceTemplate: NAMES[templateName],
     organization: organization.name,
-    name: `${NAMES[deviceType].replace(/\s/g, '-')}-${idx}`,
-    serialNumber: `${NAMES[deviceType].replace(/\s/g, '-')}-${_.padStart(DEVICES_PER_ORGANIZATION[deviceType] * orgIdx + idx + 1, 6, '0')}`,
-    hardwareVersion: `1.1.${idx}`,
-    includedSensors: 'Temperature, Humidity, VoC, CO, Dust, Filter',
+    organizationId: organization.id,
     color: 'white',
     productionRun: 'DEC2016',
-    powerVersion: '12VDC',
-    filterType: 'carbonHEPA',
-    firmwareVersion: `2.0.${idx}`,
+    hardwareVersion: '1.1.1',
+    firmwareVersion: '2.0.0',
     longitude: location[0],
     latitude: location[1]
   }
@@ -200,8 +207,8 @@ const rawDevices = [{
   name: NAMES.HOME_AIR_PUTIFIER,
   count: DEVICES_PER_ORGANIZATION.HOME_AIR_PUTIFIER,
   organizations: homeOrganizations,
-  generator: (idx, organization, orgIdx) => {
-    const generic = generateGenericDevice('HOME_AIR_PUTIFIER', idx, organization, orgIdx)
+  generate: (options) => {
+    const generic = generateGenericDevice(Object.assign({ templateName: 'HOME_AIR_PUTIFIER' }, options || {}))
     return _.merge(generic, {
       includedSensors: 'Temperature, Humidity, VoC, CO, Dust, Filter',
       powerVersion: '12VDC',
@@ -212,8 +219,8 @@ const rawDevices = [{
   name: NAMES.JACKET,
   count: DEVICES_PER_ORGANIZATION.JACKET,
   organizations: homeOrganizations,
-  generator: (idx, organization, orgIdx) => {
-    const generic = generateGenericDevice('JACKET', idx, organization, orgIdx)
+  generate: (options) => {
+    const generic = generateGenericDevice(Object.assign({ templateName: 'JACKET' }, options || {}))
     return _.merge(generic, {
       includedSensors: 'Core, Left arm, Right arm'
     })
@@ -222,8 +229,8 @@ const rawDevices = [{
   name: NAMES.INDUSTRIAL_HVAC,
   count: DEVICES_PER_ORGANIZATION.INDUSTRIAL_HVAC,
   organizations: warehouseOrganizations,
-  generator: (idx, organization, orgIdx) => {
-    const generic = generateGenericDevice('INDUSTRIAL_HVAC', idx, organization, orgIdx)
+  generate: (options) => {
+    const generic = generateGenericDevice(Object.assign({ templateName: 'INDUSTRIAL_HVAC' }, options || {}))
     return _.merge(generic, {
       includedSensors: 'Temperature, Humidity, VoC, CO, Dust, Filter',
       powerVersion: '12VDC',
@@ -234,8 +241,8 @@ const rawDevices = [{
   name: NAMES.SOLAR_PANEL,
   count: DEVICES_PER_ORGANIZATION.SOLAR_PANEL,
   organizations: warehouseOrganizations,
-  generator: (idx, organization, orgIdx) => {
-    const generic = generateGenericDevice('SOLAR_PANEL', idx, organization, orgIdx)
+  generate: (options) => {
+    const generic = generateGenericDevice(Object.assign({ templateName: 'SOLAR_PANEL' }, options || {}))
     return _.merge(generic, {
       includedSensors: 'Power, Voltage, Current, Irradiance'
     })
@@ -300,7 +307,7 @@ const config = {
   channelTemplates: [].concat(homeDeviceChannels).concat(commercialDeviceChannels).concat(jacketDeviceChannels).concat(solarPanelDeviceChannels),
   devices: _.flattenDeep(_.map(rawDevices, (rawDevice) => {
     return _.map(rawDevice.organizations, (organization, orgIdx) => {
-      return _.times(rawDevice.count, (idx) => rawDevice.generator(idx, organization, orgIdx))
+      return _.times(rawDevice.count, (idx) => rawDevice.generate({ idx, organization, orgIdx }))
     })
   })),
   endUsers: [].concat(homeUsers).concat(commercialUsers),
