@@ -81,7 +81,8 @@ const rulesComponent = {
             <div class="actions">
               <div class="form-row">
                 <label for="case">
-                  <input id="case" type="checkbox" ng-model="rules.rule.actions.salesforceCase.enabled"/>
+                  <input id="case" type="checkbox" ng-model="rules.rule.actions.salesforceCase.enabled"
+                    ng-change="rules.checkActions()" />
                   <span>Create a salesforce case titled:</span>
                   <input type="text" class="wide-input" ng-model="rules.rule.actions.salesforceCase.value"
                     ng-required="rules.rule.actions.salesforceCase.enabled"/>
@@ -109,7 +110,7 @@ const rulesComponent = {
           <div>
             <button class="button primary" type="submit"
               ng-click="rules.save()"
-              ng-disabled="ruleForm.$invalid || !rules.rule.conditions.rules.length">
+              ng-disabled="ruleForm.$invalid || !rules.rule.conditions.rules.length || !rules.actionSelected">
               Save
             </button>
             <button class="button" ng-click="rules.clearSelection()">Cancel</button>
@@ -192,6 +193,10 @@ const rulesComponent = {
 
       this.clearSelection = () => {
         this.selectedRule = false
+      }
+
+      this.checkActions = () => {
+        this.actionSelected = _.some(this.rule.actions, (action) => action.enabled)
       }
     })
   }
