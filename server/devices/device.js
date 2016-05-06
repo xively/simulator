@@ -9,10 +9,8 @@ const DeviceLogger = require('./device-logger')
 const extensions = require('./device-extensions')
 
 const DEFAULT_SENSOR_OPTIONS = { min: 0, max: 100, wiggle: true }
-const INTERVAL = 5000
+const GENERATE_SENSOR_VALUES_INTERVAL = 5000
 const WIGGLE_PERCENTAGE = 0.05
-const SIMULATION_CICLES = 100
-const SIMULATION_LISTENER = 'simulation'
 
 class Device {
   constructor (data) {
@@ -26,8 +24,6 @@ class Device {
     this.connections = new Set()
 
     this.update(data)
-
-    this.SIMULATION_LISTENER = SIMULATION_LISTENER
   }
 
   /**
@@ -235,7 +231,7 @@ class Device {
   /**
    * Generate new sensor values
    */
-  generateSensorValues () {
+  generateSensorValues (simulation) {
     this.sensors.forEach((options, name) => {
       let latestValue
       if (_.isNumber(options.latestValue)) {
@@ -245,7 +241,7 @@ class Device {
       }
 
       let newValue
-      if (this.simulation && options.simulation) {
+      if (simulation && options.simulation) {
         try {
           newValue = options.simulation(latestValue, this.sensors)
         } catch (ex) {
@@ -257,7 +253,7 @@ class Device {
         } catch (ex) {
           newValue = latestValue
         }
-      } else if (this.simulation && options.wiggle) {
+      } else if (simulation && options.wiggle) {
         newValue = latestValue + _.random(WIGGLE_PERCENTAGE, true) * _.sample([-1, 1]) * (options.max - options.min)
       } else {
         newValue = latestValue
@@ -278,7 +274,7 @@ class Device {
    */
   startGeneratingSensorValues (interval) {
     this.generateSensorValues()
-    this.interval = setInterval(this.generateSensorValues.bind(this), interval || INTERVAL)
+    this.interval = setInterval(this.generateSensorValues.bind(this), interval || GENERATE_SENSOR_VALUES_INTERVAL)
   }
 
   /**
@@ -288,27 +284,11 @@ class Device {
     clearInterval(this.interval)
   }
 
-  startSimulation (stopCallback) {
-    this.simulationCounter = 0
-
-    if (!this.simulation) {
+  simulationTick () {
+    if (this.ok) {
       extensions.simulationTick(this)
-      this.simulation = setInterval(() => {
-        extensions.simulationTick(this)
-
-        if (this.simulationCounter++ === SIMULATION_CICLES) {
-          stopCallback()
-        }
-      }, INTERVAL)
+      this.generateSensorValues(true)
     }
-  }
-
-  stopSimulation () {
-    clearInterval(this.simulation)
-    this.ok = true
-    this.simulation = false
-
-    this.disconnect(SIMULATION_LISTENER)
   }
 
   /**

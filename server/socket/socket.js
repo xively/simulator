@@ -20,7 +20,7 @@ module.exports = function configureSocket (app, devices, rules) {
   function stopSimulation () {
     logger.debug('socket.io#stopSimulation')
     simulationRunning = false
-    devices.getAll().forEach((device) => device.stopSimulation())
+    devices.stopSimulation()
   }
 
   // handle `connection` event
@@ -79,22 +79,14 @@ module.exports = function configureSocket (app, devices, rules) {
 
     socket.on('startSimulation', (data) => {
       logger.debug('socket.io#startSimulation', data)
+      const deviceId = data.deviceId
 
       updateDevices.then(() => {
-        const devices = devices.getAll()
-        const thermometerFaliure = _.sample(devices.keys())
         simulationRunning = true
 
-        devices.forEach((device, deviceId) => {
-          if (deviceId !== data.deviceId) {
-            device.startSimulation(() => {
-              socket.emit('stopSimulation')
-              stopSimulation()
-            })
-          }
-          if (deviceId === thermometerFaliure) {
-            device.triggerThermometerFaliure()
-          }
+        devices.startSimulation(deviceId, () => {
+          socket.emit('stopSimulation')
+          stopSimulation()
         })
       })
     })

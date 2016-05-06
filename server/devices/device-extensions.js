@@ -15,7 +15,7 @@ const extensions = {
         high: 2
       }[value]
       device.sensors.set('fan', fanOptions)
-      device.logger.send({
+      device.logger.sendLog({
         level: 'informational',
         message: `Fan ${value}`
       })
@@ -51,7 +51,7 @@ const extensions = {
           details: 'Filter low'
         }
       }
-      device.logger.send(log)
+      device.logger.sendLog(log)
 
       return {
         channel: filterOptions.channel,
@@ -67,7 +67,7 @@ const extensions = {
       case 1: // hight temp warning
         if (device.mqtt && device.mqtt.connected && device.ok) {
           // TODO set temp value?
-          device.logger.send({
+          device.logger.sendLog({
             level: 'warning',
             message: 'High Temperature',
             details: '100 F'
@@ -76,7 +76,7 @@ const extensions = {
         break
       case 2: // malfunction
         if (device.mqtt && device.mqtt.connected && device.ok) {
-          device.logger.send({
+          device.logger.sendLog({
             level: 'error',
             message: 'Fan overheated',
             details: 'Shutting down	Filter internal temperature over 150 F'
@@ -91,7 +91,7 @@ const extensions = {
         break
       case 4:
       case 5: // disconnect
-        device.logger.send({
+        device.logger.sendLog({
           level: 'error',
           message: 'Network connection failed',
           details: 'Failed to initialize network connection. DNS lookup to concaria.broker.xively.com failed. SSID: HomeWifi'

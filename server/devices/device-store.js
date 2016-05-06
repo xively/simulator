@@ -6,6 +6,10 @@ const blueprint = require('../xively').blueprint
 const db = require('../database')
 const Device = require('./device')
 
+const SIMULATION_INTERVAL = 5000
+const SIMULATION_CICLES = 100
+const SIMULATION_LISTENER = 'simulation'
+
 class DeviceStore {
   constructor () {
     // key: id, value: Device
@@ -36,6 +40,7 @@ class DeviceStore {
             .map((device) => {
               device.template = _.find(deviceTemplates, { id: device.deviceTemplateId })
               device.config = deviceConfig[device.template.name] || {}
+              device.SIMULATION_LISTENER = SIMULATION_LISTENER
               return device
             })
             .filter((device) => {
@@ -99,6 +104,51 @@ class DeviceStore {
    */
   getOne (id) {
     return this.devices.get(id)
+  }
+
+  /**
+   * Simulation tick
+   * @param  {String} deviceId Exclude from simulation
+   */
+  simulationTick (deviceId) {
+    this.devices.forEach((device) => {
+      if (device.id !== deviceId) {
+        device.simulationTick()
+      }
+    })
+  }
+
+  /**
+   * Start simulation
+   * @param  {String} deviceId        Exclude from simulation
+   * @param  {Function} stopCallback  Called on simulation stop
+   */
+  startSimulation (deviceId, stopCallback) {
+    let simulationCounter = 0
+    if (!this.simulation) {
+      logger.debug('DeviceStore#startSimulation')
+      this.simulationTick(deviceId)
+      this.simulation = setInterval(() => {
+        this.simulationTick(deviceId)
+        simulationCounter += 1
+        if (simulationCounter >= SIMULATION_CICLES) {
+          stopCallback()
+        }
+      }, SIMULATION_INTERVAL)
+    }
+  }
+
+  /**
+   * Stop simulation
+   */
+  stopSimulation () {
+    logger.debug('DeviceStore#stopSimulation')
+    clearInterval(this.simulation)
+    this.simulation = null
+    this.devices.forEach((device) => {
+      device.ok = true
+      device.disconnect(SIMULATION_LISTENER)
+    })
   }
 }
 
