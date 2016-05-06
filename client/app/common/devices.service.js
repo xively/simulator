@@ -28,7 +28,6 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
           }
         })
         device.update = (name, value) => {
-          value = _.parseInt(value)
           socketService.sendMessage(device.id, 'update', { name, value })
         }
         device.subscribe = this.subscribeDevice.bind(this, device)
