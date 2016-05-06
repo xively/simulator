@@ -45,8 +45,10 @@ module.exports = function configureSocket (app, devices, rules) {
     })
 
     blueprintPromise.then((result) => {
-      salesforce.addContacts(result.endUsers)
-      salesforce.addAssets(result.devices)
+      if (salesforce.done) {
+        salesforce.addContacts(result.endUsers)
+        salesforce.addAssets(result.devices)
+      }
     })
 
     socket.on('error', (err) => {

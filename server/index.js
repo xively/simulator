@@ -27,6 +27,7 @@ orchestrator.init(server, app)
  */
 
 // create account user
+// integrating with salesforce
 salesforce.getUserEmail()
   .then((idmUserEmail) => {
     return blueprint.createAccountUsers([{
@@ -36,19 +37,21 @@ salesforce.getUserEmail()
     }])
   })
   .catch(() => {
-    blueprint.createAccountUsers([{
+    return blueprint.createAccountUsers([{
       accountId: config.account.accountId
     }])
   })
-
-// integrating with salesforce
-salesforce.login()
-  .then((user) => {
-    return integration.removeAccount(user.organizationId)
-      .catch(() => Promise.resolve())
-      .then(() => integration.addAccount(user.organizationId))
+  .then(() => {
+    return salesforce.login()
+      .then((user) => {
+        return integration.removeAccount(user.organizationId)
+          .catch(() => Promise.resolve())
+          .then(() => integration.addAccount(user.organizationId))
+      })
+      .then(() => logger.info('Integrating with SalesForce success'))
   })
-  .then(() => logger.info('Integrating with SalesForce success'))
+  .then(() => { salesforce.done = true })
+  .catch((err) => logger.error('Integrating with SalesForce error', err))
 
 /*
   Server

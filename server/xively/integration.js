@@ -8,14 +8,15 @@ const integration = {
   addAccount (organizationId) {
     return idm.login()
       .then((jwt) => {
-        request({
+        return request({
           url: `https://${config.account.integrationHost}/api/v1/accounts`,
-          method: 'DELETE',
+          method: 'POST',
           auth: {
             bearer: jwt
           },
           json: {
-            id: organizationId
+            id: organizationId,
+            accountId: config.account.accountId
           }
         })
       })

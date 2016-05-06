@@ -11,12 +11,11 @@ const END_USER_FIELD_NAME = `${config.salesforce.namespace}__XI_End_User_ID__c`
 
 const salesforce = {
   login () {
-    this.connection = new jsforce.Connection()
-
     if (!this.loggedIn) {
       if (!(config.salesforce.user && config.salesforce.pass && config.salesforce.token)) {
         this.loggedIn = Promise.reject('Environment variables are missing')
       } else {
+        this.connection = new jsforce.Connection()
         this.loggedIn = this.connection.login(config.salesforce.user, `${config.salesforce.pass}${config.salesforce.token}`)
       }
 
@@ -33,10 +32,10 @@ const salesforce = {
    */
   addAssets (assets) {
     assets = assets.map((a) => ({
-      Name: a.product,
-      SerialNumber: a.serial,
-      [DEVICE_FIELD_NAME_WITHOUT_XI]: a.deviceId,
-      Contact: { [END_USER_FIELD_NAME]: a.orgId }
+      Name: a.name,
+      SerialNumber: a.serialNumber,
+      [DEVICE_FIELD_NAME_WITHOUT_XI]: a.id || a.deviceId,
+      Contact: { [END_USER_FIELD_NAME]: a.organizationId }
     }))
 
     return this.login()
@@ -63,7 +62,7 @@ const salesforce = {
     cases = cases.map((c) => ({
       Subject: c.subject,
       Description: c.description,
-      [DEVICE_FIELD_NAME]: c.deviceId
+      [DEVICE_FIELD_NAME]: c.id || c.deviceId
     }))
 
     return this.login()
@@ -86,8 +85,8 @@ const salesforce = {
    */
   addContacts (contacts) {
     contacts = _.uniq(contacts.map((c) => ({
-      Email: c.email,
-      [END_USER_FIELD_NAME]: c.orgId
+      Email: config.salesforce.user,
+      [END_USER_FIELD_NAME]: c.organizationId
     })))
 
     const chunksOfContacts = _.chunk(contacts, 10)
