@@ -22,8 +22,8 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
         device.channels.forEach((channel) => {
           const name = channel.channel.split('/').pop()
           device.sensors[name] = {
-            numericValue: 'N/A',
-            stringValue: 'N/A',
+            numericValue: '-',
+            stringValue: '-',
             type: channel.persistenceType
           }
         })

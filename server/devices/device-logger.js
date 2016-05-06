@@ -8,14 +8,21 @@ const config = require('../../config/server')
 class DeviceLogger {
   constructor (device) {
     this.device = device
+  }
 
-    this.fallbackMqtt = mqtt.connect(`mqtts://${config.account.brokerHost}:${config.account.brokerPort}`, {
-      username: config.account.brokerUser,
-      password: config.account.brokerPassword,
-      rejectUnauthorized: false
-    })
+  static getMqtt () {
+    if (!DeviceLogger.fallbackMqtt) {
+      logger.debug('DeviceLogger#getMqtt: create singleton')
+      DeviceLogger.fallbackMqtt = mqtt.connect(`mqtts://${config.account.brokerHost}:${config.account.brokerPort}`, {
+        username: config.account.brokerUser,
+        password: config.account.brokerPassword,
+        rejectUnauthorized: false
+      })
 
-    this.fallbackMqtt.on('error', (error) => logger.error('DeviceLogger#constructor error', error.message))
+      DeviceLogger.fallbackMqtt.on('error', (error) => logger.error('DeviceLogger#constructor error', error.message))
+    }
+
+    return DeviceLogger.fallbackMqtt
   }
 
   onBoot () {
@@ -89,7 +96,7 @@ class DeviceLogger {
       return
     }
 
-    this.fallbackMqtt.publish(logChannel, message)
+    DeviceLogger.getMqtt().publish(logChannel, message)
   }
 }
 
