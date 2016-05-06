@@ -71,7 +71,7 @@ function deviceDemoRoute ($stateProvider) {
                 <div class="navigation-item" ng-click="demo.toggleSimulation()">
                   <span class="navigation-item-icon" ng-hide="demo.device.simulate">${buttonPlay}</span>
                   <span class="navigation-item-icon pause-button" ng-show="demo.device.simulate">${buttonPause}</span>
-                  <span class="navigation-item-text">{{ demo.device.simulate ? 'Stop' : 'Start' }} simulation</span>
+                  <span class="navigation-item-text">{{ demo.device.simulate ? '\&nbsp;Stop\&nbsp;' : 'Start' }} simulation</span>
                 </div>
                 <div class="navigation-item" ng-click="demo.toggleModal('settings')">
                   <span class="navigation-item-icon">${settingsIcon}</span>

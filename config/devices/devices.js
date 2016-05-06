@@ -199,7 +199,7 @@ const config = {
   },
   'Industrial HVAC': {
     image: '/devices/images/industrial-hvac.png',
-    width: 1000,
+    width: 800,
     widgets: ['fan-state-control', 'filter'],
     defaultSensor: 'dust',
     sensors: {
@@ -210,8 +210,8 @@ const config = {
         unit: 'mg/m³',
         tooltip: {
           position: {
-            top: 30,
-            left: 210
+            top: 20,
+            left: 165
           },
           labelPosition: {
             top: 12,
@@ -244,8 +244,8 @@ const config = {
         unit: 'PPM',
         tooltip: {
           position: {
-            top: 30,
-            left: 660
+            top: 20,
+            left: 530
           },
           labelPosition: {
             top: 12,
@@ -262,8 +262,8 @@ const config = {
         unit: '°F',
         tooltip: {
           position: {
-            top: 300,
-            left: 640
+            top: 235,
+            left: 510
           },
           labelPosition: {
             top: -7,
@@ -280,8 +280,8 @@ const config = {
         unit: '%',
         tooltip: {
           position: {
-            top: 300,
-            left: 270
+            top: 235,
+            left: 215
           },
           labelPosition: {
             top: -7,
@@ -298,8 +298,8 @@ const config = {
         rule: filterRule,
         tooltip: {
           position: {
-            top: 268,
-            left: 120
+            top: 235,
+            left: 90
           },
           labelPosition: {
             top: 14,
@@ -342,8 +342,8 @@ const config = {
         widget: {
           name: 'fan-control',
           position: {
-            top: 245,
-            left: 820
+            top: 200,
+            left: 680
           }
         }
       },
@@ -351,8 +351,8 @@ const config = {
         widget: {
           name: 'hvac-display',
           position: {
-            top: 150,
-            left: 350
+            top: 80,
+            left: 270
           }
         }
       }
