@@ -4,7 +4,7 @@ const logger = require('winston')
 
 const config = {
   logger: {
-    level: process.env.LOG_LEVEL || ((process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'provision') ? 'debug' : 'info')
+    level: process.env.LOG_LEVEL || (process.env.NODE_ENV === 'development' ? 'debug' : 'info')
   },
   database: {
     pgUri: process.env.DATABASE_URL || 'postgres://localhost:5432/concaria'

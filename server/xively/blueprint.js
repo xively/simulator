@@ -54,7 +54,7 @@ const blueprint = {
   },
 
   createOrganizationTemplates (organizationTemplates) {
-    logger.debug('Creating: organization templates')
+    logger.debug('blueprint#createOrganizationTemplates')
     return this.create({
       url: 'organizations/templates',
       responseField: 'organizationTemplate',
@@ -63,7 +63,7 @@ const blueprint = {
   },
 
   createDeviceTemplates (deviceTemplates) {
-    logger.debug('Creating: device templates')
+    logger.debug('blueprint#createDeviceTemplates')
     return this.create({
       url: 'devices/templates',
       responseField: 'deviceTemplate',
@@ -72,7 +72,7 @@ const blueprint = {
   },
 
   createOrganizations (organizations) {
-    logger.debug('Creating: organizations')
+    logger.debug('blueprint#createOrganizations')
     return this.create({
       url: 'organizations',
       responseField: 'organization',
@@ -81,7 +81,7 @@ const blueprint = {
   },
 
   createDevices (devices) {
-    logger.debug('Creating: devices')
+    logger.debug('blueprint#createDevices')
     return this.create({
       url: 'devices',
       responseField: 'device',
@@ -90,7 +90,7 @@ const blueprint = {
   },
 
   createDeviceFields (fields) {
-    logger.debug('Creating: device fields')
+    logger.debug('blueprint#createDeviceFields')
     return this.create({
       url: 'devices/custom-fields',
       responseField: 'deviceField',
@@ -99,7 +99,7 @@ const blueprint = {
   },
 
   createChannelTemplates (channelTemplates) {
-    logger.debug('Creating: channel templates')
+    logger.debug('blueprint#createChannelTemplates')
     return this.create({
       url: 'channels/templates',
       responseField: 'channelTemplate',
@@ -108,7 +108,7 @@ const blueprint = {
   },
 
   createEndUserTemplates (endUserTemplates) {
-    logger.debug('Creating: end user templates')
+    logger.debug('blueprint#createEndUserTemplates')
     return this.create({
       url: 'end-users/templates',
       responseField: 'endUserTemplate',
@@ -117,7 +117,7 @@ const blueprint = {
   },
 
   createEndUser (endUser) {
-    logger.debug('Creating: end user')
+    logger.debug('blueprint#createEndUser')
     return this.create({
       url: 'end-users',
       responseField: 'endUser',
@@ -126,7 +126,7 @@ const blueprint = {
   },
 
   createMqttCredentials (entities) {
-    logger.debug('Creating: mqtt credentials')
+    logger.debug('blueprint#createMqttCredentials')
     return this.create({
       url: 'access/mqtt-credentials',
       responseField: 'mqttCredential',
@@ -135,7 +135,7 @@ const blueprint = {
   },
 
   createAccountUsers (accountUsers) {
-    logger.debug('Creating: account users')
+    logger.debug('blueprint#createAccountUsers')
     return this.create({
       url: 'account-users',
       responseField: 'accountUser',
@@ -144,7 +144,7 @@ const blueprint = {
   },
 
   getDevices () {
-    logger.debug('Blueprint#getDevices')
+    logger.debug('blueprint#getDevices')
     return promiseDebounce(this.get.bind(this, {
       url: 'devices',
       responseField: 'devices'
@@ -152,7 +152,7 @@ const blueprint = {
   },
 
   getDeviceTemplates () {
-    logger.debug('Blueprint#getDeviceTemplates')
+    logger.debug('blueprint#getDeviceTemplates')
     return promiseDebounce(this.get.bind(this, {
       url: 'devices/templates',
       responseField: 'deviceTemplates'
@@ -160,7 +160,7 @@ const blueprint = {
   },
 
   getEndUsers () {
-    logger.debug('Blueprint#getEndUsers')
+    logger.debug('blueprint#getEndUsers')
     return promiseDebounce(this.get.bind(this, {
       url: 'end-users',
       responseField: 'endUsers'
