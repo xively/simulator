@@ -3,6 +3,7 @@
 const logger = require('winston')
 const _ = require('lodash')
 const blueprint = require('../xively').blueprint
+const db = require('../database')
 const Device = require('./device')
 
 class DeviceStore {
@@ -22,13 +23,21 @@ class DeviceStore {
     if (!this.request) {
       this.request = Promise.all([
         blueprint.getDevices(),
-        blueprint.getDeviceTemplates()
+        blueprint.getDeviceTemplates(),
+        db.selectDeviceConfig()
+          .then((data) => data[0].deviceConfig)
       ])
         .then((data) => {
           let devices = data[0]
           const deviceTemplates = data[1]
+          const deviceConfig = data[2]
 
           devices = devices
+            .map((device) => {
+              device.template = _.find(deviceTemplates, { id: device.deviceTemplateId })
+              device.config = deviceConfig[device.template.name] || {}
+              return device
+            })
             .filter((device) => {
               const savedDevice = this.devices.get(device.id)
               if (savedDevice) {
@@ -45,7 +54,6 @@ class DeviceStore {
           if (devices.length) {
             return blueprint.createMqttCredentials(devices).then((mqttCredentials) => {
               devices.forEach((device) => {
-                device.template = _.find(deviceTemplates, { id: device.deviceTemplateId })
                 const mqttCredential = _.find(mqttCredentials, { entityId: device.id })
                 Object.assign(device, mqttCredential)
                 this.addDevice(device)

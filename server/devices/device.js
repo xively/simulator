@@ -4,7 +4,6 @@ const mqtt = require('mqtt')
 const _ = require('lodash')
 const logger = require('winston')
 const serverConfig = require('../../config/server')
-const devicesConfig = require('../../config/devices')
 
 const DeviceLogger = require('./device-logger')
 const extensions = require('./device-extensions')
@@ -59,8 +58,6 @@ class Device {
    */
   update (data) {
     Object.assign(this, data)
-    // TODO get config from DB too
-    this.config = devicesConfig[this.template.name] || {}
 
     _.forEach(this.channels, (channel) => {
       const name = channel.channel.split('/').pop()
