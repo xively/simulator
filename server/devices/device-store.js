@@ -112,12 +112,6 @@ class DeviceStore {
    * @param  {Function} stopCallback  Called on simulation stop
    */
   startSimulation (deviceId, stopCallback) {
-    // TODO refactor, device specific: trigger thermometer faliure on one device
-    // const faliureDevice = _.find(this.devices, (device) => _.isFunction(device.triggerThermometerFaliure))
-    // if (faliureDevice) {
-      // faliureDevice.triggerThermometerFaliure()
-    // }
-
     let simulationCounter = 0
     if (!this.simulation) {
       logger.info('DeviceStore#startSimulation')

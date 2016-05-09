@@ -65,7 +65,7 @@ const extensions = {
 
     switch (event) {
       case 1: // hight temp warning
-        if (device.mqtt && device.mqtt.connected && device.ok) {
+        if (device.mqtt && device.mqtt.connected && device.ok && device.sensors.has('temp')) {
           // TODO set temp value?
           device.logger.sendLog({
             level: 'warning',
@@ -74,8 +74,17 @@ const extensions = {
           })
         }
         break
-      case 2: // malfunction
-        if (device.mqtt && device.mqtt.connected && device.ok) {
+      case 2: // thermometer faliure
+        if (device.mqtt && device.mqtt.connected && device.ok && device.sensors.has('temp')) {
+          device.logger.sendLog({
+            level: 'error',
+            message: 'Thermometer failure',
+            details: 'Failed to read from TMP36. Sensor not found.'
+          })
+        }
+        break
+      case 3: // malfunction
+        if (device.mqtt && device.mqtt.connected && device.ok && device.sensors.has('fan')) {
           device.logger.sendLog({
             level: 'error',
             message: 'Fan overheated',
@@ -84,13 +93,13 @@ const extensions = {
           device.triggerMalfunction()
         }
         break
-      case 3: // factory reset
+      case 4: // factory reset
         if (!((device.mqtt && device.mqtt.connected) || device.ok)) {
           device.factoryReset()
         }
         break
-      case 4:
-      case 5: // disconnect
+      case 5:
+      case 6: // disconnect
         device.logger.sendLog({
           level: 'error',
           message: 'Network connection failed',
