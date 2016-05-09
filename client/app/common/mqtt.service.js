@@ -11,7 +11,7 @@ function mqttFactory ($log, $q, $rootScope, CONFIG, utils) {
       this.channels = new Map()
 
       try {
-        const host = `wss://${CONFIG.account.brokerHost}:${CONFIG.account.brokerPort}`
+        const host = `wss://${CONFIG.account.brokerHost}:${CONFIG.account.brokerPort}/mqtt`
         const options = {
           username: CONFIG.account.brokerUser,
           password: CONFIG.account.brokerPassword
@@ -19,12 +19,18 @@ function mqttFactory ($log, $q, $rootScope, CONFIG, utils) {
         $log.debug('MQTT#constructor open Xively client with options:', host, options)
         this.client = mqtt.connect(host, options)
 
+        this.client.on('open', () => {
+          $log.debug('MQTT#connection open')
+        })
         this.client.on('message', (channel, message) => {
           this.handleMessage(channel, message.toString())
         })
-      } catch (err) {
-        $log.error('MQTT#constructor error:', err)
-        this.connected = $q.reject(err)
+        this.client.on('error', (error) => {
+          $log.error('MQTT#connection error:', error)
+        })
+      } catch (error) {
+        $log.error('MQTT#constructor error:', error)
+        this.connected = $q.reject(error)
       }
     }
 
@@ -34,25 +40,21 @@ function mqttFactory ($log, $q, $rootScope, CONFIG, utils) {
      * @param  {Object} message
      * @return {Object}
      */
-    parseMessage (message, channel) {
-      const payloadString = message || ''
+    parseMessage (message = '', channel) {
+      if (_.isObject(message)) {
+        message = message.toString()
+      }
       const channelName = channel ? channel.split('/').pop() : null
 
       // JSON format
-      try {
-        const obj = JSON.parse(payloadString)
-        if (_.isNumber(obj) && channelName) {
-          return {
-            [channelName]: {
-              numericValue: obj
-            }
-          }
-        }
-        return obj
-      } catch (e) { /* ignore */ }
+      if (message.startsWith('{') || message.startsWith('[')) {
+        try {
+          return JSON.parse(message)
+        } catch (e) { /* ignore */ }
+      }
 
       // CSV format
-      const csvRows = payloadString.split('/n')
+      const csvRows = message.split('/n')
       return _.fromPairs(csvRows.map((row) => {
         const parts = row.split(',').map((string) => _.trim(string, '"').trim())
         let timestamp = utils.numberOrString(parts[0]) || Date.now()
@@ -136,6 +138,7 @@ function mqttFactory ($log, $q, $rootScope, CONFIG, utils) {
         } = payload
         message = [timestamp, name, numericValue, stringValue].join(',')
       }
+      $log.debug('MQTT#sendMessage:', channel, message)
       this.client.publish(channel, message)
     }
   }

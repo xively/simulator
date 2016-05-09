@@ -13,26 +13,23 @@ function utilsFactory ($timeout, $q) {
 
     debounce (func, wait, immediate) {
       let timeout
-      let deferred = $q.defer()
       return function () {
-        const callFunction = () => {
-          deferred.resolve(func.apply(this, arguments))
-          deferred = $q.defer()
-        }
-        const later = () => {
-          timeout = null
-          if (!immediate) {
-            callFunction()
+        return new $q((resolve, reject) => {
+          const later = () => {
+            timeout = null
+            if (!immediate) {
+              resolve(func.apply(this, arguments))
+            }
           }
-        }
-        if (immediate && !timeout) {
-          callFunction()
-        }
-        if (timeout) {
+
+          const callNow = immediate && !timeout
           $timeout.cancel(timeout)
-        }
-        timeout = $timeout(later, wait)
-        return deferred.promise
+          timeout = $timeout(later, wait)
+
+          if (callNow) {
+            resolve(func.apply(this, arguments))
+          }
+        })
       }
     }
   }

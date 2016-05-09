@@ -48,15 +48,6 @@ describe('MQTT service', () => {
         }
       })
     })
-
-    it('should handle plain number', () => {
-      const message = mqttService.parseMessage('20', 'xi/channel/sensorName')
-      expect(message).to.eql({
-        sensorName: {
-          numericValue: 20
-        }
-      })
-    })
   })
 
   describe('#subscribe', () => {

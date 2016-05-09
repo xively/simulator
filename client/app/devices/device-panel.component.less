@@ -74,6 +74,39 @@
       font-weight: 300;
     }
 
+     .device-info {
+
+        h2 {
+          margin: 0;
+        }
+
+       .device-fields {
+         margin-top: 20px;
+         transition: all 0.5s;
+         height: 300px;
+         overflow-y: auto;
+
+         &.ng-hide {
+           margin-top: 0;
+           height: 0;
+         }
+
+         .row {
+           display: flex;
+           padding: 5px;
+           text-transform: capitalize;
+
+           & > div {
+             flex-wrap: wrap;
+           }
+
+           .field-name, .field-value {
+             flex-basis: 50%;
+           }
+         }
+       }
+     }
+
     .sensor-panels {
       display: flex;
       flex-direction: row;

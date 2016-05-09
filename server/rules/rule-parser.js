@@ -1,76 +1,79 @@
 'use strict'
 
-const mqtt = require('mqtt')
 const logger = require('winston')
 const _ = require('lodash')
-const salesforce = require('../salesforce')
+const mqtt = require('mqtt')
 const config = require('../../config/server')
+const salesforce = require('../salesforce')
 
 class RuleParser {
   constructor (device, rules) {
     this.device = device
     this.rules = rules
-
     this.channels = new Map()
 
-    this.connectMqtt()
-    this.getChannels()
-  }
-
-  updateRules (rules) {
-    this.rules = rules
-  }
-
-  getChannels () {
-    this.device.channels.push({
-      channelTemplateName: 'log:message',
-      channel: `xi/blue/v1/${this.device.accountId}/d/${this.device.id}/_log`,
-      persistenceType: 'simple'
-    })
-
-    _.each(this.device.channels, (channel) => {
-      this.channels.set(channel.channelTemplateName, channel)
-
-      this.mqtt.subscribe(channel.channel)
-    })
-  }
-
-  connectMqtt () {
-    const host = `mqtts://${config.account.brokerHost}:${config.account.brokerPort}`
-    const options = {
+    this.mqtt = mqtt.connect(`mqtts://${config.account.brokerHost}:${config.account.brokerPort}`, {
       username: config.account.brokerUser,
-      password: config.account.brokerPassword
-    }
+      password: config.account.brokerPassword,
+      rejectUnauthorized: false
+    })
 
-    this.mqtt = mqtt.connect(host, options)
+    this.subscribe()
 
     this.mqtt.on('connect', () => {
-      logger.silly(`rule parser#mqtt connection success for device ${this.device.id}`)
+      logger.silly(`RuleParser#connect: mqtt connections success for device ${this.device.id}`)
     })
+
     this.mqtt.on('error', (error) => {
-      logger.debug('rule parser#mqtt connection error', error)
+      logger.debug('RuleParser#error: mqtt connection error', error.message)
     })
+
     this.mqtt.on('message', (topic, message) => {
       let channelName = topic.split('/').pop()
+      message = message.toString()
       if (channelName === '_log') {
         channelName = 'log:message'
       }
 
       const channel = this.channels.get(channelName)
       if (!channel) {
-        return logger.debug('rule parser#failed to get channel', topic, message)
+        return logger.debug('RuleParser#message: failed to get channel', channelName)
       }
 
       channel.latestValue = this.parseMessage(channel.persistenceType, message)
       this.channels.set(channelName, channel)
-
-      this.checkValues(channelName, message.toString())
+      this.checkValues(channelName, message)
     })
   }
 
-  parseMessage (channelType, message) {
-    message = message.toString()
+  subscribe () {
+    this.device.channels.concat({
+      channelTemplateName: 'log:message',
+      channel: `xi/blue/v1/${this.device.accountId}/d/${this.device.id}/_log`,
+      persistenceType: 'simple'
+    }).forEach((channel) => {
+      this.channels.set(channel.channelTemplateName, channel)
+      this.mqtt.subscribe(channel.channel)
+    })
+  }
 
+  unsubscribe () {
+    this.channels.forEach((channel) => {
+      this.mqtt.unsubscribe(channel.channel)
+    })
+  }
+
+  updateRules (rules) {
+    this.rules = rules
+  }
+
+  update (device, rules) {
+    this.device = device
+    this.rules = rules
+    this.subscribe()
+  }
+
+  parseMessage (channelType, message) {
     if (channelType !== 'timeSeries') {
       try {
         const parsed = JSON.parse(message)
@@ -121,8 +124,9 @@ class RuleParser {
             return parseFloat(rule.value) > parseFloat(sensorValue)
         }
       })
+
       if (ruleResults[mode](Boolean) && !_.isUndefined(sensorValues[channelName]) && !entry.reported) {
-        logger.debug(`rule parser#creating SalesForce ticket for rule ${entry.name} because of message: ${message}`)
+        logger.debug(`RuleParser#checkValues: creating SalesForce ticket for rule ${entry.name} because of message: ${message}`)
         salesforce.addCases([{
           subject: entry.actions.salesforceCase.value,
           description: message,

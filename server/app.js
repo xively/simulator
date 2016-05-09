@@ -5,10 +5,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const favicon = require('serve-favicon')
-const _ = require('lodash')
 
 const config = require('../config/server')
-const devicesConfigFile = require('../config/devices')
 const db = require('./database')
 
 const routes = require('./routes')
@@ -27,8 +25,7 @@ app.use(routes)
 app.use('/script/config.js', (req, res) => {
   db.selectDeviceConfig()
     .then((data) => {
-      const devicesConfigDb = data[0].deviceConfig
-      const devicesConfig = _.merge({}, devicesConfigFile, devicesConfigDb)
+      const devicesConfig = data[0].deviceConfig
 
       res.status(200).send(`
         window.APP_CONFIG = ${JSON.stringify(config)}

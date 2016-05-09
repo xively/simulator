@@ -2,12 +2,10 @@
 
 const expect = require('chai').expect
 const jsforce = require('jsforce')
-const Salesforce = require('./salesforce')
+const salesforce = require('./salesforce')
 const config = require('../../config/server')
 
 describe.skip('Salesforce', () => {
-  let salesforce
-
   beforeEach(function () {
     config.salesforce = {
       user: 'user',
@@ -26,7 +24,6 @@ describe.skip('Salesforce', () => {
     Connection.prototype.retrieve = this.sandbox.spy(() => Promise.resolve())
 
     this.sandbox.stub(jsforce, 'Connection', Connection)
-    salesforce = new Salesforce()
   })
 
   it('should add assets', function (done) {

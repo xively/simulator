@@ -4,16 +4,18 @@
 require('dotenv').config({ silent: true })
 
 const logger = require('winston')
+
 const config = require('../config/server')
 const salesforce = require('./salesforce')
-const database = require('./database')
+const integration = require('./xively').integration
+const blueprint = require('./xively').blueprint
 const app = require('./app')
 const socket = require('./socket')
 const orchestrator = require('./orchestrator')
+const devices = require('./devices')
+const rules = require('./rules')
 
-require('./rules')
-
-const server = socket(app)
+const server = socket(app, devices, rules)
 
 /*
   Orchestrator
@@ -21,43 +23,39 @@ const server = socket(app)
 orchestrator.init(server, app)
 
 /*
-  Salesforce
+  Salesforce integration
  */
 
-try {
-  database.selectApplicationConfig(config.account.accountId).then((appConfigs) => {
-    const contacts = appConfigs.map((appConfig) => ({
-      email: config.salesforce.user,
-      orgId: appConfig.organization.id
-    }))
-
-    salesforce.addContacts(contacts)
+// create account user
+// integrating with salesforce
+salesforce.getUserEmail()
+  .then((idmUserEmail) => {
+    return blueprint.createAccountUsers([{
+      accountId: config.account.accountId,
+      createIdmUser: true,
+      idmUserEmail
+    }])
   })
-
-  database.selectFirmwares().then((firmwares) => {
-    const devices = firmwares.map((firmware) => ({
-      product: firmware.name,
-      serial: firmware.serialNumber,
-      deviceId: firmware.deviceId,
-      orgId: firmware.organizationId
-    }))
-
-    salesforce.addAssets(devices)
+  .catch(() => {
+    return blueprint.createAccountUsers([{
+      accountId: config.account.accountId
+    }])
   })
-
-  salesforce.integration()
-} catch (err) {
-  logger.warn(`
-    Skipping salesforce provisioning.
-    To set up this application with Salesforce, follow the instructions in the README.
-  `, err)
-}
+  .then(() => {
+    return salesforce.login()
+      .then((user) => {
+        return integration.removeAccount(user.organizationId)
+          .catch(() => Promise.resolve())
+          .then(() => integration.addAccount(user.organizationId))
+      })
+      .then(() => logger.info('Integrating with SalesForce success'))
+  })
+  .then(() => { salesforce.done = true })
+  .catch((err) => logger.error('Integrating with SalesForce error', err))
 
 /*
   Server
  */
-
-// start http server
 server.listen(config.server.port, (err) => {
   logger.info(`Server is listening on ${config.server.port}`)
   if (err) {

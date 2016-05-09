@@ -11,7 +11,7 @@ then
   BUILD_BRANCH=$BRANCH-build;
 
   # create build branch
-  git checkout -b $BUILD_BRANCH;
+  git checkout -b $BUILD_BRANCH -f;
 
   # build the client
   npm run build;

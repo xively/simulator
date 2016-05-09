@@ -122,6 +122,8 @@
           width: 26px;
 
           svg {
+            height: 100%;
+            width: 100%;
             fill: @light-gray;
             stroke: @light-gray;
           }
@@ -236,49 +238,70 @@
       color: @light-gray;
     }
 
-    .device-control-sliders {
-      width: @width;
-      margin: 0 auto;
-      margin-top: 50px;
+    .device-information {
+      width: 80%;
       color: @light-gray;
-      line-height: @row-height;
+      margin: 25px auto 0 auto;
+      padding-top: 15px;
+      border-top: @border;
 
-      .header {
-        font-size: 1.1em;
-        font-weight: 200;
-        border-bottom: @border;
+      .device-fields {
+        float: left;
       }
 
-      .row {
-        display: flex;
-        padding: 10px;
-        height: @row-height;
+      .device-control-sliders {
+        float: right;
+      }
 
-        & > div {
-          flex-wrap: wrap;
-        }
+      .device-fields, .device-control-sliders {
+        width: 48%;
 
-        .channel-name {
-          flex-basis: 40%;
-        }
+        .header {
+          font-size: 1.1em;
+          font-weight: 200;
+          border-bottom: @border;
 
-        .control {
-          flex-basis: 40%;
-          text-align: center;
-
-          input[type='range'] {
-            appearance: none;
-            outline: none;
-            width: 100%;
-            height: 3px;
-            background: @light-gray;
-            vertical-align: middle;
+          div {
+            text-transform: uppercase;
           }
         }
 
-        .value {
-          flex-basis: 20%;
-          text-align: center;
+        .row {
+          display: flex;
+          padding: 10px;
+          height: @row-height;
+          text-transform: capitalize;
+
+          & > div {
+            flex-wrap: wrap;
+          }
+
+          .field-name, .field-value {
+            flex-basis: 50%;
+          }
+
+          .channel-name {
+            flex-basis: 40%;
+          }
+
+          .control {
+            flex-basis: 40%;
+            text-align: center;
+
+            input[type='range'] {
+              appearance: none;
+              outline: none;
+              width: 100%;
+              height: 3px;
+              background: @light-gray;
+              vertical-align: middle;
+            }
+          }
+
+          .value {
+            flex-basis: 20%;
+            text-align: center;
+          }
         }
       }
     }
