@@ -180,10 +180,12 @@ function generateGenericDevice (options) {
   options = options || {}
   const templateName = options.templateName
   const idx = options.idx
+  const orgIdx = options.orgIdx
   const organization = options.organization || {}
-  const orgIdx = _.isNumber(options.orgIdx) ? options.orgIdx : 100
-  const name = options.name || `${(NAMES[templateName] || '').replace(/\s/g, '-')}-${idx}`
-  const serialNumber = options.serialNumber || `${(NAMES[templateName] || '').replace(/\s/g, '-')}-${_.padStart(DEVICES_PER_ORGANIZATION[templateName] * orgIdx + idx + 1, 6, '0')}`
+  const namePostfix = _.isNumber(idx) ? idx + 1 : ''
+  const name = options.name || `${(NAMES[templateName] || '').replace(/\s/g, '-')}-${namePostfix}`
+  const serialNumberPostfix = _.isNumber(orgIdx) && _.isNumber(idx) ? _.padStart(DEVICES_PER_ORGANIZATION[templateName] * orgIdx + idx + 1, 6, '0') : ''
+  const serialNumber = options.serialNumber || `${(NAMES[templateName] || '').replace(/\s/g, '-')}-${serialNumberPostfix}`
   const deviceTemplateId = options.deviceTemplateId
 
   const location = getLocation()
@@ -194,10 +196,10 @@ function generateGenericDevice (options) {
     deviceTemplate: NAMES[templateName],
     organization: organization.name,
     organizationId: organization.id,
-    color: 'white',
+    color: faker.commerce.color(),
     productionRun: 'DEC2016',
-    hardwareVersion: '1.1.1',
-    firmwareVersion: '2.0.0',
+    hardwareVersion: faker.system.semver(),
+    firmwareVersion: faker.system.semver(),
     longitude: location[0],
     latitude: location[1]
   }

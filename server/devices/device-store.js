@@ -2,13 +2,12 @@
 
 const logger = require('winston')
 const _ = require('lodash')
-const uuid = require('uuid')
 const blueprint = require('../xively').blueprint
 const db = require('../database')
 const provisionConfig = require('../../config/provision')
 const Device = require('./device')
 
-const SIMULATION_INTERVAL = 500
+const SIMULATION_INTERVAL = 5000
 const SIMULATION_CICLES = 100
 const SIMULATION_LISTENER = 'simulation'
 
@@ -121,7 +120,7 @@ class DeviceStore {
 
     let simulationCounter = 0
     if (!this.simulation) {
-      logger.debug('DeviceStore#startSimulation')
+      logger.info('DeviceStore#startSimulation')
       this.simulationTick(deviceId)
       this.simulation = setInterval(() => {
         this.simulationTick(deviceId)
@@ -132,19 +131,19 @@ class DeviceStore {
 
         // spawn new devices
         if (_.random(5) === 0) {
-          console.log('spawn devices')
           const rawDevice = _.sample(provisionConfig.rawDevices)
-          const serialNumber = uuid.v4()
           const newDevice = rawDevice.generate({
-            serialNumber,
-            idx: serialNumber,
             deviceTemplate: rawDevice.name
           })
-          const deviceWithMatchingTemplate = _.find(Array.from(this.devices.values()), (device) => device.template.name === newDevice.deviceTemplate)
-          if (!deviceWithMatchingTemplate) {
+          const deviceWithMatchingTemplates = _.filter(Array.from(this.devices.values()), (device) => device.template.name === newDevice.deviceTemplate)
+          if (!deviceWithMatchingTemplates.length) {
             return
           }
 
+          const deviceWithMatchingTemplate = deviceWithMatchingTemplates[0]
+          const serialNumber = _.padStart(deviceWithMatchingTemplates.length + 1, 6, '0')
+          newDevice.name += _.filter(deviceWithMatchingTemplates, (device) => device.organizationId === deviceWithMatchingTemplate.organizationId).length + 1
+          newDevice.serialNumber += serialNumber
           newDevice.deviceTemplateId = deviceWithMatchingTemplate.template.id
           newDevice.organizationId = deviceWithMatchingTemplate.organizationId
           Promise.all([
@@ -175,7 +174,7 @@ class DeviceStore {
    * Stop simulation
    */
   stopSimulation () {
-    logger.debug('DeviceStore#stopSimulation')
+    logger.info('DeviceStore#stopSimulation')
     clearInterval(this.simulation)
     this.simulation = null
     this.devices.forEach((device) => {

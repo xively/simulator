@@ -227,13 +227,13 @@ class Device {
       return
     }
 
-    channel = _.isObject(channel) ? channel : this.channels.find((ch) => ch.channel.endsWith(channel))
-    if (!channel || !channel.channel) {
+    const ch = _.isObject(channel) ? channel : this.channels.find((ch) => ch.channel.endsWith(channel))
+    if (!ch || !ch.channel) {
       logger.error('Device#subscribeMqtt: channel cannot be found', channel)
       return
     }
 
-    this.mqtt.subscribe(channel.channel)
+    this.mqtt.subscribe(ch.channel)
   }
 
   /**
