@@ -50,8 +50,8 @@ const settingsComponent = {
             <pre>{{ settings.deviceConfigGuide | json }}</pre>
           </div>
 
-          <textarea ng-model="settings.deviceConfig" ng-change="settings.formatConfig()" ng-model-options="{ debounce: 1000 }"
-            placeholder="Press show guide button for help"></textarea>
+          <div ui-ace="settings.aceOptions" ng-model="settings.deviceConfig"></div>
+
           <button type="button" class="button primary" ng-click="settings.updateConfig()" ng-disabled="settings.configError">Save</button>
           <button type="button" class="button secondary" ng-click="settings.applyConfig()" ng-disabled="settings.configError">Apply</button>
           <span class="pull-right">
@@ -63,11 +63,11 @@ const settingsComponent = {
   `,
   controllerAs: 'settings',
   /* @ngInject */
-  controller ($document, $window, settingsService, CONFIG, DEVICES_CONFIG) {
+  controller ($document, $window, $q, settingsService, CONFIG, DEVICES_CONFIG) {
     settingsService.getDeviceConfig()
       .then((res) => {
         if (!_.isEmpty(res.data.deviceConfig)) {
-          this.deviceConfig = JSON.stringify(res.data.deviceConfig, undefined, 2)
+          this.deviceConfig = JSON.stringify(res.data.deviceConfig, true, 4)
         }
       })
 
@@ -134,6 +134,13 @@ const settingsComponent = {
       }
     }
 
+    this.aceOptions = {
+      useWrapMode: true,
+      showGutter: true,
+      mode: 'json',
+      onChange: this.formatConfig.bind(this)
+    }
+
     this.updateConfig = () => {
       this.formatConfig()
 
@@ -143,6 +150,7 @@ const settingsComponent = {
             this.deviceConfig = JSON.stringify(res.data.deviceConfig, undefined, 2)
           })
       }
+      return $q.reject()
     }
 
     this.applyConfig = () => {
