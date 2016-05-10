@@ -19,12 +19,15 @@ const badgeButtonComponent = {
   controller ($timeout) {
     this.buttonActive = false
 
-    this.toggleButton = function () {
+    this.toggleButton = () => {
       if (!this.buttonActive) {
         this.buttonActive = true
         $timeout(() => {
+          this.device.sensors[this.options.sensorName] = 0
           this.buttonActive = false
         }, 3000)
+
+        this.device.update(this.options.sensorName, 1)
       }
     }
   }

@@ -178,6 +178,24 @@ function deviceDemoRoute ($stateProvider) {
         }
       })
 
+      // start virtual device
+      socketService.connect(this.device, (err, { ok = true, simulate = false } = {}) => {
+        if (err) {
+          ok = false
+          $log.error(err)
+        }
+        this.device.simulate = simulate
+        // TODO not sure if we need this later
+        // this.device.ok = ok
+        this.device.ok = true
+      })
+      // subscribe for mqtt messages
+      const unsubscribe = this.device.subscribe()
+      $scope.$on('$stateChangeStart', () => {
+        socketService.disconnect(this.device)
+        unsubscribe()
+      })
+
       // template navigation options
       devicesService.getDevices().then((devices) => {
         const availableOptions = _.map((templates), (template, id) => ({

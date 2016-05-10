@@ -43,7 +43,8 @@ const config = {
           name: 'badge-button',
           options: {
             toggleColor: 'green',
-            label: 'Check in'
+            label: 'Check in',
+            sensorName: 'checkin'
           },
           position: {
             top: 280,
@@ -60,7 +61,8 @@ const config = {
           name: 'badge-button',
           options: {
             toggleColor: 'green',
-            label: 'Request replenishment'
+            label: 'Request replenishment',
+            sensorName: 'replenishment_request'
           },
           position: {
             top: 310,
@@ -77,7 +79,8 @@ const config = {
           name: 'badge-button',
           options: {
             toggleColor: 'red',
-            label: 'Emergency'
+            label: 'Emergency',
+            sensorName: 'emergency'
           },
           position: {
             top: 280,
