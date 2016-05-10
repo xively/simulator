@@ -1,12 +1,9 @@
 const _ = require('lodash')
 
-const shareIcon = require('./images/share-icon.svg')
 const rulesIcon = require('../navigation/images/rules-icon.svg')
 const settingsIcon = require('../navigation/images/settings-icon.svg')
 const xiLogo = require('./images/xi-logo.svg')
 const xivelyLogo = require('./images/xively-logo.png')
-const xivelyLogoSimple = require('./images/xively-logo-simple.png')
-const chevronLeft = require('./images/chevron-left.svg')
 const chevronRight = require('./images/chevron-right.svg')
 const buttonPlay = require('./images/button-play.svg')
 const buttonPause = require('./images/button-pause.svg')
@@ -41,26 +38,6 @@ function deviceDemoRoute ($stateProvider) {
           </div>
         </div>
 
-        <div class="left-side" ng-show="demo.mobileView">
-          <div class="chevron-left" ng-click="demo.toggleMobileView()" ng-show="demo.mobileView"> ${chevronLeft} </div>
-          <iphone-frame>
-            <notification></notification>
-            <div class="iphone-frame-scrollable">
-              <div class="navigation-header">
-                <div class="logo">
-                  <img src="${xivelyLogoSimple}"></img>
-                  <div>Product Simulator</div>
-                </div>
-              </div>
-              <div class="icons">
-                <a class="share" ng-click="demo.toggleShareModal()"> ${shareIcon} </a>
-              </div>
-              <device-panel device="demo.device"></device-panel>
-            </div>
-            <share-modal link="demo.shareLink" toggle="demo.toggleShareModal()" ng-show="demo.shareModal"></share-modal>
-            <boldchat></boldchat>
-          </iphone-frame>
-        </div>
         <div class="right-side">
           <div class="navigation">
             <div class="navigation-container">
@@ -255,7 +232,7 @@ function deviceDemoRoute ($stateProvider) {
       // get html for a widget element
       this.getHtml = (widget) => {
         const { name, position } = widget
-        return `<${name} device="demo.device" style="position: absolute; top: ${position.top}px; left: ${position.left}px"></${name}>`
+        return `<${name} device="demo.device" options="sensor.widget.options" style="position: absolute; top: ${position.top}px; left: ${position.left}px"></${name}>`
       }
 
       this.shareLink = $location.absUrl().replace(/\/demo.*/, '?navigation=0')
