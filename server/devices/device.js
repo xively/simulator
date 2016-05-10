@@ -10,7 +10,7 @@ const DeviceLogger = require('./device-logger')
 const extensions = require('./device-extensions')
 
 const DEFAULT_SENSOR_OPTIONS = { min: 0, max: 100, wiggle: true }
-const GENERATE_SENSOR_VALUES_INTERVAL = 5000
+// const GENERATE_SENSOR_VALUES_INTERVAL = 5000
 const WIGGLE_PERCENTAGE = 0.05
 
 class Device {
@@ -71,7 +71,7 @@ class Device {
     if (_.isNaN(_.parseInt(value))) {
       message = value
     } else {
-      message = `${Date.now()}, ${name}, ${value}, , \n`
+      message = `${Date.now()}, ${name}, ${value}, pushed, \n`
     }
     this.handleMessage(message)
   }
@@ -87,7 +87,7 @@ class Device {
       this.logger.onBoot()
 
       this.connectMqtt().then(() => {
-        this.subscribeMqtt('control')
+        // this.subscribeMqtt('control')
         this.startGeneratingSensorValues()
       })
     }
@@ -187,19 +187,20 @@ class Device {
     const parts = message.split(',')
     const timeStamp = parts[0].trim()
     const name = parts[1].trim()
-    const sensorValue = Number(parts[2])
+    const sensorNumbericValue = Number(parts[2])
+    const sensorStringValue = parts[3] || ''
 
     if (!this.sensors.has(name)) {
       this.addSensor(name)
     }
     const options = this.sensors.get(name)
-    options.latestValue = sensorValue
+    options.latestValue = sensorNumbericValue
 
     this.sensors.set(name, options)
 
     return {
       channel: options.channel,
-      message: `${timeStamp}, ${name}, ${sensorValue}, , \n`
+      message: `${timeStamp}, ${name}, ${sensorNumbericValue}, ${sensorStringValue}, \n`
     }
   }
 
@@ -296,21 +297,21 @@ class Device {
    * Start sensor value generation
    */
   startGeneratingSensorValues (interval) {
-    this.generateSensorValues()
-    this.interval = setInterval(this.generateSensorValues.bind(this), interval || GENERATE_SENSOR_VALUES_INTERVAL)
+    // this.generateSensorValues()
+    // this.interval = setInterval(this.generateSensorValues.bind(this), interval || GENERATE_SENSOR_VALUES_INTERVAL)
   }
 
   /**
    * Stop sensor value generation
    */
   stopGeneratingSensorValues () {
-    clearInterval(this.interval)
+    // clearInterval(this.interval)
   }
 
   simulationTick () {
     if (this.ok) {
       extensions.simulationTick(this)
-      this.generateSensorValues(true)
+      // this.generateSensorValues(true)
     }
   }
 
