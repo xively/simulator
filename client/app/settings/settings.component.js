@@ -73,6 +73,12 @@ const settingsComponent = {
                     placeholder="Add sensor"
                     replace-spaces-with-dashes="false"
                     ></tags-input>
+                  <div>
+                    <label></label>
+                    <span>
+                      <small>Please enter the names of the desired sensors. Press enter to set each name.</small>
+                    </span>
+                  </div>
                 </div>
                 <div class="form-row">
                   <button class="button primary" ng-click="settings.addNewDevice()">Add</button>
