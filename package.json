@@ -71,6 +71,7 @@
     "mocha": "2.4.5",
     "ng-annotate-loader": "0.1.0",
     "ng-cache-loader": "0.0.15",
+    "ng-tags-input": "3.0.0",
     "normalize.css": "4.1.1",
     "parallelshell": "2.0.0",
     "phantomjs-prebuilt": "2.1.7",

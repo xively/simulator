@@ -18,7 +18,7 @@ const settingsComponent = {
           </h2>
           <ul class="settings-list">
             <li class="form-row" ng-repeat="(subname, object) in ::value.items">
-              <label>{{ ::subname }}:</label>
+              <label>{{ ::subname }}</label>
               <span ng-if="!object.isPassword">
                 <input type="text"
                        value="{{object.text}}"
@@ -39,10 +39,47 @@ const settingsComponent = {
           <h2 class="name">
             Device config
             <small class="error" ng-if="settings.configError">Config must be a valid JSON.</small>
-            <button type="button" class="pull-right button primary" ng-click="settings.toggleDeviceConfigGuide()">
-              {{ settings.deviceConfigGuideOpen ? 'Close' : 'Show' }} guide
-            </button>
+
+            <div class="pull-right">
+              <button type="button" class="button primary" ng-click="settings.togglePanel('deviceConfigGuideOpen')">
+                {{ settings.deviceConfigGuideOpen ? 'Close' : 'Show' }} guide
+              </button>
+              <button class="button secondary" ng-click="settings.togglePanel('newDevicePanelOpen')">
+                Add new device
+              </button>
+            </div>
           </h2>
+
+          <div class="new-device" ng-show="settings.newDevicePanelOpen">
+            <div class="group">
+              <h2 class="name">Add new device template</h2>
+              <form>
+                <div class="form-row">
+                  <label>Template name</label>
+                  <input type="text" class="input-field" ng-model="settings.newDevice.tempalteName"/>
+                </div>
+                <div class="form-row">
+                  <label>Image url</label>
+                  <input type="text" class="input-field" ng-model="settings.newDevice.imageUrl"/>
+                </div>
+                <div class="form-row">
+                  <label>Image width</label>
+                  <input type="text" class="input-field" ng-model="settings.newDevice.imageWidth"/>
+                </div>
+                <div class="form-row">
+                  <label>Sensors</label>
+                  <tags-input ng-model="settings.newDevice.sensors"
+                    min-length="1"
+                    placeholder="Add sensor"
+                    replace-spaces-with-dashes="false"
+                    ></tags-input>
+                </div>
+                <div class="form-row">
+                  <button class="button primary" ng-click="settings.addNewDevice()">Add</button>
+                </div>
+              </form>
+            </div>
+          </div>
 
           <div class="config-guide" ng-show="settings.deviceConfigGuideOpen">
             <pre>{{ settings.deviceConfigGuide | json }}</pre>
@@ -171,8 +208,8 @@ const settingsComponent = {
       }
     }
 
-    this.toggleDeviceConfigGuide = () => {
-      this.deviceConfigGuideOpen = !this.deviceConfigGuideOpen
+    this.togglePanel = (panelName) => {
+      this[panelName] = !this[panelName]
     }
 
     this.deviceConfigGuideOpen = false
@@ -203,6 +240,42 @@ const settingsComponent = {
           }
         }
       }
+    }
+
+    this.newDevicePanelOpen = false
+    this.addNewDevice = () => {
+      const config = JSON.parse(this.deviceConfig)
+
+      config[this.newDevice.tempalteName] = {
+        image: this.newDevice.imageUrl,
+        width: this.newDevice.imageWidth,
+        sensors: this.newDevice.sensors.reduce((sensors, currentSensor, idx) => {
+          sensors[currentSensor.text] = {
+            min: 0,
+            max: 100,
+            wiggle: false,
+            unit: 'm',
+            tooltip: {
+              position: {
+                top: 100,
+                left: idx * 50
+              },
+              labelPosition: {
+                top: 0,
+                left: 20
+              },
+              distance: 100,
+              direction: 'bottom'
+            }
+          }
+
+          return sensors
+        }, {})
+      }
+
+      this.newDevicePanelOpen = false
+      this.deviceConfig = JSON.stringify(config, undefined, 2)
+      this.newDevice = {}
     }
   }
 }
