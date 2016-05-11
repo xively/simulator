@@ -8,7 +8,9 @@ function settingsFactory ($log, $http) {
       return $http({
         method: 'GET',
         url: '/api/device-config'
-      }).catch((err) => {
+      })
+      .then((res) => res.data.deviceConfig || {})
+      .catch((err) => {
         $log.error('settingsService#getDeviceConfig error:', err)
         throw err
       })
@@ -22,8 +24,22 @@ function settingsFactory ($log, $http) {
         method: 'PUT',
         url: '/api/device-config',
         data: deviceConfig
-      }).catch((err) => {
+      })
+      .then((res) => res.data.deviceConfig || {})
+      .catch((err) => {
         $log.error('settingsService#updateDeviceConfig error:', err)
+        throw err
+      })
+    }
+
+    getOriginalDeviceConfig () {
+      return $http({
+        method: 'GET',
+        url: '/api/device-config/original'
+      })
+      .then((res) => res.data || {})
+      .catch((err) => {
+        $log.error('settingsService#getOriginalDeviceConfig error:', err)
         throw err
       })
     }

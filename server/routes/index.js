@@ -22,6 +22,7 @@ apiRouter.delete('/rules/:id', apiHandlers.removeRule)
 apiRouter.put('/rules/:id', apiHandlers.updateRule)
 apiRouter.get('/device-config', apiHandlers.getDeviceConfig)
 apiRouter.put('/device-config', apiHandlers.updateDeviceConfig)
+apiRouter.get('/device-config/original', apiHandlers.getOriginalDeviceConfig)
 
 router.use('/api', apiRouter)
 

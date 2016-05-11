@@ -1,7 +1,5 @@
 require('./settings.component.less')
 
-const _ = require('lodash')
-
 /* @ngInject */
 const settingsComponent = {
   template: `
@@ -52,11 +50,13 @@ const settingsComponent = {
 
           <div ui-ace="settings.aceOptions" ng-model="settings.deviceConfig"></div>
 
-          <button type="button" class="button primary" ng-click="settings.updateConfig()" ng-disabled="settings.configError">Save</button>
-          <button type="button" class="button secondary" ng-click="settings.applyConfig()" ng-disabled="settings.configError">Apply</button>
-          <span class="pull-right">
-            <small>Applying the changes will result in page reload</small>
-          </span>
+          <div class="buttons">
+            <button type="button" class="button delete-outline" ng-click="settings.undoConfig()">Undo</button>
+            <button type="button" class="button primary" ng-click="settings.updateConfig()" ng-disabled="settings.configError">Save</button>
+            <button type="button" class="button secondary" ng-click="settings.applyConfig()" ng-disabled="settings.configError">Apply</button>
+            <button type="button" class="button delete pull-right" ng-click="settings.resetConfig()">Reset</button>
+          </div>
+          <small>Applying the changes will result in page reload</small>
         </div>
       </div>
     </section>
@@ -64,11 +64,11 @@ const settingsComponent = {
   controllerAs: 'settings',
   /* @ngInject */
   controller ($document, $window, $q, settingsService, CONFIG, DEVICES_CONFIG) {
+    let savedDeviceConfig = {}
     settingsService.getDeviceConfig()
-      .then((res) => {
-        if (!_.isEmpty(res.data.deviceConfig)) {
-          this.deviceConfig = JSON.stringify(res.data.deviceConfig, true, 4)
-        }
+      .then((deviceConfig) => {
+        savedDeviceConfig = deviceConfig
+        this.deviceConfig = JSON.stringify(deviceConfig, null, 2)
       })
 
     const account = {
@@ -128,7 +128,7 @@ const settingsComponent = {
       let parsed
       try {
         parsed = JSON.parse(this.deviceConfig)
-        this.deviceConfig = JSON.stringify(parsed, undefined, 2)
+        this.deviceConfig = JSON.stringify(parsed, null, 2)
       } catch (ex) {
         this.configError = true
       }
@@ -145,9 +145,10 @@ const settingsComponent = {
       this.formatConfig()
 
       if (!this.configError) {
+        savedDeviceConfig = JSON.parse(this.deviceConfig)
         return settingsService.updateDeviceConfig(this.deviceConfig)
-          .then((res) => {
-            this.deviceConfig = JSON.stringify(res.data.deviceConfig, undefined, 2)
+          .then((deviceConfig) => {
+            this.deviceConfig = JSON.stringify(deviceConfig, null, 2)
           })
       }
       return $q.reject()
@@ -156,6 +157,18 @@ const settingsComponent = {
     this.applyConfig = () => {
       this.updateConfig()
         .then(() => $window.location.reload())
+    }
+
+    this.undoConfig = () => {
+      this.deviceConfig = JSON.stringify(savedDeviceConfig, null, 2)
+    }
+
+    this.resetConfig = () => {
+      if ($window.confirm('Do you really want to reset the device config?')) {
+        settingsService.getOriginalDeviceConfig().then((deviceConfig) => {
+          this.deviceConfig = JSON.stringify(deviceConfig, null, 2)
+        })
+      }
     }
 
     this.toggleDeviceConfigGuide = () => {

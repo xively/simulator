@@ -1,5 +1,6 @@
 'use strict'
 
+const deviceConfig = require('../../config/devices')
 const database = require('../database')
 const rulesEngine = require('../rules')
 
@@ -71,6 +72,10 @@ function updateDeviceConfig (req, res) {
     .then((rows) => res.json(rows[0]))
 }
 
+function getOriginalDeviceConfig (req, res) {
+  res.json(deviceConfig)
+}
+
 module.exports = {
   getFirmwareById,
   updateInventory,
@@ -80,5 +85,6 @@ module.exports = {
   removeRule,
   updateRule,
   getDeviceConfig,
-  updateDeviceConfig
+  updateDeviceConfig,
+  getOriginalDeviceConfig
 }

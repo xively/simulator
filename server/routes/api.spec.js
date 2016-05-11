@@ -3,6 +3,7 @@
 const request = require('super-request')
 const expect = require('chai').expect
 
+const deviceConfig = require('../../config/devices')
 const server = require('../app')
 const database = require('../database')
 const rulesEngine = require('../rules')
@@ -167,7 +168,7 @@ describe('API endpoints (/api/*)', () => {
   })
 
   describe('GET /device-config', () => {
-    it('should update device config', function * () {
+    it('should return device config', function * () {
       const selectDeviceConfigStub = this.sandbox.stub(database, 'selectDeviceConfig').returnsWithResolve(['data'])
 
       yield database.initDeviceConfig()
@@ -197,6 +198,17 @@ describe('API endpoints (/api/*)', () => {
 
       expect(resp.body).to.eql('data')
       expect(updateDeviceConfigStub).to.be.calledWith(deviceConfig)
+    })
+  })
+
+  describe('GET /device-config/original', () => {
+    it('should return with the original device config', function * () {
+      const resp = yield request(server.listen())
+        .get('/api/device-config/original')
+        .expect(200)
+        .end()
+
+      expect(resp.body).to.eql(JSON.stringify(deviceConfig))
     })
   })
 })
