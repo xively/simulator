@@ -10,7 +10,7 @@ const config = {
     pgUri: process.env.DATABASE_URL || 'postgres://localhost:5432/concaria'
   },
   habanero: {
-    embedded: !(process.env.HABANERO_EMBEDDED === 'false')
+    embedded: process.env.HABANERO_EMBEDDED === 'true'
   },
   server: {
     port: process.env.PORT || 5000
