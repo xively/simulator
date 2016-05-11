@@ -38,13 +38,11 @@ const filterRule = (latestValue, sensors) => {
 
 const config = {
   hiddenChannels: ['sensor', 'control'],
-  deviceInfoFields: ['version', 'serialNumber', 'firmwareVersion', 'latitude', 'longitude', 'externalIp', 'color',
-    'productionRun', 'hardwareVersion', 'activatedDate', 'powerVersion', 'name', 'purchaseDate', 'location'],
+  excludedDeviceInfoFields: [],
   widgets: [],
   'Home Air Purifier': {
     image: '/devices/images/home-air-purifier.png',
     width: 680,
-    deviceInfoFields: ['filterType'],
     widgets: ['fan-state-control', 'filter'],
     defaultSensor: 'dust',
     sensors: {
@@ -203,7 +201,6 @@ const config = {
   'Industrial HVAC': {
     image: '/devices/images/industrial-hvac.png',
     width: 800,
-    deviceInfoFields: ['filterType'],
     widgets: ['fan-state-control', 'filter'],
     defaultSensor: 'dust',
     sensors: {

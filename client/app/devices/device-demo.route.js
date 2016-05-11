@@ -125,7 +125,7 @@ function deviceDemoRoute ($stateProvider) {
                   <div class="field-name">Field name</div>
                   <div class="field-value">Value</div>
                 </div>
-                <div class="row" ng-repeat="(key, value) in demo.device" ng-if="demo.device.infoFields.indexOf(key) > -1">
+                <div class="row" ng-repeat="(key, value) in demo.device" ng-if="demo.device.excludedInfoFields.indexOf(key.toLowerCase()) === -1">
                   <div class="field-name">{{ key }}</div>
                   <div class="field-value">{{ value }}</div>
                 </div>
@@ -170,7 +170,15 @@ function deviceDemoRoute ($stateProvider) {
     controller ($log, $scope, $rootScope, $state, $location, $window, device, templates, devicesService, socketService, DEVICES_CONFIG, CONFIG, EVENTS) {
       device.template = templates[device.deviceTemplateId]
       this.config = DEVICES_CONFIG[device.template.name] || {}
-      device.infoFields = [].concat(DEVICES_CONFIG.deviceInfoFields, this.config.deviceInfoFields).filter(Boolean)
+
+      const EXCLUDED_INFO_FIELDS = ['excludedInfoFields', 'simulate', 'subscribe', 'template', 'update', 'sensors', 'ok', 'channels']
+      device.excludedInfoFields = EXCLUDED_INFO_FIELDS
+        .concat(DEVICES_CONFIG.excludedDeviceInfoFields, this.config.excludedDeviceInfoFields)
+        .filter(Boolean)
+        .map((fieldName) => {
+          return fieldName.toLowerCase()
+        })
+
       this.sensorsNotConfigured = _.pullAll(Object.keys(device.sensors), Object.keys(this.config.sensors || {}))
       this.sensors = this.sensorsNotConfigured.reduce((sensors, key) => {
         sensors[key] = 50

@@ -35,7 +35,7 @@ const devicePanelComponent = {
             <span class="pull-right chevron" ng-class="{bottom: devicePanel.infoPanelOpen}"></span>
           </h2>
           <div class="device-fields" ng-show="devicePanel.infoPanelOpen">
-            <div class="row" ng-repeat="(key, value) in devicePanel.device" ng-if="devicePanel.device.infoFields.indexOf(key) > -1">
+            <div class="row" ng-repeat="(key, value) in devicePanel.device" ng-if="devicePanel.device.excludedInfoFields.indexOf(key.toLowerCase()) === -1">
               <div class="field-name">{{ ::key }}</div>
               <div class="field-value">{{ value }}</div>
             </div>
