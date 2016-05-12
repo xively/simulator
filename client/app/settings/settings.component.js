@@ -254,7 +254,7 @@ const settingsComponent = {
 
       config[this.newDevice.tempalteName] = {
         image: this.newDevice.imageUrl,
-        width: this.newDevice.imageWidth,
+        width: parseInt(this.newDevice.imageWidth, 10),
         sensors: this.newDevice.sensors.reduce((sensors, currentSensor, idx) => {
           sensors[currentSensor.text] = {
             min: 0,
