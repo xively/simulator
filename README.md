@@ -132,7 +132,7 @@ After your PR is reviewed, merge your PR into the `staging` branch. Then cut a n
 
 #### Staging
 
-The `staging` branch should be updated with the latest reviewed development work on demand per the project management group, after the `development` branch is reviewed and deemed ready for a potential release.  Once requested, merge `development` into the `staging` branch, then cut a new build release into `staging-build`.
+[Deploy the staging branch](https://heroku.com/deploy?template=https://github.com/xively/simulator/tree/staging-build)
 
 (NOTE: You will have to run `npm run build` & add the public folder by force `git add public --force`)
 
