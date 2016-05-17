@@ -18,7 +18,7 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
         device.ok = true
         device.sensors = {}
         device.channels = device.channels
-          .filter((channel) => !(DEVICES_CONFIG.hiddenChannels || []).includes(channel.channelTemplateName))
+          .filter((channel) => !(DEVICES_CONFIG.general.hiddenChannels || []).includes(channel.channelTemplateName))
         device.channels.forEach((channel) => {
           const name = channel.channel.split('/').pop()
           device.sensors[name] = {

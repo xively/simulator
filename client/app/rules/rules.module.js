@@ -2,17 +2,11 @@ const angular = require('angular')
 
 const rulesService = require('./rules.service')
 const conditionList = require('./condition-list.component')
-const rulesRoute = require('./rules.route')
 const rulesComponent = require('./rules.component')
-const run = require('./rules.run')
 
-const rulesModule = angular.module('simulator.rules', [
-  require('angular-ui-router')
-])
-  .config(rulesRoute)
-  .run(run)
+const rulesModule = angular.module('simulator.rules', [])
   .factory('rulesService', rulesService)
-  .component('rulesComponent', rulesComponent)
+  .component('rules', rulesComponent)
   .component('conditionList', conditionList)
 
 module.exports = rulesModule

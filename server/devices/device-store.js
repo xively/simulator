@@ -29,8 +29,7 @@ class DeviceStore {
       this.request = Promise.all([
         blueprint.getDevices(),
         blueprint.getDeviceTemplates(),
-        db.selectDeviceConfig()
-          .then((data) => data[0].deviceConfig)
+        db.selectDeviceConfigsAsObject()
       ])
         .then((data) => {
           let devices = data[0]

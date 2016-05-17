@@ -25,7 +25,7 @@ function deviceDemoRoute ($stateProvider) {
               <div class="close" ng-click="demo.toggleModal('rules')">✕</div>
             </div>
             <div class="modal-content">
-              <rules-component></rules-component>
+              <rules></rules>
             </div>
           </div>
         </div>
@@ -36,7 +36,7 @@ function deviceDemoRoute ($stateProvider) {
               <div class="close" ng-click="demo.toggleModal('settings')">✕</div>
             </div>
             <div class="modal-content">
-              <settings-component></settings-component>
+              <settings></settings>
             </div>
           </div>
         </div>
@@ -153,9 +153,18 @@ function deviceDemoRoute ($stateProvider) {
       }
     },
     /* @ngInject */
-    controller ($log, $scope, $rootScope, $state, $location, $window, device, templates, devicesService, socketService, DEVICES_CONFIG, CONFIG, EVENTS) {
+    controller ($log, $scope, $rootScope, $state, $location, $window, $document, device, templates, devicesService, socketService, DEVICES_CONFIG, CONFIG, EVENTS) {
       device.template = templates[device.deviceTemplateId]
       this.config = DEVICES_CONFIG[device.template.name] || {}
+
+      const EXCLUDED_INFO_FIELDS = ['excludedInfoFields', 'simulate', 'subscribe', 'template', 'update', 'sensors', 'ok', 'channels']
+      device.excludedInfoFields = EXCLUDED_INFO_FIELDS
+        .concat(DEVICES_CONFIG.general.excludedDeviceInfoFields, this.config.excludedDeviceInfoFields)
+        .filter(Boolean)
+        .map((fieldName) => {
+          return fieldName.toLowerCase()
+        })
+
       this.sensorsNotConfigured = _.pullAll(Object.keys(device.sensors), Object.keys(this.config.sensors || {}))
       this.sensors = this.sensorsNotConfigured.reduce((sensors, key) => {
         sensors[key] = 50
@@ -204,20 +213,23 @@ function deviceDemoRoute ($stateProvider) {
         }
       })
 
+      const body = angular.element(document).find('body')
       this.toggleModal = (modal) => {
         if (modal === 'rules' && CONFIG.habanero.embedded) {
           return $window.open('/goto-orchestrator', '_blank')
         }
         this.modals[modal] = !this.modals[modal]
+
+        body.hasClass('scroll-lock') ? body.removeClass('scroll-lock') : body.addClass('scroll-lock')
       }
 
       this.block = ($event) => { $event.stopPropagation() }
 
       this.closeModals = () => {
-        this.modals = {
-          settings: false,
-          rules: false
-        }
+        _.forEach(this.modals, (modal, name) => {
+          this.modals[name] = false
+        })
+        body.removeClass('scroll-lock')
       }
 
       // simulate
@@ -256,6 +268,13 @@ function deviceDemoRoute ($stateProvider) {
       this.toggleMobileView = () => {
         this.mobileView = !this.mobileView
       }
+
+      // close modals on esc
+      $document.bind('keyup', (e) => {
+        if (e.keyCode === 27) {
+          $scope.$applyAsync(() => this.closeModals())
+        }
+      })
     }
   })
 }

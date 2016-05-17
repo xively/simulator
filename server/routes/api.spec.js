@@ -167,37 +167,21 @@ describe('API endpoints (/api/*)', () => {
     })
   })
 
-  describe('GET /device-config', () => {
-    it('should return device config', function * () {
-      const selectDeviceConfigStub = this.sandbox.stub(database, 'selectDeviceConfig').returnsWithResolve(['data'])
-
-      yield database.initDeviceConfig()
-      const resp = yield request(server.listen())
-        .get('/api/device-config')
-        .json(true)
-        .expect(200)
-        .end()
-
-      expect(resp.body).to.eql('data')
-      expect(selectDeviceConfigStub).to.be.called // eslint-disable-line
-    })
-  })
-
   describe('PUT /device-config', () => {
     it('should update device config', function * () {
-      const deviceConfig = { a: 1 }
+      const config = { foo: 'bar' }
       const updateDeviceConfigStub = this.sandbox.stub(database, 'updateDeviceConfig').returnsWithResolve(['data'])
 
-      yield database.initDeviceConfig()
       const resp = yield request(server.listen())
         .put('/api/device-config')
-        .body(deviceConfig)
+        .qs({ templateName: 'templateName' })
+        .body(config)
         .json(true)
         .expect(200)
         .end()
 
       expect(resp.body).to.eql('data')
-      expect(updateDeviceConfigStub).to.be.calledWith(deviceConfig)
+      expect(updateDeviceConfigStub).to.be.calledWith('templateName', config)
     })
   })
 
@@ -205,10 +189,23 @@ describe('API endpoints (/api/*)', () => {
     it('should return with the original device config', function * () {
       const resp = yield request(server.listen())
         .get('/api/device-config/original')
+        .qs({ templateName: 'Jacket' })
+        .json(true)
         .expect(200)
         .end()
 
-      expect(resp.body).to.eql(JSON.stringify(deviceConfig))
+      expect(resp.body).to.eql(deviceConfig.Jacket)
+    })
+
+    it('should return with an empty object', function * () {
+      const resp = yield request(server.listen())
+        .get('/api/device-config/original')
+        .qs({ templateName: 'Foo' })
+        .json(true)
+        .expect(200)
+        .end()
+
+      expect(resp.body).to.eql({})
     })
   })
 })

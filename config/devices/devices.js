@@ -37,26 +37,29 @@ const filterRule = (latestValue, sensors) => {
 }
 
 const config = {
-  hiddenChannels: ['sensor', 'control'],
-  excludedDeviceInfoFields: [
-    'Created',
-    'CreatedById',
-    'LastModified',
-    'LastModifiedById',
-    'Version',
-    'Id',
-    'AccountId',
-    'DeviceTemplateId',
-    'OrganizationId',
-    'ProvisioningState',
-    'Connected',
-    'LastConnected',
-    'ExternalIp',
-    'ReverseDns',
-    'IncludedSensors',
-    'SerialNumber'
-  ],
-  widgets: [],
+  general: {
+    hiddenChannels: ['sensor', 'control'],
+    excludedDeviceInfoFields: [
+      'Created',
+      'CreatedById',
+      'LastModified',
+      'LastModifiedById',
+      'Version',
+      'Id',
+      'AccountId',
+      'DeviceTemplateId',
+      'OrganizationId',
+      'ProvisioningState',
+      'Connected',
+      'LastConnected',
+      'ExternalIp',
+      'ReverseDns',
+      'IncludedSensors',
+      'SerialNumber',
+      'GeoIpLatitude',
+      'GeoIpLongitude'
+    ]
+  },
   'Home Air Purifier': {
     image: '/devices/images/home-air-purifier.png',
     width: 680,

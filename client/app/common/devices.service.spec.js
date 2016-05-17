@@ -12,6 +12,12 @@ describe('Blueprint service', () => {
         blueprintHost: 'blueprint.com'
       }
     })
+
+    $provide.constant('DEVICES_CONFIG', {
+      general: {
+        hiddenChannels: []
+      }
+    })
   }))
 
   let devicesService

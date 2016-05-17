@@ -20,9 +20,9 @@ apiRouter.get('/rules/:id', apiHandlers.getRuleById)
 apiRouter.post('/rules/', apiHandlers.createRule)
 apiRouter.delete('/rules/:id', apiHandlers.removeRule)
 apiRouter.put('/rules/:id', apiHandlers.updateRule)
-apiRouter.get('/device-config', apiHandlers.getDeviceConfig)
 apiRouter.put('/device-config', apiHandlers.updateDeviceConfig)
 apiRouter.get('/device-config/original', apiHandlers.getOriginalDeviceConfig)
+apiRouter.post('/upload', apiHandlers.upload)
 
 router.use('/api', apiRouter)
 

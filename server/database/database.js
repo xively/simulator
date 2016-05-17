@@ -25,21 +25,40 @@ function insertApplicationConfig (data) {
 }
 
 // Device config
-function initDeviceConfig () {
+function createDeviceConfig (data) {
   return knex('device_config')
-    .insert({ deviceConfig: {} })
+    .insert(data)
     .returning('*')
 }
 
-function selectDeviceConfig () {
+function selectDeviceConfigs () {
   return knex('device_config')
     .select()
 }
 
-function updateDeviceConfig (deviceConfig) {
+function selectDeviceConfigsAsObject () {
+  return selectDeviceConfigs()
+    .then((data) => {
+      return data.reduce((prev, current) => {
+        prev[current.templateName] = current.config
+        return prev
+      }, {})
+    })
+}
+
+function selectDeviceConfig (templateName) {
   return knex('device_config')
-    .update({ deviceConfig })
+    .select()
+    .where('templateName', templateName)
+}
+
+function updateDeviceConfig (templateName, config) {
+  const resp = knex('device_config')
+    .where('templateName', templateName)
+    .update({ config })
     .returning('*')
+
+  return resp.length ? resp : createDeviceConfig({ templateName, config })
 }
 
 // Firmware
@@ -138,7 +157,9 @@ module.exports = {
   selectApplicationConfig,
   insertApplicationConfig,
 
-  initDeviceConfig,
+  createDeviceConfig,
+  selectDeviceConfigs,
+  selectDeviceConfigsAsObject,
   selectDeviceConfig,
   updateDeviceConfig,
 

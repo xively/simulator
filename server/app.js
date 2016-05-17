@@ -13,7 +13,7 @@ const routes = require('./routes')
 
 const app = express()
 
-app.use(bodyParser.json())
+app.use(bodyParser.json({ limit: '5mb' }))
 app.use(bodyParser.urlencoded({
   extended: false
 }))
@@ -23,10 +23,8 @@ app.use(cookieParser())
 app.use(routes)
 
 app.use('/script/config.js', (req, res) => {
-  db.selectDeviceConfig()
-    .then((data) => {
-      const devicesConfig = data[0].deviceConfig
-
+  db.selectDeviceConfigsAsObject()
+    .then((devicesConfig) => {
       res.status(200).send(`
         window.APP_CONFIG = ${JSON.stringify(config)}
         window.DEVICES_CONFIG = ${JSON.stringify(devicesConfig)}

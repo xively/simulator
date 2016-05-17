@@ -3,6 +3,7 @@
 const deviceConfig = require('../../config/devices')
 const database = require('../database')
 const rulesEngine = require('../rules')
+const cloudinary = require('../util').cloudinary
 
 function getFirmwareById (req, res) {
   database.selectFirmware(req.params.id)
@@ -62,18 +63,18 @@ function updateRule (req, res) {
     })
 }
 
-function getDeviceConfig (req, res) {
-  database.selectDeviceConfig()
-    .then((rows) => res.json(rows[0]))
-}
-
 function updateDeviceConfig (req, res) {
-  database.updateDeviceConfig(req.body)
+  database.updateDeviceConfig(req.query.templateName, req.body)
     .then((rows) => res.json(rows[0]))
 }
 
 function getOriginalDeviceConfig (req, res) {
-  res.json(deviceConfig)
+  res.json(deviceConfig[req.query.templateName] || {})
+}
+
+function upload (req, res) {
+  cloudinary.upload(req.body.deviceImage)
+    .then((result) => res.json({ imageUrl: result.secure_url }))
 }
 
 module.exports = {
@@ -84,7 +85,7 @@ module.exports = {
   createRule,
   removeRule,
   updateRule,
-  getDeviceConfig,
   updateDeviceConfig,
-  getOriginalDeviceConfig
+  getOriginalDeviceConfig,
+  upload
 }

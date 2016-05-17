@@ -22,7 +22,10 @@ describe('Database', () => {
     }
   }
   const deviceConfigMock = {
-    config: 'config'
+    templateName: 'templateName',
+    config: {
+      foo: 'bar'
+    }
   }
   const inventoryMock = {
     serial: 'serial1234567',
@@ -71,24 +74,45 @@ describe('Database', () => {
   })
 
   describe('device_config', () => {
-    it('should create empty device config', function * () {
-      const config = yield database.initDeviceConfig()
+    it('should create a device config', function * () {
+      const config = yield database.createDeviceConfig(deviceConfigMock)
 
-      expect(config[0]).to.eql({ deviceConfig: {} })
+      expect(config[0]).to.eql(deviceConfigMock)
     })
 
-    it('should find device config', function * () {
-      yield database.initDeviceConfig()
-      const config = yield database.selectDeviceConfig()
+    it('should select all device configs', function * () {
+      yield database.createDeviceConfig(deviceConfigMock)
+      yield database.createDeviceConfig(deviceConfigMock)
+      const config = yield database.selectDeviceConfigs(deviceConfigMock)
 
-      expect(config[0]).to.eql({ deviceConfig: {} })
+      expect(config).to.eql([deviceConfigMock, deviceConfigMock])
     })
 
-    it('should update device config', function * () {
-      yield database.initDeviceConfig()
-      const config = yield database.updateDeviceConfig(deviceConfigMock)
+    it('should select a device config by template name', function * () {
+      yield database.createDeviceConfig(deviceConfigMock)
+      const config = yield database.selectDeviceConfig(deviceConfigMock.templateName)
 
-      expect(config[0]).to.eql({ deviceConfig: deviceConfigMock })
+      expect(config).to.eql([deviceConfigMock])
+    })
+
+    it('should update a device config by template name', function * () {
+      yield database.createDeviceConfig(deviceConfigMock)
+      const config = yield database.updateDeviceConfig(deviceConfigMock.templateName, {
+        foo: 'bar2'
+      })
+
+      expect(config).to.eql([{
+        templateName: deviceConfigMock.templateName,
+        config: {
+          foo: 'bar2'
+        }
+      }])
+    })
+
+    it('should create a new device config if it\'s not yet in the db', function * () {
+      const config = yield database.updateDeviceConfig(deviceConfigMock.templateName, deviceConfigMock.config)
+
+      expect(config).to.eql([deviceConfigMock])
     })
   })
 

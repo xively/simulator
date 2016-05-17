@@ -71,6 +71,7 @@
     "mocha": "2.4.5",
     "ng-annotate-loader": "0.1.0",
     "ng-cache-loader": "0.0.15",
+    "ng-file-upload": "12.0.4",
     "ng-tags-input": "3.0.0",
     "normalize.css": "4.1.1",
     "parallelshell": "2.0.0",
@@ -91,6 +92,7 @@
   "dependencies": {
     "body-parser": "1.15.0",
     "chart.js": "1.1.1",
+    "cloudinary": "1.3.1",
     "cookie-parser": "1.4.1",
     "dotenv": "2.0.0",
     "express": "4.13.4",
@@ -103,6 +105,7 @@
     "lodash": "4.11.1",
     "moment": "2.13.0",
     "mqtt": "1.10.0",
+    "multer": "1.1.0",
     "node-red-habanero": "^1.0.10",
     "pg": "4.5.5",
     "redis": "2.6.0-1",

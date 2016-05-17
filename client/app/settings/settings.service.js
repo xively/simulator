@@ -2,44 +2,44 @@
 function settingsFactory ($log, $http) {
   return new class RulesService {
     /**
-     * Get device config
-     */
-    getDeviceConfig () {
-      return $http({
-        method: 'GET',
-        url: '/api/device-config'
-      })
-      .then((res) => res.data.deviceConfig || {})
-      .catch((err) => {
-        $log.error('settingsService#getDeviceConfig error:', err)
-        throw err
-      })
-    }
-
-    /**
      * Update device config
      */
-    updateDeviceConfig (deviceConfig) {
+    updateDeviceConfig (templateName, config) {
       return $http({
         method: 'PUT',
         url: '/api/device-config',
-        data: deviceConfig
+        data: config,
+        params: { templateName }
       })
-      .then((res) => res.data.deviceConfig || {})
+      .then((res) => res.data.config || {})
       .catch((err) => {
         $log.error('settingsService#updateDeviceConfig error:', err)
         throw err
       })
     }
 
-    getOriginalDeviceConfig () {
+    getOriginalDeviceConfig (templateName) {
       return $http({
         method: 'GET',
-        url: '/api/device-config/original'
+        url: '/api/device-config/original',
+        params: { templateName }
       })
       .then((res) => res.data || {})
       .catch((err) => {
         $log.error('settingsService#getOriginalDeviceConfig error:', err)
+        throw err
+      })
+    }
+
+    uploadImage (deviceImage) {
+      return $http({
+        method: 'POST',
+        url: '/api/upload',
+        data: { deviceImage }
+      })
+      .then((res) => res.data || {})
+      .catch((err) => {
+        $log.error('settingsService#uploadImage error:', err)
         throw err
       })
     }

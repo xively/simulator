@@ -89,9 +89,18 @@ Promise.all([
 
   return database.runScriptFile(tableScript)
     .then(() => {
-      logger.info('Initiating: device config')
-      return database.initDeviceConfig()
-        .then(() => database.updateDeviceConfig(deviceConfig))
+      let configs = data.deviceTemplates.map((template) => {
+        return database.createDeviceConfig({
+          templateName: template.name,
+          config: deviceConfig[template.name]
+        })
+      })
+      configs.push(database.createDeviceConfig({
+        templateName: 'general',
+        config: deviceConfig.general
+      }))
+
+      return Promise.all(configs)
     })
 })
 .then(() => {

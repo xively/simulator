@@ -2,12 +2,12 @@ DROP TABLE IF EXISTS inventory, firmware, application_config, rules, device_conf
 
 CREATE TABLE inventory
 (
-  id serial NOT NULL,
-  serial text,
+  "id" serial NOT NULL,
+  "serial" text,
   "soldDate" timestamp without time zone,
   "soldTo" text,
-  sold boolean DEFAULT false,
-  reserved boolean DEFAULT false,
+  "sold" boolean DEFAULT false,
+  "reserved" boolean DEFAULT false,
   CONSTRAINT inventory_pkey PRIMARY KEY (id)
 )
 WITH (
@@ -16,7 +16,7 @@ WITH (
 
 CREATE TABLE firmware
 (
-  id integer NOT NULL,
+  "id" integer NOT NULL,
   "name" text,
   "serialNumber" text,
   "deviceId" text,
@@ -26,7 +26,7 @@ CREATE TABLE firmware
   "accountId" text,
   "entityId" text,
   "entityType" text,
-  secret text,
+  "secret" text,
   CONSTRAINT firmware_pkey PRIMARY KEY (id),
   CONSTRAINT firmware_id_fkey FOREIGN KEY (id)
       REFERENCES inventory (id) MATCH SIMPLE
@@ -38,7 +38,8 @@ WITH (
 
 CREATE TABLE device_config
 (
-  "deviceConfig" json
+  "templateName" text,
+  "config" json
 )
 WITH (
   OIDS=FALSE
@@ -46,7 +47,7 @@ WITH (
 
 CREATE TABLE rules
 (
-  id serial NOT NULL,
+  "id" serial NOT NULL,
   "ruleConfig" json
 )
 WITH (
@@ -55,7 +56,7 @@ WITH (
 
 CREATE TABLE application_config
 (
-  id serial NOT NULL,
+  "id" serial NOT NULL,
   "accountId" text,
   "organization" json,
   "mqttUser" json,

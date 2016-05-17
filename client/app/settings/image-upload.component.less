@@ -1,0 +1,33 @@
+@import '../style/variables.less';
+
+image-upload {
+  display: block;
+  height: 100%;
+  text-align: center;
+
+  .upload-field {
+    height: 100%;
+    width: 100%;
+    background-color: @navy-blue;
+    text-align: center;
+    white-space: nowrap;
+
+    &:before {
+      content: '';
+      display: inline-block;
+      height: 100%;
+      vertical-align: middle;
+    }
+
+    .thumbnail {
+      max-width: 90%;
+      max-height: 90%;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+
+  small {
+    color: @dark-gray;
+  }
+}
