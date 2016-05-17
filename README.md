@@ -6,7 +6,7 @@ This is a sample application demonstrating the Xively platform.
 
 The simplest and recommended method of installation is through Heroku. Simply click the button below.
 
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/xively/concaria/tree/build)
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/xively/simulator/tree/build)
 
 ### Local Installation
 
@@ -28,8 +28,8 @@ Navigate to <http://localhost:5000/> in your browser to access the app. The appl
 If you are making changes to this repo or a fork of it you'll need commit the built client files to deploy it. You can follow this script as an example.
 
 ```sh
-git clone git@github.com:my-github-user/concaria.git
-cd concaria
+git clone git@github.com:my-github-user/simulator.git
+cd simulator
 git checkout -b my-changes
 # make your changes
 npm run dev
@@ -53,7 +53,7 @@ Or deploy a from scratch copy by pushing to your fork and deploying with https:/
 
 ```sh
 git push origin my-changes-heroku
-# https://heroku.com/deploy?template=https://github.com/my-github-user/concaria/tree/my-changes-heroku
+# https://heroku.com/deploy?template=https://github.com/my-github-user/simulator/tree/my-changes-heroku
 ```
 
 ### Developer Scripts
@@ -130,7 +130,7 @@ After your PR is reviewed, merge your PR into the `staging` branch. Then cut a n
 
 (**NOTE:** You will have to run `npm run build` & add the public folder by force `git add public --force`)
 
-[Deploy the staging branch](https://heroku.com/deploy?template=https://github.com/xively/concaria/tree/staging-build)
+[Deploy the staging branch](https://heroku.com/deploy?template=https://github.com/xively/simulator/tree/staging-build)
 
 When a staging branch has been QA'd and no regressions are found, then you can merge your Pull Request into master. After you've done that, tag master with the lastest version #.
 
