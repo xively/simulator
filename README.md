@@ -1,4 +1,4 @@
-# Concaria
+# Simulator
 
 This is a sample application demonstrating the Xively platform.
 
@@ -6,7 +6,7 @@ This is a sample application demonstrating the Xively platform.
 
 The simplest and recommended method of installation is through Heroku. Simply click the button below.
 
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/xively/concaria/tree/build)
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/xively/simulator/tree/build)
 
 ### Local Installation
 
@@ -28,8 +28,8 @@ Navigate to <http://localhost:5000/> in your browser to access the app. The appl
 If you are making changes to this repo or a fork of it you'll need commit the built client files to deploy it. You can follow this script as an example.
 
 ```sh
-git clone git@github.com:my-github-user/concaria.git
-cd concaria
+git clone git@github.com:my-github-user/simulator.git
+cd simulator
 git checkout -b my-changes
 # make your changes
 npm run dev
@@ -53,7 +53,7 @@ Or deploy a from scratch copy by pushing to your fork and deploying with https:/
 
 ```sh
 git push origin my-changes-heroku
-# https://heroku.com/deploy?template=https://github.com/my-github-user/concaria/tree/my-changes-heroku
+# https://heroku.com/deploy?template=https://github.com/my-github-user/simulator/tree/my-changes-heroku
 ```
 
 ### Developer Scripts
@@ -84,12 +84,9 @@ There are a handful of npm scripts to aid in development.
 - XIVELY_ACCOUNT_ID
 - XIVELY_IDM_EMAIL_ADDRESS
 - XIVELY_IDM_PASSWORD
-- AIRNOW_APIKEY
-- AIRNOW_BOUNDINGBOX
-- CONCARIA_TYPEID
-- CONCARIA_ID
 - XIVELY_MQTT_USERNAME
 - XIVELY_MQTT_PASSWORD
+- HABANERO_HOST
 
 ### Salesforce Integration
 
@@ -124,37 +121,51 @@ a `.env` file.
 3. Restart the Node application. It will upload a Contact and the devices as Assets
   to your Salesforce account
 
-#### Staging and Release notes
+### Branches and Release notes
+
+#### New development
+
+All new development must be done outside of the release workflow branches (stage/beta/master).  Small changes can be done directly in the development branch, while feature work should be done in individual feature branches.  Individual feature branches should be reviewed before they are merged back into the main development branch.
 
 Pull Requests are not to be merged into master without first being confirmed by QA.
 After your PR is reviewed, merge your PR into the `staging` branch. Then cut a new build release into `staging-build`.
 
-(**NOTE:** You will have to run `npm run build` & add the public folder by force `git add public --force`)
+#### Staging
 
-[Deploy the staging branch](https://heroku.com/deploy?template=https://github.com/xively/concaria/tree/staging-build)
+The staging branch should be updated with the latest reviewed development work on demand per the project management group, after the development branch is reviewed and deemed ready for a potential release.  Once requested, merge development into the staging branch, then cut a new build release into staging-build.
 
-When a staging branch has been QA'd and no regressions are found, then you can merge your Pull Request into master. After you've done that, tag master with the lastest version #.
+(NOTE: You will have to run `npm run build` & add the public folder by force `git add public --force`)
 
-```
+#### Beta
+
+The beta branch represents the latest and greatest stable code available for public consumption, with the expectation that it may or may not be production-approved. When a staging branch has been QA'd and no regressions/outstanding issues are found, then the staging branch can be built directly into the beta branch. After you've done that, tag beta with the latest version number.
+
+```shell
 git tag -a v1.1 -m "write a note about what this version includes"
 git push origin v1.1
-
 ```
 
-Update the `new-build` branch with a new build.  Master and new-build should always match.
+[Deploy the beta branch.](https://heroku.com/deploy?template=https://github.com/xively/simulator/tree/beta)
 
+#### Master
 
-##### Release notes
+The master branch is the latest production-approved code that is the standard for general use.  This will be periodically updated from the beta branch by stakeholder request, with all accompanying documentation.  The update is performed by copying the beta branch over to master, as both are directly built branches.
+
+#### Release notes
+
 If you want to include release notes between each tagged version, you can get a list of commits using this command:
 
-`git log v1.0..v1.1`
+```shell
+git log v1.0..v1.1
+```
 
-This will give you all the commits made between those 2 versions.  
+This will give you all the commits made between those 2 versions.
 
 Tags are like branches, so you can also do that with any branch. For example if you want to see how many commits staging is ahead of master:
 
-`git log master..staging`
-
+```shell
+git log master..staging
+```
 
 ### System Requirements
 
