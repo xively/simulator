@@ -32,7 +32,7 @@ const salesforce = {
    */
   addAssets (assets) {
     assets = assets.map((a) => ({
-      Name: a.name,
+      Name: a.name || a.serialNumber,
       SerialNumber: a.serialNumber,
       [DEVICE_FIELD_NAME_WITHOUT_XI]: a.id || a.deviceId,
       Contact: { [END_USER_FIELD_NAME]: a.organizationId }
