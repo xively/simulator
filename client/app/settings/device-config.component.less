@@ -3,20 +3,38 @@
 device-config {
   padding: 20px 0;
 
-  select {
+  .selector {
+    display: flex;
     width: 100%;
-    height: 34px;
-    margin-bottom: 10px;
-    padding: 0 20px;
-    border: none;
-    border-radius: 0;
-    text-transform: capitalize;
-    color: black;
-    background: url('./images/arrow-down.png') no-repeat @light-gray;
-    background-position: right 20px top 6px;
-    background-size: 20px 20px;
-    box-shadow: 2px 2px 3px 1px fade(@dark-gray, 50%);
-    appearance: none;
+
+    @height: 34px;
+    select {
+      flex: 0.8;
+      height: @height;
+      margin-bottom: 10px;
+      padding: 0 20px;
+      border: none;
+      border-radius: 0;
+      text-transform: capitalize;
+      color: black;
+      background: url('./images/arrow-down.png') no-repeat @light-gray;
+      background-position: right 20px top 6px;
+      background-size: 20px 20px;
+      box-shadow: 2px 2px 3px 1px fade(@dark-gray, 50%);
+      appearance: none;
+    }
+
+    .mode {
+      flex: 0.2;
+      margin-left: 5px;
+      height: @height;
+      line-height: @height;
+      text-align: center;
+      vertical-align: middle;
+      background: @light-gray;
+      box-shadow: 2px 2px 3px 1px fade(@dark-gray, 50%);
+      cursor: pointer;
+    }
   }
 
   device-form {

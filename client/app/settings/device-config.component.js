@@ -4,7 +4,7 @@ require('./device-config.component.less')
 
 const deviceConfig = {
   template: `
-    <div>
+    <div class="selector">
       <select
         ng-model="deviceConfig.options.selectedOption"
         ng-change="deviceConfig.options.selectedOption.select()"
@@ -14,7 +14,7 @@ const deviceConfig = {
         {{ deviceConfig.showEditor ? 'Simple' : 'Advanced' }}
       </div>
     </div>
-    <div class="form">
+    <div class="form" ng-show="!deviceConfig.showEditor">
       <device-form
         image="deviceConfig.image"
         width="deviceConfig.width"
