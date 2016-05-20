@@ -4,28 +4,73 @@ device-form {
   form {
     .form-row {
       padding: 0.2em 1em;
+      margin-top: 13px;
+      display: flex;
 
       label {
-        display: inline-block;
-        line-height: 2.2em;
+        flex: 0.12;
+        line-height: 34px;
+        height: 34px;
         font-size: 0.8em;
-        font-weight: 400;
+        font-weight: 500;
         width: 12%;
         margin: 0;
       }
 
-      .input-field {
-        width: 86%;
-        font-size: 0.8em;
+      input {
+        width: 100%;
+        margin: 0;
         height: 34px;
+        font-size: 0.8em;
         border: none;
         border-radius: 0;
         background: @light-gray;
         box-shadow: 2px 2px 3px 1px @box-shadow;
         appearance: none;
+        padding: 0 12px;
+      }
 
-        &[type=text] {
-          padding: 0 12px;
+      .input-field {
+        flex: 0.88;
+      }
+
+      .inputs {
+        display: flex;
+        flex: 0.88;
+
+        .floating-label-group {
+          position: relative;
+          display: inline-block;
+          width: 86%;
+          vertical-align: middle;
+          flex: 1;
+
+          &:not(:first-child) {
+            margin-left: 5px;
+          }
+
+          .input-field {
+            font-size: 14px;
+            width: 100%;
+
+            &:focus ~ .label, &.ng-dirty ~ .label, &.ng-not-empty ~ .label {
+              top: -13px;
+              left: 5px;
+              font-size: 11px;
+              color: @navy-blue;
+            }
+          }
+
+          .label {
+            color: @dark-gray;
+            font-size: 14px;
+            font-weight: normal;
+            position: absolute;
+            pointer-events: none;
+            left: 10px;
+            top: 10px;
+            transition: 0.2s ease all;
+          }
         }
       }
 
@@ -36,7 +81,7 @@ device-form {
       }
 
       tags-input {
-        width: 86%;
+        flex: 0.88;
         height: 34px;
         display: inline-block;
         vertical-align: bottom;
@@ -60,6 +105,7 @@ device-form {
           }
 
           .tag-item {
+            margin-top: 4px;
             background: #2196F3;
             color: @light-gray;
 

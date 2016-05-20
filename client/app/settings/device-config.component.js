@@ -17,7 +17,6 @@ const deviceConfig = {
     <div class="form" ng-show="!deviceConfig.showEditor">
       <device-form
         image="deviceConfig.image"
-        width="deviceConfig.width"
         sensors="deviceConfig.sensors"
         update="deviceConfig.update(deviceForm)">
       </device-form>
@@ -27,9 +26,9 @@ const deviceConfig = {
     <editor ng-show="deviceConfig.showEditor" json="deviceConfig.json" error="deviceConfig.error"></editor>
 
     <div class="buttons">
-      <button type="button" class="button delete-outline" ng-click="deviceConfig.undoConfig()">Undo</button>
+      <button type="button" class="button delete" ng-click="deviceConfig.undoConfig()">Undo</button>
       <button type="button" class="button primary" ng-click="deviceConfig.saveConfig()" ng-disabled="deviceConfig.error">Save</button>
-      <button type="button" class="button secondary" ng-click="deviceConfig.saveAndCloseConfig()" ng-disabled="deviceConfig.error">Save & Close</button>
+      <button type="button" class="button primary" ng-click="deviceConfig.saveAndCloseConfig()" ng-disabled="deviceConfig.error">Save & Close</button>
       <button type="button" class="button delete pull-right" ng-click="deviceConfig.resetConfig()">Reset to default</button>
     </div>
   `,
@@ -64,26 +63,24 @@ const deviceConfig = {
 
     this.update = (deviceForm) => {
       // apply image and width
-      _.merge(this.config, {
-        image: deviceForm.image,
-        width: _.clamp(parseInt(deviceForm.width || 800, 10), 0, 1200)
-      })
+      this.config.image = deviceForm.image
+      this.config.width = this.config.width || 800
 
       if (deviceForm.sensors) {
         const sensors = deviceForm.sensors.map((sensor) => sensor.text)
         // remove sensors
         this.config.sensors = _.pick(this.config.sensors, sensors)
         // add new sensors
-        this.config.sensors = _.defaults(this.config.sensors, sensors.reduce((sensors, sensor, idx) => {
-          sensors[sensor] = {
-            min: 0,
-            max: 100,
+        this.config.sensors = _.defaults(this.config.sensors, deviceForm.sensors.reduce((sensors, sensor, idx) => {
+          sensors[sensor.text] = {
+            min: sensor.min || 0,
+            max: sensor.max || 100,
             wiggle: false,
             unit: 'm',
             tooltip: {
               position: {
-                top: 100,
-                left: idx * 50
+                top: sensor.top || 100,
+                left: sensor.left || idx * 50
               },
               labelPosition: {
                 top: 0,
@@ -91,6 +88,21 @@ const deviceConfig = {
               },
               distance: 100,
               direction: 'bottom'
+            }
+          }
+          return sensors
+        }, {}))
+        // modify existing sensors
+        _.merge(this.config.sensors, deviceForm.sensors.reduce((sensors, sensor) => {
+          const tooltipOrWidget = this.config.sensors[sensor.text].widget ? 'widget' : 'tooltip'
+          sensors[sensor.text] = {
+            min: sensor.min,
+            max: sensor.max,
+            [tooltipOrWidget]: {
+              position: {
+                top: sensor.top,
+                left: sensor.left
+              }
             }
           }
           return sensors
@@ -125,8 +137,13 @@ const deviceConfig = {
       _.assign(this.config, config)
 
       this.image = this.config.image
-      this.width = this.config.width
-      this.sensors = Object.keys(this.config.sensors || []).map((text) => ({ text }))
+      this.sensors = _.map(this.config.sensors || [], (sensor, text) => ({
+        text,
+        min: sensor.min,
+        max: sensor.max,
+        top: ((sensor.tooltip || sensor.widget || {}).position || {}).top,
+        left: ((sensor.tooltip || sensor.widget || {}).position || {}).left
+      }))
     }
   }
 }

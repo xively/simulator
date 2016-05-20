@@ -5,11 +5,9 @@ const deviceFormComponent = {
     <form novalidate>
       <div class="form-row">
         <label>Image URL</label>
-        <input type="text" class="input-field" ng-model="deviceForm.image"/>
-      </div>
-      <div class="form-row">
-        <label>Image width</label>
-        <input type="text" class="input-field" ng-model="deviceForm.width"/>
+        <div class="input-field">
+          <input type="text" ng-model="deviceForm.image"/>
+        </div>
       </div>
       <div class="form-row">
         <label>Sensors</label>
@@ -18,10 +16,26 @@ const deviceFormComponent = {
           placeholder="Add sensor"
           replace-spaces-with-dashes="false">
         </tags-input>
-        <div>
-          <span>
-            <small>Please enter the names of the desired sensors. Press enter to set each name.</small>
-          </span>
+      </div>
+      <div class="form-row" ng-repeat="sensor in deviceForm.sensors track by sensor.text">
+        <label>{{ sensor.text }}</label>
+        <div class="inputs">
+          <div class="floating-label-group">
+            <input type="number" class="input-field" ng-model="sensor.min"/>
+            <div class="label">Minimum</div>
+          </div>
+          <div class="floating-label-group">
+            <input type="number" class="input-field" ng-model="sensor.max"/>
+            <div class="label">Maximum</div>
+          </div>
+          <div class="floating-label-group">
+            <input type="number" class="input-field" ng-model="sensor.top"/>
+            <div class="label">Top [px]</div>
+          </div>
+          <div class="floating-label-group">
+            <input type="number" class="input-field" ng-model="sensor.left"/>
+            <div class="label">Left [px]</div>
+          </div>
         </div>
       </div>
     </form>
@@ -30,7 +44,6 @@ const deviceFormComponent = {
   bindings: {
     update: '&',
     image: '=',
-    width: '=',
     sensors: '='
   },
   /* @ngInject */
