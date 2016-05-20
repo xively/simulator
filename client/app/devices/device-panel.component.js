@@ -35,9 +35,26 @@ const devicePanelComponent = {
             <span class="pull-right chevron" ng-class="{bottom: devicePanel.infoPanelOpen}"></span>
           </h2>
           <div class="device-fields" ng-show="devicePanel.infoPanelOpen">
-            <div class="row" ng-repeat="(key, value) in devicePanel.device" ng-if="devicePanel.device.excludedInfoFields.indexOf(key.toLowerCase()) === -1">
-              <div class="field-name">{{ ::key }}</div>
-              <div class="field-value">{{ value }}</div>
+            <div class="device-info-fields">
+              <div class="row" ng-repeat="(key, value) in devicePanel.device" ng-if="devicePanel.device.excludedInfoFields.indexOf(key.toLowerCase()) === -1">
+                <div class="field-name">{{ ::key }}</div>
+                <div class="field-value">
+                  <span ng-if="!devicePanel.editingInfoFields">{{ value }}</span>
+                  <input type="text" ng-if="devicePanel.editingInfoFields" ng-model="devicePanel.device[key]" />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <button type="button" class="button primary" ng-if="!devicePanel.editingInfoFields" ng-click="devicePanel.editInfoFields()">
+                Edit
+              </button>
+              <button type="button" class="button secondary" ng-if="devicePanel.editingInfoFields" ng-click="devicePanel.updateInfoFields()">
+                Save
+              </button>
+              <button type="button" class="button delete" ng-if="devicePanel.editingInfoFields" ng-click="devicePanel.cancelInfoFieldsEditing()">
+                Cancel
+              </button>
             </div>
           </div>
         </div>
@@ -59,6 +76,15 @@ const devicePanelComponent = {
   /* @ngInject */
   controller ($log, $scope, socketService, blueprintService, CONFIG, DEVICES_CONFIG, EVENTS) {
     this.config = CONFIG
+
+    const EXCLUDED_INFO_FIELDS = ['excludedInfoFields', 'simulate', 'subscribe', 'template', 'update', 'sensors', 'ok', 'channels']
+    this.device.excludedInfoFields = EXCLUDED_INFO_FIELDS
+      .concat(DEVICES_CONFIG.excludedDeviceInfoFields, this.config.excludedDeviceInfoFields)
+      .filter(Boolean)
+      .map((fieldName) => {
+        return fieldName.toLowerCase()
+      })
+
     const deviceConfig = DEVICES_CONFIG[this.device.template.name] || {}
     this.deviceConfig = deviceConfig
     blueprintService.getV1('end-users', { organizationId: this.device.organizationId }).then((response) => {
@@ -103,6 +129,31 @@ const devicePanelComponent = {
     this.timeseries = {
       availableOptions: timeseriesChannels,
       selectedOption
+    }
+
+    let deviceCopy
+    this.editInfoFields = () => {
+      this.editingInfoFields = true
+      deviceCopy = _.cloneDeep(this.device)
+    }
+
+    this.cancelInfoFieldsEditing = () => {
+      this.editingInfoFields = false
+      this.device = deviceCopy
+    }
+
+    this.updateInfoFields = () => {
+      const data = _.reduce(this.device, (result, value, key) => {
+        if (!this.device.excludedInfoFields.includes(key.toLowerCase())) {
+          result[key] = value
+        }
+        return result
+      }, {})
+
+      blueprintService.updateDevice(this.device.id, data)
+        .then(() => {
+          this.editingInfoFields = false
+        })
     }
   }
 }

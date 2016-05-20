@@ -24,6 +24,29 @@ function blueprintFactory ($log, $http, CONFIG) {
         }
       })
     }
+
+    updateDevice (id, data) {
+      return this.getV1(`devices/${id}`)
+        .then((resp) => {
+          const diff = _.reduce(resp.data.device, (result, value, key) => {
+            if (!_.isEqual(value, data[key]) && key !== 'version' && !_.isArray(value) && !_.isObject(value)) {
+              result[key] = data[key]
+            }
+
+            return result
+          }, {})
+
+          return $http({
+            method: 'PUT',
+            url: `https://${CONFIG.account.blueprintHost}/api/v1/devices/${id}`,
+            data: diff,
+            headers: {
+              Etag: resp.data.device.version,
+              Accept: 'application/json'
+            }
+          })
+        })
+    }
   }
 }
 

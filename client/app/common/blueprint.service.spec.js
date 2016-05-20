@@ -27,6 +27,18 @@ describe('Blueprint service', () => {
 
     $httpBackend.whenGET('https://blueprint.com/api/v1/abc?accountId=1')
       .respond({ data: 'data' })
+
+    $httpBackend.whenGET('https://blueprint.com/api/v1/devices/123?accountId=1')
+      .respond({
+        device: {
+          updatedField: '1.0.0',
+          unchangedField: '1.2.3',
+          version: 'ABC'
+        }
+      })
+
+    $httpBackend.whenPUT('https://blueprint.com/api/v1/devices/123')
+      .respond({ data: 'data' })
   }))
 
   afterEach(() => {
@@ -41,6 +53,34 @@ describe('Blueprint service', () => {
         Authorization: 'Bearer token'
       })
       blueprintService.getV1('abc')
+        .then((response) => {
+          expect(response.data).to.eql({ data: 'data' })
+          done()
+        })
+        .catch(done)
+      $httpBackend.flush()
+    })
+  })
+
+  describe('#updateDevice', () => {
+    it('should update device data', (done) => {
+      $httpBackend.expectGET('https://blueprint.com/api/v1/devices/123?accountId=1', {
+        Accept: 'application/json',
+        Authorization: 'Bearer token'
+      })
+
+      $httpBackend.expectPUT('https://blueprint.com/api/v1/devices/123', {
+        updatedField: 'updated'
+      }, {
+        Accept: 'application/json',
+        Authorization: 'Bearer token',
+        Etag: 'ABC',
+        'Content-Type': 'application/json;charset=utf-8'
+      })
+
+      blueprintService.updateDevice(123, {
+        updatedField: 'updated'
+      })
         .then((response) => {
           expect(response.data).to.eql({ data: 'data' })
           done()
