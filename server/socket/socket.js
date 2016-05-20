@@ -23,14 +23,7 @@ module.exports = function configureSocket (app, devices, rules) {
     devices.stopSimulation()
   }
 
-  // handle `connection` event
-  io.on('connection', (socket) => {
-    logger.debug('socket.io#connection', socket.client.conn.remoteAddress)
-    const deviceIds = new Set()
-
-    // fetch devices from blueprint
-    const updateDevices = devices.update()
-
+  function updateData () {
     // update salesforce && rules engine
     const blueprintPromise = Promise.all([
       blueprint.getDevices(),
@@ -50,6 +43,18 @@ module.exports = function configureSocket (app, devices, rules) {
         salesforce.addAssets(result.devices)
       }
     })
+  }
+  updateData()
+
+  // handle `connection` event
+  io.on('connection', (socket) => {
+    logger.debug('socket.io#connection', socket.client.conn.remoteAddress)
+    const deviceIds = new Set()
+
+    // fetch devices from blueprint
+    const updateDevices = devices.update()
+
+    updateData()
 
     socket.on('error', (err) => {
       logger.error('socket.io#error', err)
