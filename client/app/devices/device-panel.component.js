@@ -34,27 +34,29 @@ const devicePanelComponent = {
             Device info
             <span class="pull-right chevron" ng-class="{bottom: devicePanel.infoPanelOpen}"></span>
           </h2>
-          <div class="device-fields" ng-show="devicePanel.infoPanelOpen">
-            <div class="device-info-fields">
-              <div class="row" ng-repeat="(key, value) in devicePanel.device" ng-if="devicePanel.device.excludedInfoFields.indexOf(key.toLowerCase()) === -1">
-                <div class="field-name">{{ ::key }}</div>
-                <div class="field-value">
-                  <span ng-if="!devicePanel.editingInfoFields">{{ value }}</span>
-                  <input type="text" ng-if="devicePanel.editingInfoFields" ng-model="devicePanel.device[key]" />
+          <div accordion is-open="devicePanel.infoPanelOpen" class="device-fields">
+            <div class="device-panel-content">
+              <div class="device-info-fields">
+                <div class="row" ng-repeat="(key, value) in devicePanel.device" ng-if="devicePanel.device.excludedInfoFields.indexOf(key.toLowerCase()) === -1">
+                  <div class="field-name">{{ ::key }}</div>
+                  <div class="field-value">
+                    <span ng-if="!devicePanel.editingInfoFields">{{ value }}</span>
+                    <input type="text" ng-if="devicePanel.editingInfoFields" ng-model="devicePanel.device[key]" />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div>
-              <button type="button" class="button primary" ng-if="!devicePanel.editingInfoFields" ng-click="devicePanel.editInfoFields()">
-                Edit
-              </button>
-              <button type="button" class="button secondary" ng-if="devicePanel.editingInfoFields" ng-click="devicePanel.updateInfoFields()">
-                Save
-              </button>
-              <button type="button" class="button delete" ng-if="devicePanel.editingInfoFields" ng-click="devicePanel.cancelInfoFieldsEditing()">
-                Cancel
-              </button>
+              <div>
+                <button type="button" class="button primary" ng-if="!devicePanel.editingInfoFields" ng-click="devicePanel.editInfoFields()">
+                  Edit
+                </button>
+                <button type="button" class="button secondary" ng-if="devicePanel.editingInfoFields" ng-click="devicePanel.updateInfoFields()">
+                  Save
+                </button>
+                <button type="button" class="button delete" ng-if="devicePanel.editingInfoFields" ng-click="devicePanel.cancelInfoFieldsEditing()">
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         </div>
