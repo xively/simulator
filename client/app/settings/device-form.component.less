@@ -3,8 +3,8 @@
 device-form {
   form {
     .form-row {
-      padding: 0.2em 1em;
-      margin-top: 13px;
+      padding: 0.2em 0;
+      margin-top: 5px;
       display: flex;
 
       label {
@@ -13,7 +13,6 @@ device-form {
         height: 34px;
         font-size: 0.8em;
         font-weight: 500;
-        width: 12%;
         margin: 0;
       }
 
@@ -34,42 +33,51 @@ device-form {
         flex: 0.88;
       }
 
+      &.header {
+        height: 15px;
+
+        .labels {
+          display: flex;
+          flex: 0.88;
+          height: 15px;
+          line-height: 15px;
+
+          .label {
+            flex: 1;
+            font-size: 12px;
+            padding-left: 5px;
+            color: @navy-blue;
+
+            &:not(:first-child) {
+              margin-left: 5px;
+            }
+          }
+        }
+      }
+
+      &.header, &.sensors {
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+
+      &.sensors {
+        background-color: fade(@light-blue, 80%);
+
+        label {
+          color: @light-gray;
+        }
+      }
+
       .inputs {
         display: flex;
         flex: 0.88;
 
-        .floating-label-group {
-          position: relative;
-          display: inline-block;
-          width: 86%;
-          vertical-align: middle;
+        .input-field {
+          font-size: 14px;
           flex: 1;
 
           &:not(:first-child) {
             margin-left: 5px;
-          }
-
-          .input-field {
-            font-size: 14px;
-            width: 100%;
-
-            &:focus ~ .label, &.ng-dirty ~ .label, &.ng-not-empty ~ .label {
-              top: -13px;
-              left: 5px;
-              font-size: 11px;
-              color: @navy-blue;
-            }
-          }
-
-          .label {
-            color: @dark-gray;
-            font-size: 14px;
-            font-weight: normal;
-            position: absolute;
-            pointer-events: none;
-            left: 10px;
-            top: 10px;
-            transition: 0.2s ease all;
           }
         }
       }
@@ -82,7 +90,6 @@ device-form {
 
       tags-input {
         flex: 0.88;
-        height: 34px;
         display: inline-block;
         vertical-align: bottom;
 
@@ -93,12 +100,12 @@ device-form {
         .tags {
           padding-left: 5px;
           font-size: 0.8em;
-          height: 34px;
           border: none;
           background: @light-gray;
           box-shadow: 2px 2px 3px 1px @box-shadow;
 
           .input {
+            width: 80px;
             background: transparent;
             border-radius: 0;
             box-shadow: none;
@@ -106,7 +113,7 @@ device-form {
 
           .tag-item {
             margin-top: 4px;
-            background: #2196F3;
+            background: @light-blue;
             color: @light-gray;
 
             .remove-button {

@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 require('./editor.component.less')
 
 const editorComponent = {
@@ -7,7 +9,8 @@ const editorComponent = {
   controllerAs: 'editor',
   bindings: {
     json: '=',
-    error: '='
+    error: '=',
+    update: '&'
   },
   /* @ngInject */
   controller ($scope) {
@@ -25,7 +28,7 @@ const editorComponent = {
         })
         editor.$blockScrolling = Infinity
       },
-      onChange: () => {
+      onChange: _.debounce(() => {
         this.error = false
 
         if (!this.json.length) {
@@ -33,11 +36,12 @@ const editorComponent = {
         }
 
         try {
-          JSON.parse(this.json)
+          const config = JSON.parse(this.json)
+          this.update({ config })
         } catch (ex) {
           this.error = true
         }
-      }
+      }, 500)
     }
   }
 }

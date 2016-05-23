@@ -2,34 +2,49 @@ const _ = require('lodash')
 
 require('./device-config.component.less')
 
+const editorIcon = require('./images/editor.svg')
+const formIcon = require('./images/form.svg')
+
 const deviceConfig = {
   template: `
-    <div class="selector">
-      <select
-        ng-model="deviceConfig.options.selectedOption"
-        ng-change="deviceConfig.options.selectedOption.select()"
-        ng-options="template.name for template in deviceConfig.options.availableOptions track by template.id">
-      </select>
-      <div class="mode" ng-click="deviceConfig.showEditor = !deviceConfig.showEditor">
-        {{ deviceConfig.showEditor ? 'Simple' : 'Advanced' }}
+    <div class="section">
+      <image-upload image="deviceConfig.image"></image-upload>
+      <div class="selector">
+        <div class="mode">
+          <div ng-class="{active: deviceConfig.advancedMode}"
+               ng-click="deviceConfig.advancedMode = true">
+            ${editorIcon}
+          </div>
+          <div ng-class="{active: !deviceConfig.advancedMode}"
+               ng-click="deviceConfig.advancedMode = false">
+            ${formIcon}
+          </div>
+        </div>
+        <select
+          ng-model="deviceConfig.options.selectedOption"
+          ng-change="deviceConfig.options.selectedOption.select()"
+          ng-options="template.name for template in deviceConfig.options.availableOptions track by template.id">
+        </select>
       </div>
     </div>
-    <div class="form" ng-show="!deviceConfig.showEditor">
-      <device-form
-        image="deviceConfig.image"
-        sensors="deviceConfig.sensors"
-        update="deviceConfig.update(deviceForm)">
-      </device-form>
-      <image-upload image="deviceConfig.image"></image-upload>
+
+    <div class="section">
+      <div class="form" ng-show="!deviceConfig.advancedMode">
+        <device-form
+          image="deviceConfig.image"
+          sensors="deviceConfig.sensors"
+          update="deviceConfig.update(deviceForm)">
+        </device-form>
+      </div>
+      <editor ng-show="deviceConfig.advancedMode"
+              json="deviceConfig.json"
+              error="deviceConfig.error"
+              update="deviceConfig.setNewConfig(config)"></editor>
     </div>
 
-    <editor ng-show="deviceConfig.showEditor" json="deviceConfig.json" error="deviceConfig.error"></editor>
-
-    <div class="buttons">
-      <button type="button" class="button delete" ng-click="deviceConfig.undoConfig()">Undo</button>
-      <button type="button" class="button primary" ng-click="deviceConfig.saveConfig()" ng-disabled="deviceConfig.error">Save</button>
-      <button type="button" class="button primary" ng-click="deviceConfig.saveAndCloseConfig()" ng-disabled="deviceConfig.error">Save & Close</button>
-      <button type="button" class="button delete pull-right" ng-click="deviceConfig.resetConfig()">Reset to default</button>
+    <div class="section buttons">
+      <button type="button" class="button reset" ng-click="deviceConfig.resetConfig()">Reset to default</button>
+      <button type="button" class="button ok pull-right" ng-click="deviceConfig.applyConfig()" ng-disabled="deviceConfig.error">OK</button>
     </div>
   `,
   controllerAs: 'deviceConfig',
@@ -37,11 +52,6 @@ const deviceConfig = {
   controller ($scope, $window, devicesService, settingsService, DEVICES_CONFIG) {
     const self = this
     this.error = false
-
-    this.config = {}
-    $scope.$watch(() => this.config, (config = {}) => {
-      this.json = JSON.stringify(config, null, 2)
-    }, true)
 
     devicesService.getDeviceTemplates().then((templates) => {
       const availableOptions = _.map((templates), (template, id) => ({
@@ -61,6 +71,14 @@ const deviceConfig = {
       }
     })
 
+    this.config = {}
+    $scope.$watch(() => this.config, (config = {}) => {
+      this.json = JSON.stringify(config, null, 2)
+      if (this.options && this.options.selectedOption) {
+        settingsService.updateDeviceConfig(this.options.selectedOption.name, this.json)
+      }
+    }, true)
+
     this.update = (deviceForm) => {
       // apply image and width
       this.config.image = deviceForm.image
@@ -76,7 +94,7 @@ const deviceConfig = {
             min: sensor.min || 0,
             max: sensor.max || 100,
             wiggle: false,
-            unit: 'm',
+            unit: sensor.unit,
             tooltip: {
               position: {
                 top: sensor.top || 100,
@@ -98,6 +116,7 @@ const deviceConfig = {
           sensors[sensor.text] = {
             min: sensor.min,
             max: sensor.max,
+            unit: sensor.unit,
             [tooltipOrWidget]: {
               position: {
                 top: sensor.top,
@@ -110,19 +129,8 @@ const deviceConfig = {
       }
     }
 
-    this.undoConfig = () => {
-      this.setNewConfig(this.savedConfig)
-    }
-    this.saveConfig = () => {
-      settingsService.updateDeviceConfig(this.options.selectedOption.name, this.json).then((config) => {
-        this.setNewConfig(config)
-        this.savedConfig = _.cloneDeep(config)
-      })
-    }
-    this.saveAndCloseConfig = () => {
-      settingsService.updateDeviceConfig(this.options.selectedOption.name, this.json).then(() => {
-        $window.location.reload(true)
-      })
+    this.applyConfig = () => {
+      $window.location.reload(true)
     }
     this.resetConfig = () => {
       if ($window.confirm('Do you really want to reset the device config?')) {
@@ -141,6 +149,7 @@ const deviceConfig = {
         text,
         min: sensor.min,
         max: sensor.max,
+        unit: sensor.unit,
         top: ((sensor.tooltip || sensor.widget || {}).position || {}).top,
         left: ((sensor.tooltip || sensor.widget || {}).position || {}).left
       }))
