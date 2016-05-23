@@ -119,35 +119,21 @@ function deviceDemoRoute ($stateProvider) {
               <h2>No image available</h2>
             </div>
 
-            <div class="device-information">
-              <div class="device-fields">
-                <div class="header row">
-                  <div class="field-name">Field name</div>
-                  <div class="field-value">Value</div>
+            <div class="device-control-sliders" ng-if="demo.sensorsNotConfigured.length">
+              <div class="header row">
+                <div class="channel-name">Channel name</div>
+                <div class="control">Control</div>
+                <div class="value">Value</div>
+              </div>
+              <div class="row" ng-repeat="(name, sensor) in demo.device.sensors" ng-if="demo.sensorsNotConfigured.indexOf(name) > -1">
+                <div class="channel-name">{{ name }}</div>
+                <div class="control">
+                  <input type="range" min="0" max="100" ng-model="demo.sensors[name]" ng-change="demo.update(name, demo.sensors[name])" ng-disabled="!demo.device.ok">
                 </div>
-                <div class="row" ng-repeat="(key, value) in demo.device" ng-if="demo.device.excludedInfoFields.indexOf(key.toLowerCase()) === -1">
-                  <div class="field-name">{{ key }}</div>
-                  <div class="field-value">{{ value }}</div>
+                <div class="value">
+                  {{ demo.sensors[name] }}
                 </div>
               </div>
-
-              <div class="device-control-sliders" ng-if="demo.sensorsNotConfigured.length">
-                <div class="header row">
-                  <div class="channel-name">Channel name</div>
-                  <div class="control">Control</div>
-                  <div class="value">Value</div>
-                </div>
-                <div class="row" ng-repeat="(name, sensor) in demo.device.sensors" ng-if="demo.sensorsNotConfigured.indexOf(name) > -1">
-                  <div class="channel-name">{{ name }}</div>
-                  <div class="control">
-                    <input type="range" min="0" max="100" ng-model="demo.sensors[name]" ng-change="demo.update(name, demo.sensors[name])" ng-disabled="!demo.device.ok">
-                  </div>
-                  <div class="value">
-                    {{ demo.sensors[name] }}
-                  </div>
-                </div>
-              </div>
-              <div style="clear: both;"></div>
             </div>
           </div>
         </div>
@@ -170,15 +156,6 @@ function deviceDemoRoute ($stateProvider) {
     controller ($log, $scope, $rootScope, $state, $location, $window, device, templates, devicesService, socketService, DEVICES_CONFIG, CONFIG, EVENTS) {
       device.template = templates[device.deviceTemplateId]
       this.config = DEVICES_CONFIG[device.template.name] || {}
-
-      const EXCLUDED_INFO_FIELDS = ['excludedInfoFields', 'simulate', 'subscribe', 'template', 'update', 'sensors', 'ok', 'channels']
-      device.excludedInfoFields = EXCLUDED_INFO_FIELDS
-        .concat(DEVICES_CONFIG.excludedDeviceInfoFields, this.config.excludedDeviceInfoFields)
-        .filter(Boolean)
-        .map((fieldName) => {
-          return fieldName.toLowerCase()
-        })
-
       this.sensorsNotConfigured = _.pullAll(Object.keys(device.sensors), Object.keys(this.config.sensors || {}))
       this.sensors = this.sensorsNotConfigured.reduce((sensors, key) => {
         sensors[key] = 50
