@@ -178,6 +178,7 @@ class Device {
   handleJSON (message) {
     if (message.command === 'factory-reset') {
       logger.info('Device#handleJSON: factory reset command received')
+      this.factoryReset()
       return this.logger.onFactoryReset()
     }
     return extensions.handleJSON(this, message)
