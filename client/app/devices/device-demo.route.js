@@ -19,6 +19,14 @@ function deviceDemoRoute ($stateProvider) {
     url: '/:id/demo?header',
     template: `
       <div class="device-demo">
+        <modal name="rules">
+          <rules></rules>
+        </modal>
+
+        <modal name="settings">
+          <settings></settings>
+        </modal>
+        <!--
         <div class="modal" ng-click="demo.closeModals()" ng-show="demo.modals.rules">
           <div class="content modal-body" ng-click="demo.block($event)">
             <div class="modal-header">
@@ -40,6 +48,7 @@ function deviceDemoRoute ($stateProvider) {
             </div>
           </div>
         </div>
+        -->
 
         <div class="left-side" ng-show="demo.mobileView">
           <div class="chevron-left" ng-click="demo.toggleMobileView()" ng-show="demo.mobileView"> ${chevronLeft} </div>
@@ -73,11 +82,11 @@ function deviceDemoRoute ($stateProvider) {
                   <span class="navigation-item-icon pause-button" ng-show="demo.device.simulate">${buttonPause}</span>
                   <span class="navigation-item-text">{{ demo.device.simulate ? '\&nbsp;Stop\&nbsp;' : 'Start' }} simulation</span>
                 </div>
-                <div class="navigation-item" ng-click="demo.toggleModal('settings')">
+                <div class="navigation-item" ng-click="demo.openModal('settings')">
                   <span class="navigation-item-icon">${settingsIcon}</span>
                   <span class="navigation-item-text">Settings</span>
                 </div>
-                <div class="navigation-item" ng-click="demo.toggleModal('rules')">
+                <div class="navigation-item" ng-click="demo.openModal('rules')">
                   <span class="navigation-item-icon">${rulesIcon}</span>
                   <span class="navigation-item-text">Rules</span>
                 </div>
@@ -153,7 +162,7 @@ function deviceDemoRoute ($stateProvider) {
       }
     },
     /* @ngInject */
-    controller ($log, $scope, $rootScope, $state, $location, $window, $document, device, templates, devicesService, socketService, DEVICES_CONFIG, CONFIG, EVENTS) {
+    controller ($log, $scope, $rootScope, $state, $location, $window, $document, device, templates, devicesService, socketService, modalService, DEVICES_CONFIG, CONFIG, EVENTS) {
       device.template = templates[device.deviceTemplateId]
       this.config = DEVICES_CONFIG[device.template.name] || {}
 
@@ -174,11 +183,6 @@ function deviceDemoRoute ($stateProvider) {
         _.forEach(sensors, (sensor, name) => { this.sensors[name] = sensor.numericValue })
       }, true)
       this.device = device
-
-      this.modals = {
-        settings: false,
-        rules: false
-      }
 
       $scope.$watch(() => this.device.ok, (ok, wasOk) => {
         if (!ok) {
@@ -213,24 +217,14 @@ function deviceDemoRoute ($stateProvider) {
         }
       })
 
-      const body = angular.element(document).find('body')
-      this.toggleModal = (modal) => {
-        if (modal === 'rules' && CONFIG.habanero.embedded) {
+      this.openModal = (name) => {
+        if (name === 'rules' && CONFIG.habanero.embedded) {
           return $window.open('/goto-orchestrator', '_blank')
         }
-        this.modals[modal] = !this.modals[modal]
-
-        body.hasClass('scroll-lock') ? body.removeClass('scroll-lock') : body.addClass('scroll-lock')
+        modalService.open(name)
       }
 
       this.block = ($event) => { $event.stopPropagation() }
-
-      this.closeModals = () => {
-        _.forEach(this.modals, (modal, name) => {
-          this.modals[name] = false
-        })
-        body.removeClass('scroll-lock')
-      }
 
       // simulate
       this.toggleSimulation = () => {
@@ -268,13 +262,6 @@ function deviceDemoRoute ($stateProvider) {
       this.toggleMobileView = () => {
         this.mobileView = !this.mobileView
       }
-
-      // close modals on esc
-      $document.bind('keyup', (e) => {
-        if (e.keyCode === 27) {
-          $scope.$applyAsync(() => this.closeModals())
-        }
-      })
     }
   })
 }

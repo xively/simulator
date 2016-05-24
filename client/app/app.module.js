@@ -1,4 +1,5 @@
 require('./app.less')
+require('./modal.component.less') // FIXME
 
 const angular = require('angular')
 const commonModule = require('./common')

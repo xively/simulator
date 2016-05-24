@@ -4,6 +4,7 @@ image-upload {
   display: block;
   height: 100%;
   text-align: center;
+  cursor: pointer;
 
   .upload-field {
     height: 100%;
@@ -33,5 +34,52 @@ image-upload {
 
   small {
     color: @dark-gray;
+  }
+
+  .drop-box {
+    background: #F8F8F8;
+    border: 2px dashed #DDD;
+    width: 170px;
+    text-align: center;
+    padding: 50px 10px;
+    margin: 10px auto;
+    cursor: pointer;
+
+    &.accept {
+      border-color: @navy-blue;
+    }
+
+    &.reject {
+      border-color: @error-color;
+    }
+  }
+
+  .input-field {
+    width: 80%;
+    margin: 0;
+    height: 34px;
+    font-size: 0.8em;
+    border: none;
+    border-radius: 0;
+    background: @light-gray;
+    box-shadow: 2px 2px 3px 1px @box-shadow;
+    appearance: none;
+    padding: 0 12px;
+    margin: 0 auto;
+    margin-top: 50px;
+  }
+
+  .buttons {
+    position: absolute;
+    right: 0;
+    bottom: 20px;
+    left: 0;
+
+    button {
+      width: 70px;
+      margin: 0 20px;
+      color: @navy-blue;
+      border-color: @navy-blue;
+    }
   }
 }

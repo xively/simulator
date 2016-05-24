@@ -1,0 +1,65 @@
+modal {
+  cursor: default;
+
+  .modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    background: fade(#000000, 80%);
+    opacity: 1;
+    transition: all 0.3s;
+
+    &.ng-hide {
+      opacity: 0;
+
+      & > .scale {
+        transform: scale(0.7);
+      }
+    }
+
+    & > .scale {
+      transform: scale(1);
+      transition: all 0.3s;
+    }
+
+    .scale {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+
+    .modal-body {
+      z-index: 101;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 960px;
+      height: 70%;
+      overflow: hidden;
+
+      .modal-header {
+        .close {
+          position: absolute;
+          right: 15px;
+          top: 15px;
+          font-size: 1.2em;
+          cursor: pointer;
+        }
+      }
+
+      .modal-content {
+        height: 100%;
+      }
+    }
+  }
+}
+
+.scroll-lock {
+  overflow: hidden;
+}

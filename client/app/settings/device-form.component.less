@@ -3,9 +3,10 @@
 device-form {
   form {
     .form-row {
-      padding: 0.2em 0;
+      padding: 2px 5px;
       margin-top: 5px;
       display: flex;
+      box-sizing: border-box;
 
       label {
         flex: 0.12;
@@ -14,6 +15,7 @@ device-form {
         font-size: 0.8em;
         font-weight: 500;
         margin: 0;
+        padding-left: 10px;
       }
 
       input {
@@ -45,26 +47,18 @@ device-form {
           .label {
             flex: 1;
             font-size: 12px;
-            padding-left: 5px;
+            padding-left: 10px;
+            margin-left: 5px;
             color: @navy-blue;
-
-            &:not(:first-child) {
-              margin-left: 5px;
-            }
           }
         }
       }
 
-      &.header, &.sensors {
-        padding-left: 5px;
-        padding-right: 5px;
-      }
-
       &.sensors {
-        background-color: fade(@light-blue, 80%);
-
         label {
           color: @light-gray;
+          background-color: @light-blue;
+          box-shadow: 2px 2px 3px 1px @box-shadow;
         }
       }
 
@@ -75,10 +69,7 @@ device-form {
         .input-field {
           font-size: 14px;
           flex: 1;
-
-          &:not(:first-child) {
-            margin-left: 5px;
-          }
+          margin-left: 5px;
         }
       }
 
@@ -115,6 +106,7 @@ device-form {
             margin-top: 4px;
             background: @light-blue;
             color: @light-gray;
+            border: none;
 
             .remove-button {
               color: @light-gray;

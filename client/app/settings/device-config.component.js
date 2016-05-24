@@ -63,9 +63,10 @@ const deviceConfig = {
         select () {
           self.setNewConfig(DEVICES_CONFIG[this.name])
         }
-      }))
+      })).filter((option) => option.name !== 'Default Device Template')
 
       const selectedOption = availableOptions[0]
+      availableOptions[0].select()
 
       this.options = {
         availableOptions,
@@ -82,53 +83,55 @@ const deviceConfig = {
     }, true)
 
     this.update = (deviceForm) => {
-      // apply image and width
-      this.config.image = deviceForm.image
-      this.config.width = this.config.width || 800
+      $scope.$applyAsync(() => {
+        // apply image and width
+        this.config.image = deviceForm.image
+        this.config.width = this.config.width || 800
 
-      if (deviceForm.sensors) {
-        const sensors = deviceForm.sensors.map((sensor) => sensor.text)
-        // remove sensors
-        this.config.sensors = _.pick(this.config.sensors, sensors)
-        // add new sensors
-        this.config.sensors = _.defaults(this.config.sensors, deviceForm.sensors.reduce((sensors, sensor, idx) => {
-          sensors[sensor.text] = {
-            min: sensor.min,
-            max: sensor.max,
-            wiggle: false,
-            unit: sensor.unit,
-            tooltip: {
-              position: {
-                top: sensor.top,
-                left: sensor.left
-              },
-              labelPosition: {
-                top: 0,
-                left: 20
-              },
-              distance: 100,
-              direction: 'bottom'
-            }
-          }
-          return sensors
-        }, {}))
-        // modify existing sensors
-        _.merge(this.config.sensors, deviceForm.sensors.reduce((sensors, sensor) => {
-          const tooltipOrWidget = this.config.sensors[sensor.text].widget ? 'widget' : 'tooltip'
-          sensors[sensor.text] = {
-            min: sensor.min,
-            max: sensor.max,
-            unit: sensor.unit,
-            [tooltipOrWidget]: {
-              position: {
-                top: sensor.top,
-                left: sensor.left
+        if (deviceForm.sensors) {
+          const sensors = deviceForm.sensors.map((sensor) => sensor.text)
+          // remove sensors
+          this.config.sensors = _.pick(this.config.sensors, sensors)
+          // add new sensors
+          this.config.sensors = _.defaults(this.config.sensors, deviceForm.sensors.reduce((sensors, sensor, idx) => {
+            sensors[sensor.text] = {
+              min: sensor.min,
+              max: sensor.max,
+              wiggle: false,
+              unit: sensor.unit,
+              tooltip: {
+                position: {
+                  top: sensor.top,
+                  left: sensor.left
+                },
+                labelPosition: {
+                  top: 0,
+                  left: 20
+                },
+                distance: 100,
+                direction: 'bottom'
               }
             }
-          }
-          return sensors
-        }, {}))
-      }
+            return sensors
+          }, {}))
+          // modify existing sensors
+          _.merge(this.config.sensors, deviceForm.sensors.reduce((sensors, sensor) => {
+            const tooltipOrWidget = this.config.sensors[sensor.text].widget ? 'widget' : 'tooltip'
+            sensors[sensor.text] = {
+              min: sensor.min,
+              max: sensor.max,
+              unit: sensor.unit,
+              [tooltipOrWidget]: {
+                position: {
+                  top: sensor.top,
+                  left: sensor.left
+                }
+              }
+            }
+            return sensors
+          }, {}))
+        }
+      })
     }
 
     this.applyConfig = () => {
@@ -142,19 +145,25 @@ const deviceConfig = {
       }
     }
 
-    this.setNewConfig = (config = {}) => {
-      Object.keys(this.config).forEach((key) => delete this.config[key])
-      _.assign(this.config, config)
+    this.setNewConfig = (config) => {
+      if (!config) {
+        return
+      }
 
-      this.image = this.config.image
-      this.sensors = _.map((this.config.sensors || {}), (sensor, text) => ({
-        text,
-        min: sensor.min,
-        max: sensor.max,
-        unit: sensor.unit,
-        top: ((sensor.tooltip || sensor.widget || {}).position || {}).top,
-        left: ((sensor.tooltip || sensor.widget || {}).position || {}).left
-      })) // .concat(this.options.selectedOption.channels), 'text')
+      $scope.$applyAsync(() => {
+        Object.keys(this.config).forEach((key) => delete this.config[key])
+        _.assign(this.config, config)
+
+        this.image = this.config.image
+        this.sensors = _.map((this.config.sensors || {}), (sensor, text) => ({
+          text,
+          min: sensor.min,
+          max: sensor.max,
+          unit: sensor.unit,
+          top: ((sensor.tooltip || sensor.widget || {}).position || {}).top,
+          left: ((sensor.tooltip || sensor.widget || {}).position || {}).left
+        })) // .concat(this.options.selectedOption.channels), 'text')
+      })
     }
   }
 }

@@ -14,8 +14,11 @@ const bindHtmlCompileDirective = require('./bind-html-compile.directive')
 const config = require('./common.config')
 const run = require('./common.run')
 
+const commonComponents = require('./components')
+
 const common = angular.module('simulator.common', [
-  require('angular-ui-router')
+  require('angular-ui-router'),
+  commonComponents
 ])
   .constant('CONFIG', window.APP_CONFIG || {})
   .constant('DEVICES_CONFIG', window.DEVICES_CONFIG || {})
