@@ -57,9 +57,11 @@ const deviceConfig = {
       const availableOptions = _.map((templates), (template, id) => ({
         id,
         name: template.name,
+        channels: template.channelTemplates
+          .filter((channel) => channel.name !== 'control')
+          .map((channel) => ({ text: channel.name })),
         select () {
-          self.setNewConfig(DEVICES_CONFIG[this.name] || {})
-          self.savedConfig = _.cloneDeep(self.config)
+          self.setNewConfig(DEVICES_CONFIG[this.name])
         }
       }))
 
@@ -91,14 +93,14 @@ const deviceConfig = {
         // add new sensors
         this.config.sensors = _.defaults(this.config.sensors, deviceForm.sensors.reduce((sensors, sensor, idx) => {
           sensors[sensor.text] = {
-            min: sensor.min || 0,
-            max: sensor.max || 100,
+            min: sensor.min,
+            max: sensor.max,
             wiggle: false,
             unit: sensor.unit,
             tooltip: {
               position: {
-                top: sensor.top || 100,
-                left: sensor.left || idx * 50
+                top: sensor.top,
+                left: sensor.left
               },
               labelPosition: {
                 top: 0,
@@ -140,19 +142,19 @@ const deviceConfig = {
       }
     }
 
-    this.setNewConfig = (config) => {
+    this.setNewConfig = (config = {}) => {
       Object.keys(this.config).forEach((key) => delete this.config[key])
       _.assign(this.config, config)
 
       this.image = this.config.image
-      this.sensors = _.map(this.config.sensors || [], (sensor, text) => ({
+      this.sensors = _.map((this.config.sensors || {}), (sensor, text) => ({
         text,
         min: sensor.min,
         max: sensor.max,
         unit: sensor.unit,
         top: ((sensor.tooltip || sensor.widget || {}).position || {}).top,
         left: ((sensor.tooltip || sensor.widget || {}).position || {}).left
-      }))
+      })) // .concat(this.options.selectedOption.channels), 'text')
     }
   }
 }

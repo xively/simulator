@@ -24,11 +24,11 @@ const deviceFormComponent = {
       <div class="form-row sensors" ng-repeat="sensor in deviceForm.sensors track by sensor.text">
         <label>{{ sensor.text }}</label>
         <div class="inputs">
-            <input type="number" class="input-field" placeholder="Minimum" ng-model="sensor.min" ng-model-options="{ debounce: 500 }"/>
-            <input type="number" class="input-field" placeholder="Maximum" ng-model="sensor.max" ng-model-options="{ debounce: 500 }"/>
-            <input type="number" class="input-field" placeholder="Top [px]" ng-model="sensor.top" ng-model-options="{ debounce: 500 }"/>
-            <input type="number" class="input-field" placeholder="Left [px]" ng-model="sensor.left" ng-model-options="{ debounce: 500 }"/>
-            <input type="text" class="input-field" placeholder="Unit" ng-model="sensor.unit" ng-model-options="{ debounce: 500 }"/>
+            <input type="number" class="input-field" placeholder="Minimum" ng-model="sensor.min"/>
+            <input type="number" class="input-field" placeholder="Maximum" ng-model="sensor.max"/>
+            <input type="number" class="input-field" placeholder="Top [px]" ng-model="sensor.top"/>
+            <input type="number" class="input-field" placeholder="Left [px]" ng-model="sensor.left"/>
+            <input type="text" class="input-field" placeholder="Unit" ng-model="sensor.unit"/>
         </div>
       </div>
     </form>
