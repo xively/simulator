@@ -37,6 +37,7 @@ image-upload {
   }
 
   .drop-box {
+    position: relative;
     background: #F8F8F8;
     border: 2px dashed #DDD;
     width: 170px;
@@ -44,6 +45,7 @@ image-upload {
     padding: 50px 10px;
     margin: 10px auto;
     cursor: pointer;
+    overflow: hidden;
 
     &.accept {
       border-color: @navy-blue;
@@ -51,6 +53,17 @@ image-upload {
 
     &.reject {
       border-color: @error-color;
+    }
+
+    img {
+      position: absolute;
+      max-width: 100%;
+      max-height: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
     }
   }
 

@@ -17,7 +17,8 @@ const imageUploadComponent = {
                ngf-select ngf-drop
                ngf-drag-over-class="{pattern: 'image/*', accept:'accept', reject:'reject', delay:100}"
                ngf-accept="'image/*'" accept="image/*">
-               Select or Drop Image
+               <span>Click to select or Drop Image</span>
+               <img ng-show="imageUpload.newFile" ngf-src="imageUpload.newFile"/>
           </div>
           <div class="buttons">
             <button class="button" ng-disabled="!imageUpload.newFile" ng-click="imageUpload.uploadImage()">Upload</button>
