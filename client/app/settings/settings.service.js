@@ -1,6 +1,6 @@
 /* @ngInject */
-function settingsFactory ($log, $http) {
-  return new class RulesService {
+function settingsFactory ($log, $http, utils) {
+  const service = {
     /**
      * Update device config
      */
@@ -16,7 +16,7 @@ function settingsFactory ($log, $http) {
         $log.error('settingsService#updateDeviceConfig error:', err)
         throw err
       })
-    }
+    },
 
     getOriginalDeviceConfig (templateName) {
       return $http({
@@ -29,7 +29,7 @@ function settingsFactory ($log, $http) {
         $log.error('settingsService#getOriginalDeviceConfig error:', err)
         throw err
       })
-    }
+    },
 
     uploadImage (deviceImage) {
       return $http({
@@ -44,6 +44,10 @@ function settingsFactory ($log, $http) {
       })
     }
   }
+
+  service.updateDeviceConfigDebounce = utils.debounce(service.updateDeviceConfig.bind(service), 500)
+
+  return service
 }
 
 module.exports = settingsFactory

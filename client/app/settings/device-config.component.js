@@ -91,7 +91,7 @@ const deviceConfig = {
     $scope.$watch(() => this.config, (config = {}) => {
       this.json = JSON.stringify(config, null, 2)
       if (this.options && this.options.selectedOption) {
-        settingsService.updateDeviceConfig(this.options.selectedOption.name, this.json)
+        settingsService.updateDeviceConfigDebounce(this.options.selectedOption.name, this.json)
       }
     }, true)
 
