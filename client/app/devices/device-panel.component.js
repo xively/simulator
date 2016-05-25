@@ -81,7 +81,7 @@ const devicePanelComponent = {
 
     const EXCLUDED_INFO_FIELDS = ['excludedInfoFields', 'simulate', 'subscribe', 'template', 'update', 'sensors', 'ok', 'channels']
     this.device.excludedInfoFields = EXCLUDED_INFO_FIELDS
-      .concat(DEVICES_CONFIG.excludedDeviceInfoFields, this.config.excludedDeviceInfoFields)
+      .concat(DEVICES_CONFIG.general.excludedDeviceInfoFields, this.config.excludedDeviceInfoFields)
       .filter(Boolean)
       .map((fieldName) => {
         return fieldName.toLowerCase()
