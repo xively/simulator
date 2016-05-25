@@ -111,7 +111,7 @@ function deviceDemoRoute ($stateProvider) {
                 </select>
               </div>
             </div>
-            <div class="device-container" style="width: {{ ::demo.config.width }}px" ng-if="demo.config.image">
+            <div class="device-container" style="width: {{ ::demo.config.width }}px; height: {{ ::demo.config.height }}px" ng-if="demo.config.image">
               <div ng-repeat="(name, sensor) in ::demo.config.sensors">
                 <tooltip ng-if="sensor.tooltip"
                   options="sensor"

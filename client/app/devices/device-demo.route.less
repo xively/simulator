@@ -1,6 +1,5 @@
 @import '../style/variables.less';
 
-@width: 680px;
 @row-height: 30px;
 @border: 2px solid @light-gray;
 @navigation-height: 70px;
@@ -173,11 +172,14 @@
 
     .device-container {
       position: relative;
-      width: @width;
+      width: 800px;
       margin: 0 auto;
 
       .device-image {
-        width: 100%;
+        display: block;
+        max-width: 100%;
+        max-height: 800px;
+        margin: 0 auto;
         border-radius: 20px;
         user-select: none;
       }
