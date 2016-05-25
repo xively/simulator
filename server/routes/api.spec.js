@@ -25,22 +25,6 @@ describe('API endpoints (/api/*)', () => {
     })
   })
 
-  describe('PUT /inventory/:verb/:id', () => {
-    it('should update an inventory', function * () {
-      this.sandbox.stub(database, 'updateInventory')
-        .withArgs('verb', 'id')
-        .returnsWithResolve(['data'])
-
-      const resp = yield request(server.listen())
-        .put('/api/inventory/verb/id')
-        .json(true)
-        .expect(200)
-        .end()
-
-      expect(resp.body).to.eql('data')
-    })
-  })
-
   describe('GET /rules', () => {
     it('should get rules', function * () {
       this.sandbox.stub(database, 'selectRules').returnsWithResolve(['data'])
@@ -206,6 +190,22 @@ describe('API endpoints (/api/*)', () => {
         .end()
 
       expect(resp.body).to.eql({})
+    })
+  })
+
+  describe('GET /images/:id', () => {
+    it('should return with an image', function * () {
+      const selectImageStub = this.sandbox.stub(database, 'selectImage').returnsWithResolve([{ image: 'image' }])
+
+      const resp = yield request(server.listen())
+        .get('/api/images/1')
+        .json(true)
+        .expect(200)
+        .expect('Content-Type', 'image/*; charset=utf-8')
+        .end()
+
+      expect(resp.body).to.eql('image')
+      expect(selectImageStub).to.be.calledWith('1')
     })
   })
 })

@@ -50,12 +50,16 @@ const imageUploadComponent = {
     }
 
     this.uploadImage = () => {
-      Upload.base64DataUrl(this.newFile)
-        .then(settingsService.uploadImage)
-        .then((response) => {
-          this.image = response.imageUrl
-          this.closeModal()
-        })
+      Upload.upload({
+        url: '/api/images',
+        data: {
+          file: this.newFile
+        }
+      })
+      .then((response) => {
+        this.image = response.data.imageUrl
+        this.closeModal()
+      })
     }
 
     this.applyImage = () => {

@@ -29,19 +29,6 @@ function settingsFactory ($log, $http, utils) {
         $log.error('settingsService#getOriginalDeviceConfig error:', err)
         throw err
       })
-    },
-
-    uploadImage (deviceImage) {
-      return $http({
-        method: 'POST',
-        url: '/api/upload',
-        data: { deviceImage }
-      })
-      .then((res) => res.data || {})
-      .catch((err) => {
-        $log.error('settingsService#uploadImage error:', err)
-        throw err
-      })
     }
   }
 

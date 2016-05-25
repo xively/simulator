@@ -2,7 +2,6 @@
 
 const fs = require('fs')
 const createKnex = require('knex')
-const moment = require('moment')
 const config = require('../../config/server')
 
 const knex = createKnex({
@@ -112,27 +111,16 @@ function deleteRule (id) {
     .returning('*')
 }
 
-// Inventory
-function insertInventory (data) {
-  return knex('inventory')
-    .insert(data)
+// Image
+function insertImage (image) {
+  return knex('images')
+    .insert({ image })
     .returning('*')
 }
 
-function updateInventory (verb, inventoryId) {
-  const updateQuery = {}
-  if (verb === 'sell') {
-    updateQuery.sold = true
-    updateQuery.soldDate = moment.utc().toDate()
-  } else if (verb === 'reserve') {
-    updateQuery.reserved = true
-  } else {
-    throw new Error(`Tried to ${verb} the inventory`)
-  }
-
-  return knex('inventory')
-    .where('id', inventoryId)
-    .update(updateQuery)
+function selectImage (imageId) {
+  return knex('images')
+    .where('id', imageId)
     .returning('*')
 }
 
@@ -146,7 +134,6 @@ function runScriptFile (fileName) {
 function truncateTables () {
   return Promise.all([
     knex('firmware').del(),
-    knex('inventory').del(),
     knex('rules').del(),
     knex('application_config').del(),
     knex('device_config').del()
@@ -173,8 +160,8 @@ module.exports = {
   updateRule,
   deleteRule,
 
-  insertInventory,
-  updateInventory,
+  insertImage,
+  selectImage,
 
   runScriptFile,
   truncateTables
