@@ -57,11 +57,24 @@ const deviceConfig = {
       const availableOptions = _.map((templates), (template, id) => ({
         id,
         name: template.name,
-        channels: template.channelTemplates
-          .filter((channel) => channel.name !== 'control')
-          .map((channel) => ({ text: channel.name })),
         select () {
-          self.setNewConfig(DEVICES_CONFIG[this.name])
+          const defaultConfig = {
+            image: '',
+            width: 800,
+            widgets: [],
+            sensors: template.channelTemplates
+              .filter((channel) => channel.name !== 'control')
+              .reduce((sensors, channel) => {
+                sensors[channel.name] = {
+                  min: 0,
+                  max: 100,
+                  wiggle: false,
+                  unit: ''
+                }
+                return sensors
+              }, {})
+          }
+          self.setNewConfig(DEVICES_CONFIG[this.name] || defaultConfig)
         }
       })).filter((option) => option.name !== 'Default Device Template')
 
@@ -116,12 +129,20 @@ const deviceConfig = {
           }, {}))
           // modify existing sensors
           _.merge(this.config.sensors, deviceForm.sensors.reduce((sensors, sensor) => {
-            const tooltipOrWidget = this.config.sensors[sensor.text].widget ? 'widget' : 'tooltip'
             sensors[sensor.text] = {
               min: sensor.min,
               max: sensor.max,
-              unit: sensor.unit,
-              [tooltipOrWidget]: {
+              unit: sensor.unit
+            }
+
+            let tooltipOrWidget
+            if (this.config.sensors[sensor.text].widget) {
+              tooltipOrWidget = 'widget'
+            } else if (this.config.sensors[sensor.text].tooltip) {
+              tooltipOrWidget = 'tooltip'
+            }
+            if (tooltipOrWidget) {
+              sensors[sensor.text][tooltipOrWidget] = {
                 position: {
                   top: sensor.top,
                   left: sensor.left
@@ -162,7 +183,7 @@ const deviceConfig = {
           unit: sensor.unit,
           top: ((sensor.tooltip || sensor.widget || {}).position || {}).top,
           left: ((sensor.tooltip || sensor.widget || {}).position || {}).left
-        })) // .concat(this.options.selectedOption.channels), 'text')
+        }))
       })
     }
   }
