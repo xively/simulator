@@ -3,15 +3,9 @@
 const deviceConfig = require('../../config/devices')
 const database = require('../database')
 const rulesEngine = require('../rules')
-const cloudinary = require('../util').cloudinary
 
 function getFirmwareById (req, res) {
   database.selectFirmware(req.params.id)
-    .then((rows) => res.json(rows.length ? rows[0] : []))
-}
-
-function updateInventory (req, res) {
-  database.updateInventory(req.params.verb, req.params.id)
     .then((rows) => res.json(rows.length ? rows[0] : []))
 }
 
@@ -72,14 +66,24 @@ function getOriginalDeviceConfig (req, res) {
   res.json(deviceConfig[req.query.templateName] || {})
 }
 
-function upload (req, res) {
-  cloudinary.upload(req.body.deviceImage)
-    .then((result) => res.json({ imageUrl: result.secure_url }))
+function getImageById (req, res) {
+  database.selectImage(req.params.id)
+    .then((result) => {
+      res.set('Content-Type', 'image/*')
+      res.send(result[0].image)
+    })
+    .catch(() => {
+      res.status(404).end()
+    })
+}
+
+function uploadImage (req, res) {
+  database.insertImage(req.file.buffer)
+    .then((result) => res.json({ imageUrl: `/api/images/${result[0].id}` }))
 }
 
 module.exports = {
   getFirmwareById,
-  updateInventory,
   getRules,
   getRuleById,
   createRule,
@@ -87,5 +91,6 @@ module.exports = {
   updateRule,
   updateDeviceConfig,
   getOriginalDeviceConfig,
-  upload
+  getImageById,
+  uploadImage
 }

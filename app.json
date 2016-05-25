@@ -13,8 +13,7 @@
   "addons": [
     "xively:test",
     "heroku-postgresql:hobby-dev",
-    "heroku-redis:hobby-dev",
-    "cloudinary:starter"
+    "heroku-redis:hobby-dev"
   ],
   "scripts": {
     "postdeploy": "npm run provision"

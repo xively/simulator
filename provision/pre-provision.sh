@@ -31,7 +31,6 @@ heroku apps:create $app_name
 heroku addons:create xively:test
 heroku addons:create heroku-postgresql:hobby-dev
 heroku addons:create heroku-redis:hobby-dev
-heroku addons:create cloudinary:starter
 
 # Write environment vars to .env file
 heroku config -s | tee "$script_dir/../.env"

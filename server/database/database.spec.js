@@ -1,7 +1,5 @@
 'use strict'
 
-const moment = require('moment')
-const _ = require('lodash')
 const expect = require('chai').expect
 const database = require('./database')
 
@@ -26,13 +24,6 @@ describe('Database', () => {
     config: {
       foo: 'bar'
     }
-  }
-  const inventoryMock = {
-    serial: 'serial1234567',
-    soldDate: moment.utc().toDate(),
-    soldTo: 'user',
-    sold: false,
-    reserved: false
   }
   const ruleMock = {
     config: 'config'
@@ -116,42 +107,6 @@ describe('Database', () => {
     })
   })
 
-  describe('inventory', () => {
-    it('should insert new inventory into the DB', function * () {
-      const inventory = yield database.insertInventory(inventoryMock)
-
-      delete inventory[0].id
-      expect(inventory[0]).to.eql(inventoryMock)
-    })
-
-    it('should update inventory by id when sell is passed', function * () {
-      const inventoryData = yield database.insertInventory(inventoryMock)
-      const inventory = yield database.updateInventory('sell', inventoryData[0].id)
-
-      expect(inventory.length).to.eql(1)
-      expect(inventory[0].sold).to.eql(true)
-    })
-
-    it('should update inventory by id  when reserve is passed', function * () {
-      const inventoryData = yield database.insertInventory(inventoryMock)
-      const inventory = yield database.updateInventory('reserve', inventoryData[0].id)
-
-      expect(inventory.length).to.eql(1)
-      expect(inventory[0].reserved).to.eql(true)
-    })
-
-    it('should throw an error when invalid verb is passed', function * () {
-      const inventoryData = yield database.insertInventory(inventoryMock)
-      try {
-        yield database.updateInventory('invaliddate', inventoryData[0].id)
-      } catch (ex) {
-        return expect(ex.message).to.be.eql('Tried to invaliddate the inventory')
-      }
-
-      throw new Error('Should not get here')
-    })
-  })
-
   describe('rules', () => {
     it('should insert new rule into the DB', function * () {
       const rule = yield database.insertRule(ruleMock)
@@ -201,25 +156,15 @@ describe('Database', () => {
 
   describe('firmware', () => {
     it('should insert new firmware into DB', function * () {
-      const inventoryData = yield database.insertInventory(inventoryMock)
-      const firmware = yield database.insertFirmware(_.extend({}, firmwareMock, {
-        id: inventoryData[0].id
-      }))
+      const firmware = yield database.insertFirmware(firmwareMock)
 
       delete firmware[0].id
       expect(firmware[0]).to.eql(firmwareMock)
     })
 
     it('should find all firmwares in the DB', function * () {
-      const inventoryData1 = yield database.insertInventory(inventoryMock)
-      const inventoryData2 = yield database.insertInventory(inventoryMock)
-
-      yield database.insertFirmware(_.extend({}, firmwareMock, {
-        id: inventoryData1[0].id
-      }))
-      yield database.insertFirmware(_.extend({}, firmwareMock, {
-        id: inventoryData2[0].id
-      }))
+      yield database.insertFirmware(firmwareMock)
+      yield database.insertFirmware(firmwareMock)
 
       const firmwares = yield database.selectFirmwares()
 
@@ -227,10 +172,7 @@ describe('Database', () => {
     })
 
     it('should find firmware by Id', function * () {
-      const inventoryData = yield database.insertInventory(inventoryMock)
-      const firmwareData = yield database.insertFirmware(_.extend({}, firmwareMock, {
-        id: inventoryData[0].id
-      }))
+      const firmwareData = yield database.insertFirmware(firmwareMock)
       const firmware = yield database.selectFirmware(firmwareData[0].deviceId)
 
       expect(firmware).to.eql(firmwareData)
