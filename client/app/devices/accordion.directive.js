@@ -3,10 +3,19 @@ function accordion ($timeout) {
   return {
     restrict: 'A',
     scope: {
-      isOpen: '='
+      isOpen: '=',
+      editorMode: '='
     },
     link (scope, element, attrs) {
       const panel = element[0]
+
+      scope.$watch('editorMode', function (editorMode) {
+        panel.style.height = 'auto'
+
+        $timeout(function () {
+          panel.style.height = `${panel.offsetHeight}px`
+        }, 100)
+      })
 
       scope.$watch('isOpen', function (isOpen) {
         if (isOpen) {
