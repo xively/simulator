@@ -1,4 +1,4 @@
-// require('./modal.component.less')
+require('./modal.component.less')
 
 const modalComponent = {
   template: `

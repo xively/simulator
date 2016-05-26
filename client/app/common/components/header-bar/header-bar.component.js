@@ -1,8 +1,8 @@
-require('./header.component.less')
+require('./header-bar.component.less')
 const xivelyLogo = require('./images/xively-logo.png')
 
 /* @ngInject */
-const headerComponent = {
+const headerBarComponent = {
   template: `
     <nav class="header-bar">
       <div class="logo">
@@ -13,4 +13,4 @@ const headerComponent = {
   `
 }
 
-module.exports = headerComponent
+module.exports = headerBarComponent
