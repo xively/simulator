@@ -28,7 +28,7 @@ orchestrator.init(server, app)
 
 // create account user
 // integrating with salesforce
-salesforce.getUserEmail()
+salesforce.done = salesforce.getUserEmail()
   .then((idmUserEmail) => {
     return blueprint.createAccountUsers([{
       accountId: config.account.accountId,
@@ -50,7 +50,6 @@ salesforce.getUserEmail()
       })
       .then(() => logger.info('Integrating with SalesForce success'))
   })
-  .then(() => { salesforce.done = true })
   .catch((err) => logger.error('Integrating with SalesForce error', err))
 
 /*
