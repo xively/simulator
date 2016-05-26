@@ -21,9 +21,9 @@ describe('Blueprint service', () => {
     blueprintService = $injector.get('blueprintService')
     $httpBackend = $injector.get('$httpBackend')
     $q = $injector.get('$q')
-    const authService = $injector.get('authService')
+    const authorizationService = $injector.get('authorizationService')
     // mock token getter
-    this.sandbox.stub(authService, 'getToken').returns($q.resolve('token'))
+    this.sandbox.stub(authorizationService, 'getToken').returns($q.resolve('token'))
 
     $httpBackend.whenGET('https://blueprint.com/api/v1/abc?accountId=1')
       .respond({ data: 'data' })

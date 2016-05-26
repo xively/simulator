@@ -1,5 +1,5 @@
 /* @ngInject */
-function authInterceptor ($log, $injector, $q, $timeout, CONFIG) {
+function authorizationInterceptor ($log, $injector, $q, $timeout, CONFIG) {
   return {
     /**
      * Request interceptor
@@ -12,9 +12,9 @@ function authInterceptor ($log, $injector, $q, $timeout, CONFIG) {
       // if we make a request to blueprint
       if (request.url.includes(CONFIG.account.blueprintHost) ||
           request.url.includes(CONFIG.account.timeSeriesHost)) {
-        const authService = $injector.get('authService')
+        const authorizationService = $injector.get('authorizationService')
         // set authorization header
-        return authService.getToken().then((token) => {
+        return authorizationService.getToken().then((token) => {
           request.headers.Authorization = `Bearer ${token}`
           return request
         })
@@ -30,12 +30,12 @@ function authInterceptor ($log, $injector, $q, $timeout, CONFIG) {
      * @return {Promise}
      */
     responseError (response) {
-      const authService = $injector.get('authService')
+      const authorizationService = $injector.get('authorizationService')
       const $http = $injector.get('$http')
       if (response.status === 401) {
         $log.error('401 interceptor #responseError:', response)
         // delete old token
-        authService.deleteToken()
+        authorizationService.deleteToken()
         // resend the request in 2 seconds
         return $timeout(() => {
           return $http(response.config)
@@ -46,4 +46,4 @@ function authInterceptor ($log, $injector, $q, $timeout, CONFIG) {
   }
 }
 
-module.exports = authInterceptor
+module.exports = authorizationInterceptor

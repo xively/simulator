@@ -1,5 +1,5 @@
 /* @ngInject */
-function loginFactory ($log, $http, $timeout, $q, CONFIG) {
+function authorizationFactory ($log, $http, $timeout, $q, CONFIG) {
   // private
   const TOKEN_KEY = 'simulator.token'
   const ACCOUNT_ID_KEY = 'simulator.account_id'
@@ -48,14 +48,14 @@ function loginFactory ($log, $http, $timeout, $q, CONFIG) {
           accountId: CONFIG.account.accountId
         }
       }).then((response) => {
-        $log.debug('authService#newToken response:', response)
+        $log.debug('authorizationService#newToken response:', response)
         if (response.status === 200) {
           return response.data.jwt
         }
 
         throw new Error(response.message)
       }).catch((err) => {
-        $log.error('authService#newToken error:', err)
+        $log.error('authorizationService#newToken error:', err)
         throw err
       })
     },
@@ -70,4 +70,4 @@ function loginFactory ($log, $http, $timeout, $q, CONFIG) {
   }
 }
 
-module.exports = loginFactory
+module.exports = authorizationFactory

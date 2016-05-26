@@ -1,8 +1,8 @@
 const expect = require('chai').expect
-const commonModule = require('./')
+const authorizationModule = require('./')
 
-describe('Authentication service', () => {
-  beforeEach(angular.mock.module(commonModule))
+describe('Authorization service', () => {
+  beforeEach(angular.mock.module(authorizationModule))
 
   // mock config
   const config = {
@@ -17,10 +17,10 @@ describe('Authentication service', () => {
     $provide.constant('CONFIG', config)
   }))
 
-  let authService
+  let authorizationService
   let $httpBackend
   beforeEach(inject(function ($injector) {
-    authService = $injector.get('authService')
+    authorizationService = $injector.get('authorizationService')
     $httpBackend = $injector.get('$httpBackend')
 
     $httpBackend.whenPOST('https://idm.host/api/v1/auth/login-user')
@@ -40,7 +40,7 @@ describe('Authentication service', () => {
         accountId: config.account.accountId
       })
 
-      authService.newToken()
+      authorizationService.newToken()
         .then((token) => {
           expect(token).to.eql('token')
           done()
