@@ -3,10 +3,6 @@ const _ = require('lodash')
 require('./navigation-bar.less')
 const xiLogo = require('./images/xi-logo.svg')
 const xivelyLogo = require('./images/xively-logo.png')
-const dashboardIcon = require('./images/dashboard-icon.svg')
-const devicesIcon = require('./images/devices-icon.svg')
-const rulesIcon = require('./images/rules-icon.svg')
-const settingsIcon = require('./images/settings-icon.svg')
 
 /* @ngInject */
 const navComponent = {
@@ -27,26 +23,6 @@ const navComponent = {
             <img src="${xivelyLogo}"></img>
             <div>Product Simulator</div>
           </div>
-        </div>
-        <div class="navigation-item" ui-sref="devices" ui-sref-active="active" ng-show="navigationBar.showNavigation">
-          <span class="navigation-item-icon">${devicesIcon}</span>
-          <span class="navigation-item-text">Devices</span>
-          <span class="navigation-item-triangle"></span>
-        </div>
-        <div class="navigation-item" ng-show="navigationBar.showNavigation" ng-click="navigationBar.navigateToDemo()">
-          <span class="navigation-item-icon">${dashboardIcon}</span>
-          <span class="navigation-item-text">Demo</span>
-          <span class="navigation-item-triangle"></span>
-        </div>
-        <div class="navigation-item" ui-sref="rules" ui-sref-active="active" ng-show="navigationBar.showNavigation">
-          <span class="navigation-item-icon">${rulesIcon}</span>
-          <span class="navigation-item-text">Rules</span>
-          <span class="navigation-item-triangle"></span>
-        </div>
-        <div class="navigation-item" ui-sref="settings" ui-sref-active="active" ng-show="navigationBar.showNavigation">
-          <span class="navigation-item-icon">${settingsIcon}</span>
-          <span class="navigation-item-text">Settings</span>
-          <span class="navigation-item-triangle"></span>
         </div>
       </div>
     </nav>

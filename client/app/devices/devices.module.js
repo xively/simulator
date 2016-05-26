@@ -1,6 +1,5 @@
 const angular = require('angular')
 const commonModule = require('../common')
-const devicesRoute = require('./devices.route')
 const deviceRoute = require('./device.route')
 const deviceDemoRoute = require('./device-demo.route')
 const devicePanelComponent = require('./device-panel.component')
@@ -18,7 +17,6 @@ const devicesModule = angular.module('simulator.devies', [
   require('angular-ui-router'),
   commonModule
 ])
-  .config(devicesRoute)
   .config(deviceRoute)
   .config(deviceDemoRoute)
   .component('devicePanel', devicePanelComponent)

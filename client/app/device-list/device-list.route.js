@@ -1,20 +1,14 @@
 const _ = require('lodash')
 
-require('./devices.route.less')
+require('./device-list.route.less')
 
 const connectedIcon = require('./images/connected.svg')
 const notConnectedIcon = require('./images/not-connected.svg')
 
 /* @ngInject */
 function devicesRoute ($stateProvider) {
-  $stateProvider.state('devices', {
+  $stateProvider.state('deviceList', {
     url: '/devices',
-    template: '<ui-view/>',
-    redirectTo: 'devices.list'
-  })
-
-  $stateProvider.state('devices.list', {
-    url: '',
     template: `
       <div class="devices container">
         <h1>Devices</h1>
@@ -22,15 +16,15 @@ function devicesRoute ($stateProvider) {
           <table>
             <thead>
               <tr>
-                <th ng-repeat="header in ::devices.tableHeaders"
-                    ng-click="devices.changeOrder(header.field)"
-                    ng-class="{active: devices.orderBy === header.field, reverse: devices.reverseOrder}">
+                <th ng-repeat="header in ::deviceList.tableHeaders"
+                    ng-click="deviceList.changeOrder(header.field)"
+                    ng-class="{active: deviceList.orderBy === header.field, reverse: deviceList.reverseOrder}">
                   {{ header.title }}
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="device in devices.devices | orderBy:devices.orderBy:devices.reverseOrder track by device.id"
+              <tr ng-repeat="device in deviceList.devices | orderBy:deviceList.orderBy:deviceList.reverseOrder track by device.id"
                   ui-sref="devices.device({ id: device.id })">
                 <td>
                   <span>{{ device.name || 'N/A' }}</span>
@@ -50,7 +44,7 @@ function devicesRoute ($stateProvider) {
         </div>
       </div>
     `,
-    controllerAs: 'devices',
+    controllerAs: 'deviceList',
     /* @ngInject */
     controller ($q, devicesService, CONFIG) {
       this.devices = []

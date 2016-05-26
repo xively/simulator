@@ -3,7 +3,7 @@ require('./modal.component.less') // FIXME
 
 const angular = require('angular')
 const commonModule = require('./common')
-const devicesModule = require('./devices')
+const deviceListModule = require('./device-list')
 const rulesModule = require('./rules')
 const navigationModule = require('./navigation')
 const settingsModule = require('./settings')
@@ -16,7 +16,7 @@ const app = angular.module('simulator', [
   require('angular-ui-router'),
   commonModule,
   navigationModule,
-  devicesModule,
+  deviceListModule,
   rulesModule,
   widgetsModule,
   settingsModule
