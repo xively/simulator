@@ -5,6 +5,7 @@ const commonModule = require('./common')
 const deviceListModule = require('./device-list')
 const rulesModule = require('./rules')
 const settingsModule = require('./settings')
+const simulatorModule = require('./simulator')
 const config = require('./app.config')
 
 // custom widgets module
@@ -16,7 +17,8 @@ const app = angular.module('simulator', [
   deviceListModule,
   rulesModule,
   widgetsModule,
-  settingsModule
+  settingsModule,
+  simulatorModule
 ])
   .config(config)
 

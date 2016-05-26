@@ -1,21 +1,10 @@
-@import '../style/variables.less';
+@import '../../style/variables.less';
 
-.device-panel {
+device-panel {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
-
-  & .mobile, .mobile & {
-    margin: 0 0 60px 0;
-
-    & {
-      flex-direction: column;
-    }
-  }
-
-  @media (max-width: @mobile-max-width) {
-    .mobile;
-  }
+  margin: 0 0 60px 0;
 
   & > div {
     margin: 10px;
@@ -78,6 +67,8 @@
 
       h2 {
         margin: 0;
+        height: 25px;
+        line-height: 25px;
       }
 
       .device-fields {
@@ -105,6 +96,21 @@
               }
             }
           }
+        }
+      }
+
+      .chevron {
+        display: inline-block;
+        width: 25px;
+        height: 25px;
+        background: url('./images/arrow-down.png') center;
+        background-size: contain;
+        vertical-align: middle;
+        transform: rotate(-90deg);
+        transition: 0.1s all linear;
+
+        &.rotate {
+          transform: rotate(0);
         }
       }
     }
