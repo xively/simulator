@@ -1,9 +1,9 @@
 const angular = require('angular')
-const authorizationModule = require('../authorization')
+const authorization = require('../authorization')
 const blueprintService = require('./blueprint.service')
 
 const blueprint = angular.module('simulator.common.services.blueprint', [
-  authorizationModule
+  authorization
 ])
   .factory('blueprintService', blueprintService)
 

@@ -1,8 +1,8 @@
 const expect = require('chai').expect
-const commonModule = require('./')
+const devicesModule = require('./')
 
 describe('Blueprint service', () => {
-  beforeEach(angular.mock.module(commonModule))
+  beforeEach(angular.mock.module(devicesModule))
 
   // mock config
   beforeEach(angular.mock.module(($provide) => {
