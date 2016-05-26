@@ -1,6 +1,8 @@
 const angular = require('angular')
+
 const commonModule = require('../common')
 const deviceListRoute = require('./device-list.route')
+const deviceListComponent = require('./device-list.component')
 
 const devicesModule = angular.module('simulator.devies', [
   require('angular-animate'),
@@ -8,5 +10,6 @@ const devicesModule = angular.module('simulator.devies', [
   commonModule
 ])
   .config(deviceListRoute)
+  .component('deviceList', deviceListComponent)
 
 module.exports = devicesModule
