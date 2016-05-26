@@ -1,0 +1,57 @@
+notification {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+
+  .notification-item {
+    position: relative;
+    min-height: 60px;
+    padding: 20px;
+    margin-bottom: 10px;
+    background-color: #ffffff;
+    word-wrap: break-word;
+    text-align: center;
+
+    &.error {
+      background-color: #f44336;
+      color: #fafafa;
+    }
+
+    &.info {
+      background-color: #17bae3;
+      color: #fafafa;
+    }
+
+    &.success {
+      background-color: #84c441;
+      color: #fafafa;
+    }
+
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 1.2em;
+      cursor: pointer;
+    }
+
+    &.ng-enter,
+    &.ng-leave {
+      transition: 300ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+    }
+
+    &.ng-enter.ng-enter-active,
+    &.ng-leave {
+      opacity: 1;
+      margin-top: 0;
+    }
+
+    &.ng-leave.ng-leave-active,
+    &.ng-enter {
+      opacity: 0;
+      margin-top: -70px;
+    }
+  }
+}

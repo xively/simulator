@@ -4,6 +4,7 @@ const boldchat = require('./boldchat')
 const header = require('./header')
 const loading = require('./loading')
 const modal = require('./modal')
+const notification = require('./notification')
 const qrcode = require('./qrcode')
 const tabs = require('./tabs')
 
@@ -15,6 +16,7 @@ const commonComponents = angular.module('simulator.common.components', [
   header,
   loading,
   modal,
+  notification,
   qrcode,
   tabs
 ])
