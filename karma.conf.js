@@ -12,9 +12,7 @@ webpackConfig = _.merge(webpackConfig, {
     }]
   }
 })
-
 webpackConfig.entry = undefined
-webpackConfig.plugins = []
 
 module.exports = function (config) {
   config.set({
