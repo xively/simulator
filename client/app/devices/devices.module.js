@@ -10,7 +10,6 @@ const qrcodeComponent = require('./qrcode.component')
 const shareModalComponent = require('./share-modal.component')
 const notificationComponent = require('./notification.component')
 const boldchatComponent = require('./boldchat.component')
-const accordionDirective = require('./accordion.directive')
 
 const devicesModule = angular.module('simulator.devies', [
   require('angular-animate'),
@@ -27,6 +26,5 @@ const devicesModule = angular.module('simulator.devies', [
   .component('shareModal', shareModalComponent)
   .component('notification', notificationComponent)
   .component('boldchat', boldchatComponent)
-  .directive('accordion', accordionDirective)
 
 module.exports = devicesModule

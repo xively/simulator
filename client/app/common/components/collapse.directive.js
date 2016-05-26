@@ -1,15 +1,15 @@
 /* @ngInject */
-function accordion ($timeout) {
+function collapse ($timeout) {
   return {
     restrict: 'A',
     scope: {
-      isOpen: '=',
-      editorMode: '='
+      isOpen: '<',
+      triggerResize: '<'
     },
     link (scope, element, attrs) {
       const panel = element[0]
 
-      scope.$watch('editorMode', function (editorMode) {
+      scope.$watch('triggerResize', function (triggerResize) {
         panel.style.height = 'auto'
 
         $timeout(function () {
@@ -36,4 +36,4 @@ function accordion ($timeout) {
   }
 }
 
-module.exports = accordion
+module.exports = collapse

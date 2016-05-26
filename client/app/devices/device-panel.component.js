@@ -34,7 +34,7 @@ const devicePanelComponent = {
             Device info
             <span class="pull-right chevron" ng-class="{bottom: devicePanel.infoPanelOpen}"></span>
           </h2>
-          <div accordion editor-mode="devicePanel.editingInfoFields" is-open="devicePanel.infoPanelOpen" class="device-fields">
+          <div collapse trigger-resize="devicePanel.editingInfoFields" is-open="devicePanel.infoPanelOpen" class="device-fields">
             <div class="device-panel-content">
               <div class="device-info-fields">
                 <div class="row" ng-repeat="(key, value) in devicePanel.device" ng-if="devicePanel.device.excludedInfoFields.indexOf(key.toLowerCase()) === -1">
