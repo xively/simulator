@@ -1,5 +1,6 @@
 const angular = require('angular')
 
+const boldchat = require('./boldchat')
 const header = require('./header')
 const loading = require('./loading')
 const modal = require('./modal')
@@ -8,6 +9,7 @@ const bindHtmlCompileDirective = require('./bind-html-compile.directive')
 const collpaseDirective = require('./collapse.directive')
 
 const commonComponents = angular.module('simulator.common.components', [
+  boldchat,
   header,
   loading,
   modal,
