@@ -26,29 +26,6 @@ function deviceDemoRoute ($stateProvider) {
         <modal name="settings">
           <settings></settings>
         </modal>
-        <!--
-        <div class="modal" ng-click="demo.closeModals()" ng-show="demo.modals.rules">
-          <div class="content modal-body" ng-click="demo.block($event)">
-            <div class="modal-header">
-              <div class="close" ng-click="demo.toggleModal('rules')">✕</div>
-            </div>
-            <div class="modal-content">
-              <rules></rules>
-            </div>
-          </div>
-        </div>
-
-        <div class="modal" ng-click="demo.closeModals()" ng-show="demo.modals.settings">
-          <div class="content modal-body" ng-click="demo.block($event)">
-            <div class="modal-header">
-              <div class="close" ng-click="demo.toggleModal('settings')">✕</div>
-            </div>
-            <div class="modal-content">
-              <settings></settings>
-            </div>
-          </div>
-        </div>
-        -->
 
         <div class="left-side" ng-show="demo.mobileView">
           <div class="chevron-left" ng-click="demo.toggleMobileView()" ng-show="demo.mobileView"> ${chevronLeft} </div>

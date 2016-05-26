@@ -7,7 +7,6 @@ const timeseriesChartComponent = require('./timeseries-chart.component')
 const iphoneFrameComponent = require('./iphone-frame.component')
 const tooltipComponent = require('./tooltip.component')
 const shareModalComponent = require('./share-modal.component')
-const notificationComponent = require('./notification.component')
 
 const devicesModule = angular.module('simulator.devies', [
   require('angular-animate'),
@@ -21,6 +20,5 @@ const devicesModule = angular.module('simulator.devies', [
   .component('iphoneFrame', iphoneFrameComponent)
   .component('tooltip', tooltipComponent)
   .component('shareModal', shareModalComponent)
-  .component('notification', notificationComponent)
 
 module.exports = devicesModule

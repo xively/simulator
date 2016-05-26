@@ -4,7 +4,7 @@ const commonModule = require('../common')
 const deviceListRoute = require('./device-list.route')
 const deviceListComponent = require('./device-list.component')
 
-const devicesModule = angular.module('simulator.devies', [
+const devicesModule = angular.module('simulator.deviceList', [
   require('angular-animate'),
   require('angular-ui-router'),
   commonModule
