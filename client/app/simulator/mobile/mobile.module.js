@@ -4,6 +4,7 @@ const commonModule = require('../../common')
 
 const devicePanelComponent = require('./device-panel.component')
 const timeseriesChartComponent = require('./timeseries-chart.component')
+const shareComponent = require('./share.component')
 const mobileRoute = require('./mobile.route')
 
 const mobile = angular.module('simulator.devices.mobile', [
@@ -12,6 +13,7 @@ const mobile = angular.module('simulator.devices.mobile', [
 ])
   .component('devicePanel', devicePanelComponent)
   .component('timeseriesChart', timeseriesChartComponent)
+  .component('share', shareComponent)
   .config(mobileRoute)
 
 module.exports = mobile

@@ -1,15 +1,20 @@
 const _ = require('lodash')
 
 require('./device-panel.component.less')
+const shareIcon = require('./images/share-icon.svg')
 
 const devicePanelComponent = {
   template: `
+    <modal name="share" width="400px" height="485px">
+      <share link="devicePanel.link"></share>
+    </modal>
     <div class="control-panel content">
       <div class="section">
         <h1 class="type">{{ ::devicePanel.device.template.name }}</h1>
         <p class="name">{{ ::devicePanel.device.serialNumber }}</p>
         <p class="username">{{ ::devicePanel.endUser.name }}</p>
         <p class="email">{{ ::devicePanel.config.account.emailAddress }}</p>
+        <div class="share-icon" ng-click="devicePanel.openShareModal()">${shareIcon}</div>
       </div>
       <div class="section" bind-html-compile="devicePanel.widgets()">
       </div>
@@ -74,8 +79,13 @@ const devicePanelComponent = {
   },
   controllerAs: 'devicePanel',
   /* @ngInject */
-  controller ($log, $scope, socketService, blueprintService, CONFIG, DEVICES_CONFIG) {
+  controller ($log, $scope, socketService, blueprintService, modalService, CONFIG, DEVICES_CONFIG) {
     this.config = CONFIG
+
+    this.link = 'http://localhost:5000/#/devices/c3a5435e-87ba-41fa-b2bf-984accda9b95/mobile'
+    this.openShareModal = () => {
+      modalService.open('share')
+    }
 
     const EXCLUDED_INFO_FIELDS = ['excludedInfoFields', 'simulate', 'subscribe', 'template', 'update', 'sensors', 'ok', 'channels']
     this.device.excludedInfoFields = EXCLUDED_INFO_FIELDS

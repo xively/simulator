@@ -15,7 +15,7 @@ const devicesComponent = {
   `,
   controllerAs: 'simulator',
   /* @ngInject */
-  controller ($q, devicesService, CONFIG) {
+  controller () {
   }
 }
 

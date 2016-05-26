@@ -5,6 +5,7 @@ device-panel {
   flex-direction: column;
   width: 100%;
   margin: 0 0 60px 0;
+  position: relative;
 
   & > div {
     margin: 10px;
@@ -38,6 +39,19 @@ device-panel {
         font-size: 0.9em;
         font-style: italic;
         color: @dark-gray;
+      }
+
+      .share-icon {
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        top: 36px;
+        right: 36px;
+        cursor: pointer;
+
+        svg {
+          fill: @dark-gray;
+        }
       }
     }
   }
