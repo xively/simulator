@@ -10,6 +10,7 @@ function devicesRoute ($stateProvider) {
   $stateProvider.state('deviceList', {
     url: '/devices',
     template: `
+      <header></header>
       <div class="devices container">
         <h1>Devices</h1>
         <div class="content">
