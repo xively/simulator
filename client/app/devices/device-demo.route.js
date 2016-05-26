@@ -174,11 +174,19 @@ function deviceDemoRoute ($stateProvider) {
           return fieldName.toLowerCase()
         })
 
-      this.sensorsNotConfigured = _.pullAll(Object.keys(device.sensors), Object.keys(this.config.sensors || {}))
+      this.sensorsNotConfigured = _.reduce(device.sensors, (sensors, sensor, name) => {
+        const configured = this.config.sensors && this.config.sensors[name] && (this.config.sensors[name].tooltip || this.config.sensors[name].widget)
+        if (!configured) {
+          sensors.push(name)
+        }
+        return sensors
+      }, [])
+
       this.sensors = this.sensorsNotConfigured.reduce((sensors, key) => {
         sensors[key] = 50
         return sensors
       }, {})
+
       $scope.$watch(() => device.sensors, (sensors) => {
         _.forEach(sensors, (sensor, name) => { this.sensors[name] = sensor.numericValue })
       }, true)

@@ -138,7 +138,7 @@ const deviceConfig = {
             let tooltipOrWidget
             if (this.config.sensors[sensor.text].widget) {
               tooltipOrWidget = 'widget'
-            } else if (this.config.sensors[sensor.text].tooltip) {
+            } else if (this.config.sensors[sensor.text].tooltip || (sensor.top && sensor.left)) {
               tooltipOrWidget = 'tooltip'
             }
             if (tooltipOrWidget) {
