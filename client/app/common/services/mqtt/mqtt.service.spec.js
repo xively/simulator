@@ -1,8 +1,8 @@
 const expect = require('chai').expect
-const commonModule = require('./')
+const mqttModule = require('./')
 
 describe('MQTT service', () => {
-  beforeEach(angular.mock.module(commonModule))
+  beforeEach(angular.mock.module(mqttModule))
 
   // mock config
   beforeEach(angular.mock.module(($provide) => {
