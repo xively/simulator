@@ -58,7 +58,7 @@ const tooltipComponent = {
   controllerAs: 'tooltip',
   /* @ngInject */
   controller ($element, $rootScope, $scope, socketService, EVENTS) {
-    Object.assign(this.options, this.options.tooltip)
+    Object.assign(this.options, { direction: 'top', distance: 100 }, this.options.tooltip)
 
     $scope.$watch(() => {
       return this.value
