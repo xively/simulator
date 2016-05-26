@@ -4,8 +4,6 @@ const timeseriesService = require('./timeseries.service')
 const devicesService = require('./devices.service')
 const socketService = require('./socket.service')
 const smsService = require('./sms.service')
-const loadingInterceptor = require('./loading.interceptor')
-const config = require('./common.config')
 const run = require('./common.run')
 
 const commonComponents = require('./components')
@@ -23,8 +21,6 @@ const common = angular.module('simulator.common', [
   .factory('devicesService', devicesService)
   .factory('socketService', socketService)
   .factory('smsService', smsService)
-  .factory('loadingInterceptor', loadingInterceptor)
-  .config(config)
   .run(run)
 
 module.exports = common
