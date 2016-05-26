@@ -8,8 +8,6 @@ const deviceFormComponent = require('./device-form.component')
 const credentialsComponent = require('./credentials.component')
 const deviceConfigComponent = require('./device-config.component')
 const imageUploadComponent = require('./image-upload.component')
-const tabsComponent = require('./tabs.component')
-const tabComponent = require('./tab.component')
 
 require('ng-tags-input')
 require('brace')
@@ -29,7 +27,5 @@ const settingsModule = angular.module('simulator.settings', [
   .component('credentials', credentialsComponent)
   .component('deviceConfig', deviceConfigComponent)
   .component('imageUpload', imageUploadComponent)
-  .component('tabs', tabsComponent)
-  .component('tab', tabComponent)
 
 module.exports = settingsModule
