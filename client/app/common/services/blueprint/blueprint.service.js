@@ -2,11 +2,7 @@ const _ = require('lodash')
 
 /* @ngInject */
 function blueprintFactory ($log, $http, CONFIG) {
-  return new class Blueprint {
-    constructor () {
-      this.accountId = CONFIG.account.accountId
-    }
-
+  return {
     /**
      * GET resource
      * @param  {String} resource
@@ -14,7 +10,7 @@ function blueprintFactory ($log, $http, CONFIG) {
      * @return {Promise} HTTP response
      */
     getV1 (resource, params = {}) {
-      _.assign(params, { accountId: this.accountId })
+      _.assign(params, { accountId: CONFIG.account.accountId })
       return $http({
         method: 'GET',
         url: `https://${CONFIG.account.blueprintHost}/api/v1/${resource}`,
@@ -23,7 +19,7 @@ function blueprintFactory ($log, $http, CONFIG) {
           Accept: 'application/json'
         }
       })
-    }
+    },
 
     updateDevice (id, data) {
       return this.getV1(`devices/${id}`)
