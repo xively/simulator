@@ -1,23 +1,14 @@
 @import '../../../style/variables.less';
 
 boldchat {
-  position: fixed;
+  position: absolute;
   display: block;
   height: 60px;
-  width: 350px;
-  bottom: 0;
+  width: 100%;
   right: 0;
-
-  & .mobile, .mobile & {
-    position: absolute;
-    margin: 0;
-    width: 100%;
-    left: 0;
-  }
-
-  @media (max-width: @mobile-max-width) {
-    width: 100%;
-  }
+  bottom: 0;
+  left: 0;
+  margin: 0;
 
   .boldchat-button {
     position: absolute;
@@ -44,6 +35,11 @@ boldchat {
 #bc-chat-container {
   width: 380px !important;
   max-width: 100%;
+  position: absolute !important;
+  top: 285px !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: 65px !important;
 }
 
 #bc-frame {

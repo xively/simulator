@@ -1,11 +1,9 @@
 /* @ngInject */
 function mobileRoute ($stateProvider) {
   $stateProvider.state('mobile', {
-    url: 'devices/:id/mobile',
+    url: '/devices/:id/mobile',
     template: `
-      <header-bar></header-bar>
-      <notification></notification>
-      <device-panel device="mobile.device"></device-panel>
+      <mobile device="mobile.device"></mobile>
     `,
     resolve: {
       /* @ngInject */
@@ -18,9 +16,6 @@ function mobileRoute ($stateProvider) {
           .then(([device, templates]) => {
             device.template = templates[device.deviceTemplateId]
             return device
-          })
-          .catch(() => {
-            // TODO handle rejection
           })
       }
     },
