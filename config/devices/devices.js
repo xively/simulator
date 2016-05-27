@@ -379,66 +379,6 @@ const config = {
       }
     }
   },
-  Jacket: {
-    image: '/devices/images/jacket.png',
-    width: 510,
-    sensors: {
-      core: {
-        min: 50,
-        max: 100,
-        wiggle: true,
-        unit: '°F',
-        tooltip: {
-          position: {
-            left: 256,
-            top: 475
-          },
-          labelPosition: {
-            top: 12,
-            left: -20
-          },
-          distance: 100,
-          direction: 'top'
-        }
-      },
-      'left-arm': {
-        min: 50,
-        max: 100,
-        wiggle: true,
-        unit: '°F',
-        tooltip: {
-          position: {
-            top: 400,
-            left: 60
-          },
-          labelPosition: {
-            top: 12,
-            left: -20
-          },
-          distance: 100,
-          direction: 'top'
-        }
-      },
-      'right-arm': {
-        min: 50,
-        max: 100,
-        wiggle: true,
-        unit: '°F',
-        tooltip: {
-          position: {
-            top: 400,
-            left: 445
-          },
-          labelPosition: {
-            top: 12,
-            left: -20
-          },
-          distance: 100,
-          direction: 'top'
-        }
-      }
-    }
-  },
   'Solar Panel': {
     image: '/devices/images/solar-panel.png',
     width: 790,

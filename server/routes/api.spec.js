@@ -173,12 +173,12 @@ describe('API endpoints (/api/*)', () => {
     it('should return with the original device config', function * () {
       const resp = yield request(server.listen())
         .get('/api/device-config/original')
-        .qs({ templateName: 'Jacket' })
+        .qs({ templateName: 'Solar Panel' })
         .json(true)
         .expect(200)
         .end()
 
-      expect(resp.body).to.eql(deviceConfig.Jacket)
+      expect(resp.body).to.eql(deviceConfig['Solar Panel'])
     })
 
     it('should return with an empty object', function * () {
