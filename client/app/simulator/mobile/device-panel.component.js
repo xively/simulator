@@ -104,26 +104,6 @@ const devicePanelComponent = {
       }
     })
 
-    // TODO move this into this.device.subscribe
-    // start virtual device
-    socketService.connect(this.device, (err, { ok = true, simulate = false } = {}) => {
-      if (err) {
-        ok = false
-        $log.error(err)
-      }
-      // this.device.simulate = simulate
-      // TODO not sure if we need this later
-      // this.device.ok = ok
-      // this.device.ok = true
-    })
-
-    // subscribe for mqtt messages
-    const unsubscribe = this.device.subscribe()
-    $scope.$on('$stateChangeStart', () => {
-      socketService.disconnect(this.device)
-      unsubscribe()
-    })
-
     this.widgets = () => {
       if (deviceConfig && deviceConfig.widgets) {
         return deviceConfig.widgets.map((name) => `<${name} device="devicePanel.device"></${name}>`).join('')

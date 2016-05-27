@@ -64,9 +64,8 @@ const devicesComponent = {
       }
     })).filter((option) => option.device)
 
-    socketService.connect(this.device, (err, { ok = true, simulate = false } = {}) => {
+    socketService.connect(this.device, (err, { simulate = false } = {}) => {
       if (err) {
-        ok = false
         $log.error(err)
       }
 
