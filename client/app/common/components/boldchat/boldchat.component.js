@@ -10,7 +10,9 @@ const boldchatComponent = {
   `,
   controllerAs: 'boldchat',
   /* @ngInject */
-  controller ($window, $location) {
+  controller ($log, $element, $scope, $window, $location) {
+    const element = angular.element($element[0])
+
     const bdid = '457830310750908782'
     const _bcvma = [
       ['setAccountID', '461159850398350203'],
@@ -22,6 +24,17 @@ const boldchatComponent = {
     $window.pageViewer && $window.pageViewer.load()
 
     this.open = () => {
+      const unwatch = $scope.$watch(
+        () => document.getElementById('bc-chat-container'), // eslint-disable-line
+        (chatContainer) => {
+          if (chatContainer) {
+            element.append(chatContainer)
+            angular.element(chatContainer).addClass('show')
+            unwatch()
+          }
+        }
+      )
+
       $window._bcvmw.chatWindow({
         bdid,
         element: 'boldchat',
