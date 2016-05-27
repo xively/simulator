@@ -2,9 +2,9 @@
 function bindHtmlCompile ($compile) {
   return {
     restrict: 'A',
-    link (scope, element, attrs) {
+    link (scope, element, attributes) {
       scope.$watch(() => {
-        return scope.$eval(attrs.bindHtmlCompile)
+        return scope.$eval(attributes.bindHtmlCompile)
       }, (value) => {
         element.html(value)
         $compile(element.contents())(scope)

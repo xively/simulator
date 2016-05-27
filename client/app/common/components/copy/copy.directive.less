@@ -1,0 +1,31 @@
+*[copy-label] {
+  position: relative;
+  user-select: none;
+  outline: none;
+  cursor: pointer;
+  -webkit-backface-visibility: hidden;
+
+  &::after {
+    position: absolute;
+    left: 0;
+    top: 0;
+    content: attr(copy-label);
+    opacity: .001;
+  }
+
+  &.copying {
+    &::after {
+      animation: floatup 0.5s ease-in-out;
+    }
+  }
+
+  @keyframes floatup {
+    20% {
+      opacity: .999
+    }
+
+    100% {
+      transform: translate(0, -17px)
+    }
+  }
+}
