@@ -1,0 +1,60 @@
+@import '../../style/variables.less';
+
+navigation {
+  display: block;
+  height: 70px;
+
+  .navigation-container {
+    max-width: 960px;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+  }
+
+  .logo {
+    img {
+      height: 50px;
+      margin-top: 10px;
+      margin-left: 10px;
+    }
+  }
+
+  .navigation-items {
+    display: flex;
+    width: 375px;
+    height: 100%;
+    margin-left: auto;
+    margin-right: 20px;
+
+    .navigation-item {
+      cursor: pointer;
+      height: 100%;
+      display: flex;
+      flex: 1 1;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+      flex-direction: column;
+
+      .navigation-item-icon {
+        height: 26px;
+        width: 26px;
+
+        svg {
+          height: 100%;
+          width: 100%;
+          fill: @light-gray;
+          stroke: @light-gray;
+        }
+      }
+
+      .navigation-item-text {
+        padding-top: 5px;
+        color: @light-gray;
+        font-size: 0.65em;
+        font-weight: 300;
+        text-align: center;
+      }
+    }
+  }
+}

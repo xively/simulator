@@ -13,7 +13,11 @@ function appConfig ($compileProvider, $logProvider, $provide, $urlRouterProvider
 
     blueprintService.getV1('devices', { pageSize: 2 }).then((response) => {
       const id = response.data.devices.results[1].id
+<<<<<<< 47e3d9bd5dccf72fa67894778be9fa9e20fd47cc
       $state.transitionTo('mobile', { id })
+=======
+      $state.go('simulator', { id, header: 0 })
+>>>>>>> refactor(app): virtual device & navigation
     })
   })
 }
