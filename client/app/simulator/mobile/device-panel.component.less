@@ -82,6 +82,7 @@ device-panel {
         margin: 0;
         height: 25px;
         line-height: 25px;
+        cursor: pointer;
       }
 
       .device-fields {
@@ -93,12 +94,10 @@ device-panel {
 
           .row {
             display: flex;
+            height: 40px;
+            line-height: 40px;
             padding: 3px;
             text-transform: capitalize;
-
-            & > div {
-              flex-wrap: wrap;
-            }
 
             .field-name, .field-value {
               flex-basis: 50%;
