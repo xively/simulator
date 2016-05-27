@@ -3,8 +3,7 @@
 boldchat {
   position: absolute;
   display: block;
-  height: 60px;
-  width: 100%;
+  max-height: 530px;
   right: 0;
   bottom: 0;
   left: 0;
@@ -12,10 +11,10 @@ boldchat {
 
   .boldchat-button {
     position: absolute;
-    left: 0;
+    right: 0;
     bottom: 0;
-    height: 100%;
-    width: 100%;
+    left: 0;
+    height: 60px;
     background: #52C4E0;
     cursor: pointer;
 
@@ -33,13 +32,17 @@ boldchat {
 }
 
 #bc-chat-container {
+  display: none !important;
   width: 380px !important;
   max-width: 100%;
   position: absolute !important;
-  top: 285px !important;
-  right: auto !important;
-  bottom: auto !important;
-  left: 65px !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+
+  &.show {
+    display: block !important;
+  }
 }
 
 #bc-frame {

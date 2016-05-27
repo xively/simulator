@@ -69,12 +69,15 @@ device-config {
     &:nth-child(2) {
       border-top: 1px solid @gray;;
       padding-top: 15px;
-      max-height: calc(~"100% - 250px");
+      height: calc(~"100% - 250px");
+      min-height: 200px;
       overflow-y: auto;
     }
   }
 
   .buttons {
+    margin-bottom: 10px;
+
     .reset {
       color: @navy-blue;
       border-color: @navy-blue;

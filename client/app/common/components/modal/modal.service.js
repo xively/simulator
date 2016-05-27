@@ -1,8 +1,9 @@
 const angular = require('angular')
 const _ = require('lodash')
 
-function modalService () {
-  return {
+/* @ngInject */
+function modalFactory ($rootScope, $document) {
+  const service = {
     modals: {},
     register (modal) {
       // decorate modal
@@ -45,6 +46,17 @@ function modalService () {
       _.forEach(this.modals, (modal) => modal.close())
     }
   }
+
+  // close all modals on escape
+  $document.on('keyup', (e) => {
+    if (e.keyCode === 27) {
+      $rootScope.$applyAsync(() => {
+        service.closeAll()
+      })
+    }
+  })
+
+  return service
 }
 
-module.exports = modalService
+module.exports = modalFactory

@@ -21,27 +21,24 @@ modal {
     }
 
     & > .scale {
-      transform: scale(1);
-      transition: all 0.3s;
-    }
-
-    .scale {
       position: absolute;
       top: 0;
       right: 0;
       bottom: 0;
       left: 0;
+      transform: scale(1);
+      transition: all 0.3s;
     }
 
     .modal-body {
-      z-index: 101;
       position: absolute;
+      width: 960px;
+      height: 70%;
+      z-index: 101;
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      width: 960px;
-      height: 70%;
-      overflow: hidden;
+      overflow-y: auto;
 
       .modal-header {
         .close {
