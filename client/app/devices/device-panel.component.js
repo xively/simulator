@@ -141,7 +141,9 @@ const devicePanelComponent = {
 
     this.cancelInfoFieldsEditing = () => {
       this.editingInfoFields = false
-      this.device = deviceCopy
+      Object.keys(this.device).forEach((key) => {
+        this.device[key] = deviceCopy[key]
+      })
     }
 
     this.updateInfoFields = () => {
