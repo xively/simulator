@@ -6,7 +6,7 @@ const shareComponent = {
     <qrcode href="share.link"></qrcode>
     <div class="copy-link">
       <input type="text" copy-link ng-model="share.link" readonly>
-      <span class="copy-button" copy="share.link" copy-label="copy">copy</span>
+      <span class="copy-button" copy="share.link">copy</span>
     </div>
     <div class="send-link">
       <input type="text" placeholder="Phone Number" ng-model="share.phone">
