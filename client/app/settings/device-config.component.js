@@ -100,6 +100,7 @@ const deviceConfig = {
         // apply image and width
         this.config.image = deviceForm.image
         this.config.width = this.config.width || 800
+        this.config.height = this.config.height || 700
 
         if (deviceForm.sensors) {
           const sensors = deviceForm.sensors.map((sensor) => sensor.text)
