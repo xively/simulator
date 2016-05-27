@@ -1,65 +1,70 @@
-@gray: #8F9394;
-@blue: #17BAE3;
+@import '../style/variables.less';
 
-.devices {
-  .content {
-    overflow-x: auto;
-    margin-bottom: 60px;
-  }
+device-list {
+  display: block;
+  height: 100%;
+  overflow-y: auto;
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
+  .devices {
+    .content {
+      overflow-x: auto;
+      margin-bottom: 60px;
+    }
 
-    thead {
-      color: @gray;
+    table {
+      width: 100%;
+      border-collapse: collapse;
 
-      th {
-        cursor: pointer;
-        font-weight: 400;
+      thead {
+        color: @dark-gray;
 
-        &.active {
-          color: @blue;
+        th {
+          cursor: pointer;
+          font-weight: 400;
 
-          &::before {
-            content: '↓';
-            display: inline-block;
-            margin-top: -2px;
-          }
+          &.active {
+            color: @light-blue;
 
-          &.reverse::before {
-            content: '↑';
+            &::before {
+              content: '↓';
+              display: inline-block;
+              margin-top: -2px;
+            }
+
+            &.reverse::before {
+              content: '↑';
+            }
           }
         }
       }
-    }
 
-    tbody {
-      tr {
-        cursor: pointer;
+      tbody {
+        tr {
+          cursor: pointer;
 
-        &:hover {
-          color: @blue;
+          &:hover {
+            color: @light-blue;
+          }
         }
       }
-    }
 
-    th, td {
-      padding: 1.2em 0.4em;
-      border-bottom: 1px solid #777;
-      text-align: center;
+      th, td {
+        padding: 1.2em 0.4em;
+        border-bottom: 1px solid @dark-gray;
+        text-align: center;
 
-      &:first-child, &:nth-child(2) {
-        text-align: left;
-      }
+        &:first-child, &:nth-child(2) {
+          text-align: left;
+        }
 
-      .secondary {
-        font-size: 0.7em;
-        color: @gray;
-      }
+        .secondary {
+          font-size: 0.7em;
+          color: @dark-gray;
+        }
 
-      svg {
-        height: 20px;
+        svg {
+          height: 20px;
+        }
       }
     }
   }
