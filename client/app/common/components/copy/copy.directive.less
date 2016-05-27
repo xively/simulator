@@ -1,4 +1,4 @@
-*[copy-label] {
+[copy] {
   position: relative;
   user-select: none;
   outline: none;
@@ -11,6 +11,12 @@
     top: 0;
     content: attr(copy-label);
     opacity: .001;
+  }
+
+  &:not([copy-label]) {
+    &::after {
+      content: 'copy';
+    }
   }
 
   &.copying {

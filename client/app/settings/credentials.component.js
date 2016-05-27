@@ -18,6 +18,7 @@ const credentialsComponent = {
                    value="{{object.text}}"
                    ng-click="credentials.select($event)"
                    readonly/>
+                 <span class="copy" copy="object.text">copy</span>
           </span>
           <span ng-if="object.isPassword">
             <input type="text"
