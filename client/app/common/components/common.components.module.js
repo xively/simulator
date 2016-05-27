@@ -3,6 +3,7 @@ const angular = require('angular')
 const boldchat = require('./boldchat')
 const copy = require('./copy')
 const headerBar = require('./header-bar')
+const iphoneFrame = require('./iphone-frame')
 const loading = require('./loading')
 const modal = require('./modal')
 const notification = require('./notification')
@@ -16,6 +17,7 @@ const commonComponents = angular.module('simulator.common.components', [
   boldchat,
   copy,
   headerBar,
+  iphoneFrame,
   loading,
   modal,
   notification,

@@ -19,6 +19,9 @@ const devicesComponent = {
 
       <div class="left-side" ng-show="simulator.showMobile">
         <div class="chevron-left" ng-click="simulator.toggleMobileView()" ng-show="simulator.showMobile"> ${chevronLeft} </div>
+        <iphone-frame>
+          <mobile device="simulator.device"></mobile>
+        </iphone-frame>
       </div>
 
       <div class="right-side">

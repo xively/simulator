@@ -5,7 +5,7 @@ const shareIcon = require('./images/share-icon.svg')
 
 const devicePanelComponent = {
   template: `
-    <modal name="share" width="400px" height="485px">
+    <modal name="share" width="355px" height="485px">
       <share link="devicePanel.link"></share>
     </modal>
     <div class="control-panel content">
