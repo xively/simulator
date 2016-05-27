@@ -24,7 +24,7 @@ const devicesComponent = {
           </thead>
           <tbody>
             <tr ng-repeat="device in deviceList.devices | orderBy:deviceList.orderBy:deviceList.reverseOrder track by device.id"
-                ui-sref="devices.device({ id: device.id })">
+                ui-sref="simulator({ id: device.id })">
               <td>
                 <span>{{ device.name || 'N/A' }}</span>
                 <br>

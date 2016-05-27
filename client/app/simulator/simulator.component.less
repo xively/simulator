@@ -1,0 +1,58 @@
+@import '../style/variables.less';
+
+@border: 2px solid @light-gray;
+
+.simulator {
+  display: flex;
+  height: 100%;
+  background-color: @navy-blue;
+
+  .left-side {
+    height: 100%;
+    width: 510px;
+    overflow: hidden;
+    position: relative;
+    border-right: @border;
+    transition: 300ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+
+    &.ng-hide {
+      width: 0px;
+    }
+  }
+
+  .right-side {
+    height: 100%;
+    flex: 1;
+    position: relative;
+
+    navigation {
+      border-bottom: @border;
+    }
+
+    virtual-device {
+      padding-top: 20px;
+    }
+  }
+}
+
+.chevron-left, .chevron-right {
+  position: absolute;
+  width: 20px;
+  z-index: 99;
+  cursor: pointer;
+
+  svg {
+    fill: @light-gray;
+    width: 100%;
+  }
+}
+
+.chevron-left {
+  top: 5px;
+  right: 5px;
+}
+
+.chevron-right {
+  top: 5px;
+  left: 5px;
+}
