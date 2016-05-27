@@ -4,6 +4,7 @@ function mobileRoute ($stateProvider) {
     url: 'devices/:id/mobile',
     template: `
       <header-bar></header-bar>
+      <notification></notification>
       <device-panel device="mobile.device"></device-panel>
     `,
     resolve: {

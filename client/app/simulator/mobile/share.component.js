@@ -5,12 +5,12 @@ const shareComponent = {
     <p class="header">Share the link</p>
     <qrcode href="share.link"></qrcode>
     <div class="copy-link">
-      <input type="text" ng-model="share.link" readonly onclick="this.select()">
-      <span class="copy-button" data-label="copy" ng-click="share.copy()" ng-class="{copying: share.copying}">copy</span>
+      <input type="text" copy-link ng-model="share.link" readonly>
+      <span class="copy-button" copy="share.link" copy-label="copy">copy</span>
     </div>
     <div class="send-link">
       <input type="text" placeholder="Phone Number" ng-model="share.phone">
-      <span class="send-button" data-label="text" ng-click="share.send()" ng-class="{sending: share.sending}">text</span>
+      <span class="send-button" ng-click="share.send()">text</span>
     </div>
   `,
   bindings: {
@@ -18,26 +18,7 @@ const shareComponent = {
   },
   controllerAs: 'share',
   /* @ngInject */
-  controller ($log, $rootScope, $timeout, $document, smsService, EVENTS) {
-    // this.copying = false
-    // copy () {
-    //   const doc = $document[0]
-    //   const node = doc.createElement('textarea')
-    //   node.textContent = this.link
-    //   doc.body.appendChild(node)
-    //   const selection = doc.getSelection()
-    //   selection.removeAllRanges()
-    //   node.select()
-    //   if (doc.execCommand('copy')) {
-    //     this.copying = true
-    //   }
-    //   selection.removeAllRanges()
-    //   doc.body.removeChild(node)
-    //
-    //   $timeout(() => {
-    //     this.copying = false
-    //   }, 500)
-    // },
+  controller ($log, $rootScope, $timeout, $document, smsService, modalService, EVENTS) {
     this.send = () => {
       this.sending = true
       smsService.send(this.phone, this.link)
