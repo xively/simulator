@@ -5,24 +5,16 @@ input, select, button {
 }
 
 input[type=text], input[type=number] {
-  height: 30px;
-  width: 120px;
-  padding: 5px 9px;
-  margin-right: 8px;
-  border: 1px solid #C4C4C4;
-  border-radius: 5px;
-  box-shadow: inset 0px 1px 1px 0px rgba(0,0,0,0.1);
-  box-sizing: border-box;
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  height: 34px;
+  line-height: 34px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 0;
+  background: #f5f6f8;
+  color: #000000;
+  box-shadow: 2px 2px 3px 1px @box-shadow;
   font-size: 0.8em;
-  vertical-align: bottom;
-
-  // TODO use for consistency?
-  // border: none;
-  // border-radius: 0;
-  // background: @light-gray;
-  // box-shadow: 2px 2px 3px 1px @box-shadow;
-  // appearance: none;
+  appearance: none;
 
   &.wide-input {
     width: 250px;
