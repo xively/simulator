@@ -7,7 +7,7 @@ const formIcon = require('./images/form.svg')
 
 const deviceConfig = {
   template: `
-    <div class="section">
+    <div class="section" ng-show="!deviceConfig.editGlobal">
       <image-upload image="deviceConfig.image"></image-upload>
       <div class="selector">
         <div class="mode">
@@ -28,7 +28,7 @@ const deviceConfig = {
       </div>
     </div>
 
-    <div class="section">
+    <div class="section" ng-show="!deviceConfig.editGlobal">
       <div class="form" ng-show="!deviceConfig.advancedMode">
         <device-form
           image="deviceConfig.image"
@@ -42,8 +42,15 @@ const deviceConfig = {
               update="deviceConfig.setNewConfig(config)"></editor>
     </div>
 
+    <div class="section global-editor" ng-show="deviceConfig.editGlobal">
+      <editor json="deviceConfig.globalJson"
+              error="deviceConfig.error"
+              update="deviceConfig.updateGlobalConfig()"></editor>
+    </div>
+
     <div class="section buttons">
       <button type="button" class="button reset" ng-click="deviceConfig.resetConfig()">Reset to default</button>
+      <button type="button" class="button ok global-toggle" ng-click="deviceConfig.editGlobal = !deviceConfig.editGlobal">{{ deviceConfig.editGlobal ? 'Hide' : 'Show' }} global device code</button>
       <button type="button" class="button ok pull-right" ng-click="deviceConfig.applyConfig()" ng-disabled="deviceConfig.error">OK</button>
     </div>
   `,
@@ -161,8 +168,9 @@ const deviceConfig = {
     }
     this.resetConfig = () => {
       if ($window.confirm('Do you really want to reset the device config?')) {
-        settingsService.getOriginalDeviceConfig(this.options.selectedOption.name).then((config) => {
-          this.setNewConfig(config)
+        const configName = this.editGlobal ? 'general' : this.options.selectedOption.name
+        settingsService.getOriginalDeviceConfig(configName).then((config) => {
+          this.editGlobal ? this.globalJson = JSON.stringify(config, null, 2) : this.setNewConfig(config)
         })
       }
     }
@@ -186,6 +194,12 @@ const deviceConfig = {
           left: ((sensor.tooltip || sensor.widget || {}).position || {}).left
         }))
       })
+    }
+
+    this.editGlobal = false
+    this.globalJson = JSON.stringify(DEVICES_CONFIG.general, null, 2)
+    this.updateGlobalConfig = () => {
+      settingsService.updateDeviceConfigDebounce('general', this.globalJson)
     }
   }
 }
