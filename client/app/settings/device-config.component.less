@@ -4,6 +4,7 @@ device-config {
   height: 100%;
 
   .section {
+
     &:not(:first-child) {
       margin-top: 20px;
     }
@@ -73,6 +74,12 @@ device-config {
       min-height: 200px;
       overflow-y: auto;
     }
+
+    &.global-editor {
+      height: calc(~"100% - 70px");
+      overflow: scroll;
+      margin-top: 0;
+    }
   }
 
   .buttons {
@@ -87,6 +94,10 @@ device-config {
       color: @light-gray;
       background-color: @light-blue;
       border-color: @light-blue;
+
+      &.global-toggle {
+        width: 172px;
+      }
 
       &:disabled {
         color: @dark-gray;

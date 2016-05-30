@@ -18,7 +18,7 @@ const virtualDeviceComponent = {
       </div>
     </div>
 
-    <div class="device-container" style="width: {{ ::virtualDevice.config.width }}px; height: {{ ::virtualDevice.config.height }}px" ng-if="virtualDevice.config.image">
+    <div class="device-container" style="width: {{ ::virtualDevice.config.width }}px; max-height: {{ ::virtualDevice.config.height }}px" ng-if="virtualDevice.config.image">
       <div ng-repeat="(name, sensor) in ::virtualDevice.config.sensors">
         <tooltip ng-if="sensor.tooltip"
           options="sensor"
