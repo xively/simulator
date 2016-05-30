@@ -6,9 +6,6 @@ require('dotenv').config({ silent: true })
 const logger = require('winston')
 
 const config = require('../config/server')
-const salesforce = require('./salesforce')
-const integration = require('./xively').integration
-const blueprint = require('./xively').blueprint
 const app = require('./app')
 const socket = require('./socket')
 const orchestrator = require('./orchestrator')
@@ -21,37 +18,6 @@ const server = socket(app, devices, rules)
   Orchestrator
  */
 orchestrator.init(server, app)
-
-/*
-  Salesforce integration
- */
-
-// create account user
-// integrating with salesforce
-salesforce.getUserEmail()
-  .then((idmUserEmail) => {
-    return blueprint.createAccountUsers([{
-      accountId: config.account.accountId,
-      createIdmUser: true,
-      idmUserEmail
-    }])
-  })
-  .catch(() => {
-    return blueprint.createAccountUsers([{
-      accountId: config.account.accountId
-    }])
-  })
-  .then(() => {
-    return salesforce.login()
-      .then((user) => {
-        return integration.removeAccount(user.organizationId)
-          .catch(() => Promise.resolve())
-          .then(() => integration.addAccount(user.organizationId))
-      })
-      .then(() => logger.info('Integrating with SalesForce success'))
-  })
-  .then(() => { salesforce.done = true })
-  .catch((err) => logger.error('Integrating with SalesForce error', err))
 
 /*
   Server

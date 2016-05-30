@@ -208,4 +208,47 @@ describe('API endpoints (/api/*)', () => {
       expect(selectImageStub).to.be.calledWith('1')
     })
   })
+
+  describe('GET /application-config', () => {
+    const config = {
+      salesforceUsername: 'username',
+      salesforcePassword: 'password',
+      salesforceToken: 'secret'
+    }
+
+    afterEach(function * () {
+      yield database.truncateTables()
+    })
+
+    it('should return with the application config', function * () {
+      let resp = yield request(server.listen())
+        .get('/api/application-config')
+        .json(true)
+        .expect(200)
+        .end()
+
+      expect(resp.body).to.eql({})
+
+      yield database.updateApplicationConfig(config)
+
+      resp = yield request(server.listen())
+        .get('/api/application-config')
+        .json(true)
+        .expect(200)
+        .end()
+
+      expect(resp.body).to.eql(config)
+    })
+
+    it('should update the application config', function * () {
+      const resp = yield request(server.listen())
+        .put('/api/application-config')
+        .json(true)
+        .body(config)
+        .expect(200)
+        .end()
+
+      expect(resp.body).to.eql(config)
+    })
+  })
 })

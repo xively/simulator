@@ -26,6 +26,8 @@ apiRouter.put('/device-config', apiHandlers.updateDeviceConfig)
 apiRouter.get('/device-config/original', apiHandlers.getOriginalDeviceConfig)
 apiRouter.get('/images/:id', apiHandlers.getImageById)
 apiRouter.post('/images', upload.single('file'), apiHandlers.uploadImage)
+apiRouter.get('/application-config', apiHandlers.getApplicationConfig)
+apiRouter.put('/application-config', apiHandlers.updateApplicationConfig)
 
 router.use('/api', apiRouter)
 
