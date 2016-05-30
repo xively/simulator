@@ -5,19 +5,9 @@ const database = require('./database')
 
 describe('Database', () => {
   const appConfigMock = {
-    accountId: 'accountId',
-    organization: {
-      name: 'organization'
-    },
-    mqttUser: {
-      name: 'mqttUser'
-    },
-    device: {
-      name: 'device'
-    },
-    endUser: {
-      name: 'endUser'
-    }
+    salesforceUsername: 'username',
+    salesforcePassword: 'password',
+    salesforceToken: 'token'
   }
   const deviceConfigMock = {
     templateName: 'templateName',
@@ -48,18 +38,21 @@ describe('Database', () => {
   })
 
   describe('application_config', () => {
-    it('should insert new app config into the DB', function * () {
-      const config = yield database.insertApplicationConfig(appConfigMock)
+    it('should insert/update app config', function * () {
+      let config = yield database.updateApplicationConfig(appConfigMock)
 
-      delete config[0].id
-      expect(config[0]).to.eql(appConfigMock)
+      expect(config).to.eql(appConfigMock)
+
+      const update = { salesforceUsername: 'new username' }
+      config = yield database.updateApplicationConfig(update)
+
+      expect(config).to.eql(Object.assign(appConfigMock, update))
     })
 
-    it('should find app config by accountId', function * () {
-      const appConfigData = yield database.insertApplicationConfig(appConfigMock)
-      const config = yield database.selectApplicationConfig(appConfigMock.accountId)
+    it('should find app config', function * () {
+      const appConfigData = yield database.updateApplicationConfig(appConfigMock)
+      const config = yield database.selectApplicationConfig()
 
-      expect(config.length).to.eql(1)
       expect(config).to.eql(appConfigData)
     })
   })

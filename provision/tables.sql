@@ -47,12 +47,9 @@ WITH (
 
 CREATE TABLE application_config
 (
-  "id" serial NOT NULL,
-  "accountId" text,
-  "organization" json,
-  "mqttUser" json,
-  "device" json,
-  "endUser" json
+  "salesforceUsername" text,
+  "salesforcePassword" text,
+  "salesforceToken" text
 )
 WITH (
   OIDS = FALSE

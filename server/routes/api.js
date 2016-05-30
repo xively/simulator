@@ -80,6 +80,19 @@ function getImageById (req, res) {
 function uploadImage (req, res) {
   database.insertImage(req.file.buffer)
     .then((result) => res.json({ imageUrl: `/api/images/${result[0].id}` }))
+    .catch(() => res.sendStatus(400))
+}
+
+function getApplicationConfig (req, res) {
+  database.selectApplicationConfig()
+    .then((result) => res.json(result || {}))
+    .catch(() => res.sendStatus(400))
+}
+
+function updateApplicationConfig (req, res) {
+  database.updateApplicationConfig(req.body)
+    .then((result) => res.json(result))
+    .catch(() => res.sendStatus(400))
 }
 
 module.exports = {
@@ -92,5 +105,7 @@ module.exports = {
   updateDeviceConfig,
   getOriginalDeviceConfig,
   getImageById,
-  uploadImage
+  uploadImage,
+  getApplicationConfig,
+  updateApplicationConfig
 }

@@ -11,16 +11,25 @@ const knex = createKnex({
 })
 
 // Application
-function selectApplicationConfig (accountId) {
+function selectApplicationConfig () {
   return knex('application_config')
     .select()
-    .where('accountId', accountId)
+    .then((result) => result[0])
 }
 
-function insertApplicationConfig (data) {
+function createApplicationConfig (data) {
   return knex('application_config')
     .insert(data)
     .returning('*')
+    .then((result) => result[0])
+}
+
+function updateApplicationConfig (data) {
+  return knex('application_config')
+    .update(data)
+    .returning('*')
+    .then((result) => result[0])
+    .then((config) => config || createApplicationConfig(data))
 }
 
 // Device config
@@ -52,12 +61,11 @@ function selectDeviceConfig (templateName) {
 }
 
 function updateDeviceConfig (templateName, config) {
-  const resp = knex('device_config')
+  return knex('device_config')
     .where('templateName', templateName)
     .update({ config })
     .returning('*')
-
-  return resp.length ? resp : createDeviceConfig({ templateName, config })
+    .then((response) => response.length ? response : createDeviceConfig({ templateName, config }))
 }
 
 // Firmware
@@ -142,7 +150,7 @@ function truncateTables () {
 
 module.exports = {
   selectApplicationConfig,
-  insertApplicationConfig,
+  updateApplicationConfig,
 
   createDeviceConfig,
   selectDeviceConfigs,

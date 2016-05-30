@@ -22,8 +22,8 @@ const config = {
     url: process.env.SMS_SERVICE_URL || 'https://concaria-sms.herokuapp.com/api/message'
   },
   salesforce: {
-    user: process.env.SALESFORCE_USER,
-    pass: process.env.SALESFORCE_PASSWORD,
+    username: process.env.SALESFORCE_USER,
+    password: process.env.SALESFORCE_PASSWORD,
     token: process.env.SALESFORCE_TOKEN,
     namespace: process.env.SF_PKG_NAMESPACE || 'xively'
   },

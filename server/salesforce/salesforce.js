@@ -3,25 +3,56 @@
 const logger = require('winston')
 const jsforce = require('jsforce')
 const _ = require('lodash')
+const database = require('../database')
 const config = require('../../config/server')
+const xively = require('../xively')
+const blueprint = xively.blueprint
+const integration = xively.integration
 
 const DEVICE_FIELD_NAME = `${config.salesforce.namespace}__XI_Device_ID__c`
 const DEVICE_FIELD_NAME_WITHOUT_XI = `${config.salesforce.namespace}__Device_ID__c`
 const END_USER_FIELD_NAME = `${config.salesforce.namespace}__XI_End_User_ID__c`
 
+if (config.salesforce.username && config.salesforce.password && config.salesforce.token) {
+  database.updateApplicationConfig({
+    salesforceUsername: config.salesforce.username,
+    salesforcePassword: config.salesforce.password,
+    salesforceToken: config.salesforce.token
+  })
+} else {
+  logger.info('Salesforce environment variables are missing')
+}
+
 const salesforce = {
   login () {
     if (!this.loggedIn) {
-      if (!(config.salesforce.user && config.salesforce.pass && config.salesforce.token)) {
-        this.loggedIn = Promise.reject('Environment variables are missing')
-      } else {
-        this.connection = new jsforce.Connection()
-        this.loggedIn = this.connection.login(config.salesforce.user, `${config.salesforce.pass}${config.salesforce.token}`)
-      }
+      this.loggedIn = database.selectApplicationConfig().then((applicationConfig) => {
+        applicationConfig = applicationConfig || {}
+        const username = applicationConfig.salesforceUsername
+        const password = applicationConfig.salesforcePassword
+        const token = applicationConfig.salesforceToken
+        if (!(username && password && token)) {
+          return Promise.reject('no salesforce credentials')
+        }
 
-      this.loggedIn
-        .then(() => logger.info('salesforce#login: success'))
-        .catch((err) => logger.error('salesforce#login: error', err))
+        if (this.connection && this.connection.username === username) {
+          return Promise.resolve()
+        }
+        this.connection = new jsforce.Connection()
+        this.connection.username = username
+        return this.connection.login(username, `${password}${token}`)
+          .then((user) => {
+            if (!user) {
+              throw new Error('Could not log in')
+            }
+            return user
+          })
+      })
+
+      this.loggedIn.catch((err) => {
+        this.loggedIn = null
+        throw err
+      })
     }
 
     return this.loggedIn
@@ -49,10 +80,6 @@ const salesforce = {
           }
         })
       })
-      .catch((err) => {
-        logger.error('Salesforce #addAssets', err)
-        throw new Error(err)
-      })
   },
 
   /**
@@ -74,9 +101,6 @@ const salesforce = {
           }
           logger.info('Salesforce #addCases', `inserted successfully: ${cases[idx].Subject}`)
         })
-      })
-      .catch((err) => {
-        logger.error('Salesforce #addCases', err)
       })
   },
 
@@ -102,9 +126,6 @@ const salesforce = {
           logger.info('Salesforce #addContacts', `inserted successfully: ${JSON.stringify(contacts[idx])}`)
         })
       })
-      .catch((err) => {
-        logger.error('Salesforce #addContacts', err)
-      })
   },
 
   /**
@@ -122,6 +143,32 @@ const salesforce = {
     return this.login()
       .then(() => this.connection.query(`SELECT Id, Email FROM User WHERE Id = '${this.connection.userInfo.id}'`))
       .then((result) => result.records[0].Email)
+  },
+
+  integrate () {
+    return this.getUserEmail()
+      .then((idmUserEmail) => {
+        return blueprint.createAccountUsers([{
+          accountId: config.account.accountId,
+          createIdmUser: true,
+          idmUserEmail
+        }])
+      })
+      .catch(() => {
+        return blueprint.createAccountUsers([{
+          accountId: config.account.accountId
+        }])
+      })
+      .then(() => {
+        return this.login()
+          .then((user) => {
+            return integration.removeAccount(user.organizationId)
+              .catch(() => Promise.resolve())
+              .then(() => integration.addAccount(user.organizationId))
+          })
+          .then(() => logger.info('Integrating with SalesForce success'))
+      })
+      .catch((err) => logger.error('Integrating with SalesForce:', err.message))
   }
 }
 

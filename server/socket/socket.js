@@ -38,10 +38,10 @@ module.exports = function configureSocket (app, devices, rules) {
     })
 
     blueprintPromise.then((result) => {
-      if (salesforce.done) {
+      salesforce.integrate().then(() => {
         salesforce.addContacts(result.endUsers)
         salesforce.addAssets(result.devices)
-      }
+      })
     })
   }
   updateData()
