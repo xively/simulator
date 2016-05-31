@@ -56,6 +56,17 @@ git push origin my-changes-heroku
 # https://heroku.com/deploy?template=https://github.com/my-github-user/simulator/tree/my-changes-heroku
 ```
 
+#### Updating Data-Flow Dependencies (habanero)
+
+Since [data flow](https://www.npmjs.com/package/node-red-habanero) is a seperate application, to obtain updates from that repository, you can run the following commands to force a rebuild,
+replacing `my-changes-heroku` with the branch of the simulator you are using.
+
+```sh
+heroku config:set NODE_MODULES_CACHE=false
+git commit -am 'disable node_modules cache force rebuild' --allow-empty
+git push heroku my-changes-heroku:master --force
+```
+
 ### Developer Scripts
 
 There are a handful of npm scripts to aid in development.
