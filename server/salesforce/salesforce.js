@@ -108,10 +108,11 @@ const salesforce = {
    * @param {Array} contacts
    */
   addContacts (contacts) {
-    contacts = _.uniq(contacts.map((c) => ({
+    contacts = contacts.map((c) => ({
       Email: config.salesforce.user,
+      Lastname: c.name,
       [END_USER_FIELD_NAME]: c.organizationId
-    })))
+    }))
 
     const chunksOfContacts = _.chunk(contacts, 10)
 
