@@ -39,7 +39,7 @@ module.exports = function configureSocket (app, devices, rules) {
 
     blueprintPromise.then((result) => {
       salesforce.integrate().then(() => {
-        salesforce.addContacts(result.endUsers)
+        // salesforce.addContacts(result.endUsers)
         salesforce.addAssets(result.devices)
       })
     })
