@@ -25,6 +25,22 @@ const deviceConfig = {
           ng-change="deviceConfig.options.selectedOption.select()"
           ng-options="template.name for template in deviceConfig.options.availableOptions track by template.id">
         </select>
+
+        <div class="new-template" ng-if="deviceConfig.options.selectedOption.id === 'newdevice'">
+          <div class="form-row">
+            <label>Template name</label>
+            <input type="text" placeholder="Enter tempalte name" ng-model="deviceConfig.newDeviceTemplate.tempalteName"/>
+          </div>
+          <div class="form-row">
+            <label>Organization</label>
+            <select
+              class="org-selector"
+              ng-model="deviceConfig.newDeviceTemplate.organization"
+              ng-options="org.name for org in deviceConfig.organizations track by org.id">
+            </select>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -56,11 +72,16 @@ const deviceConfig = {
   `,
   controllerAs: 'deviceConfig',
   /* @ngInject */
-  controller ($scope, $window, devicesService, settingsService, DEVICES_CONFIG) {
+  controller ($scope, $window, devicesService, settingsService, blueprintService, DEVICES_CONFIG) {
     const self = this
     this.error = false
 
-    devicesService.getDeviceTemplates().then((templates) => {
+    blueprintService.getOrganizations()
+      .then((organizations) => {
+        this.organizations = organizations
+      })
+
+    blueprintService.getDeviceTemplates().then((templates) => {
       const availableOptions = _.map((templates), (template, id) => ({
         id,
         name: template.name,
@@ -88,6 +109,19 @@ const deviceConfig = {
       const selectedOption = availableOptions[0]
       availableOptions[0].select()
 
+      availableOptions.unshift({
+        id: 'newdevice',
+        name: 'Add New Device...',
+        select () {
+          self.setNewConfig({
+            image: '',
+            width: 800,
+            widgets: [],
+            sensors: {}
+          })
+        }
+      })
+
       this.options = {
         availableOptions,
         selectedOption
@@ -97,7 +131,7 @@ const deviceConfig = {
     this.config = {}
     $scope.$watch(() => this.config, (config = {}) => {
       this.json = JSON.stringify(config, null, 2)
-      if (this.options && this.options.selectedOption) {
+      if (this.options && this.options.selectedOption && this.options.selectedOption.name !== 'Add New Device...') {
         settingsService.updateDeviceConfigDebounce(this.options.selectedOption.name, this.json)
       }
     }, true)
@@ -164,8 +198,32 @@ const deviceConfig = {
     }
 
     this.applyConfig = () => {
-      $window.location.reload(true)
+      if (this.options.selectedOption.name !== 'Add New Device...') {
+        return $window.location.reload(true)
+      }
+
+      blueprintService.createDeviceTemplate({
+        templateName: this.newDeviceTemplate.tempalteName
+      })
+        .then((deviceTempalte) => {
+          const channelNames = this.sensors.map((sensor) => sensor.text)
+
+          Promise.all([
+            blueprintService.createDevice({
+              organizationId: this.newDeviceTemplate.organization.id,
+              deviceTemplateId: deviceTempalte.id,
+              deviceTemplateName: deviceTempalte.name
+            }),
+            blueprintService.createChannelTemplates({
+              channelNames,
+              deviceTemplateId: deviceTempalte.id,
+              deviceTemplateName: deviceTempalte.name
+            })
+          ])
+        })
+        .then(() => $window.location.reload(true))
     }
+
     this.resetConfig = () => {
       if ($window.confirm('Do you really want to reset the device config?')) {
         const configName = this.editGlobal ? 'general' : this.options.selectedOption.name

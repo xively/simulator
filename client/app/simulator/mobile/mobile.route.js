@@ -7,11 +7,11 @@ function mobileRoute ($stateProvider) {
     `,
     resolve: {
       /* @ngInject */
-      device: ($q, $stateParams, devicesService) => {
+      device: ($q, $stateParams, devicesService, blueprintService) => {
         const id = $stateParams.id
         return $q.all([
           devicesService.getDevice(id),
-          devicesService.getDeviceTemplates()
+          blueprintService.getDeviceTemplates()
         ])
           .then(([device, templates]) => {
             device.template = templates[device.deviceTemplateId]

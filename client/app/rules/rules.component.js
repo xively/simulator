@@ -2,25 +2,6 @@ require('./rules.less')
 
 const _ = require('lodash')
 
-function getDeviceTemplates (devicesService) {
-  return devicesService.getDeviceTemplates()
-    .then((templates) => {
-      return _.map(templates, (template) => {
-        if (template.channelTemplates) {
-          template.channelTemplates.push({
-            name: 'log:message',
-            id: '_log'
-          })
-        }
-        return {
-          id: template.id,
-          name: template.name,
-          channels: template.channelTemplates
-        }
-      })
-    })
-}
-
 /* @ngInject */
 const rulesComponent = {
   template: `
@@ -121,7 +102,7 @@ const rulesComponent = {
   `,
   controllerAs: 'rules',
   /* @ngInject */
-  controller (rulesService, devicesService) {
+  controller (rulesService, devicesService, blueprintService) {
     const ruleTemplate = {
       name: '',
       conditions: {
@@ -137,8 +118,27 @@ const rulesComponent = {
       }
     }
 
+    function getDeviceTemplates () {
+      return blueprintService.getDeviceTemplates()
+        .then((templates) => {
+          return _.map(templates, (template) => {
+            if (template.channelTemplates) {
+              template.channelTemplates.push({
+                name: 'log:message',
+                id: '_log'
+              })
+            }
+            return {
+              id: template.id,
+              name: template.name,
+              channels: template.channelTemplates
+            }
+          })
+        })
+    }
+
     Promise.all([
-      getDeviceTemplates(devicesService),
+      getDeviceTemplates(),
       rulesService.getRules()
     ]).then((results) => {
       this.templates = results[0]

@@ -11,8 +11,8 @@ function simulatorRoute ($stateProvider) {
     `,
     resolve: {
       /* @ngInject */
-      templates (devicesService) {
-        return devicesService.getDeviceTemplates()
+      templates (blueprintService) {
+        return blueprintService.getDeviceTemplates()
       },
       /* @ngInject */
       device ($stateParams, $state, devicesService) {

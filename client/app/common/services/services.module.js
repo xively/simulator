@@ -3,6 +3,7 @@ const applicationConfig = require('./application-config')
 const authorization = require('./authorization')
 const blueprint = require('./blueprint')
 const devices = require('./devices')
+const location = require('./location')
 const mqtt = require('./mqtt')
 const sms = require('./sms')
 const socket = require('./socket')
@@ -14,6 +15,7 @@ const commonServices = angular.module('simulator.common.services', [
   authorization,
   blueprint,
   devices,
+  location,
   mqtt,
   sms,
   socket,

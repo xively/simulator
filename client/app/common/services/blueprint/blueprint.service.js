@@ -1,7 +1,7 @@
 const _ = require('lodash')
 
 /* @ngInject */
-function blueprintFactory ($log, $http, CONFIG) {
+function blueprintFactory ($log, $http, locationService, CONFIG) {
   return {
     /**
      * GET resource
@@ -17,6 +17,67 @@ function blueprintFactory ($log, $http, CONFIG) {
         params,
         headers: {
           Accept: 'application/json'
+        }
+      })
+    },
+
+    getDeviceTemplates () {
+      return this.getV1('devices/templates', { pageSize: 100 })
+        .then((response) => {
+          return response.data.deviceTemplates.results.reduce((templates, template) => {
+            templates[template.id] = template
+            return templates
+          }, {})
+        })
+    },
+
+    getOrganizations () {
+      return this.getV1('organizations')
+        .then((res) => res.data.organizations.results)
+    },
+
+    createDeviceTemplate (data) {
+      return $http({
+        method: 'POST',
+        url: `https://${CONFIG.account.blueprintHost}/api/v1/devices/templates`,
+        data: {
+          accountId: CONFIG.account.accountId,
+          name: data.templateName
+        }
+      }).then((res) => res.data.deviceTemplate)
+    },
+
+    createChannelTemplates (data) {
+      const channelTemplates = data.channelNames.map((channelName) => {
+        return $http({
+          method: 'POST',
+          url: `https://${CONFIG.account.blueprintHost}/api/v1/channels/templates`,
+          data: {
+            accountId: CONFIG.account.accountId,
+            name: channelName,
+            persistenceType: 'timeSeries',
+            entityType: 'deviceTemplate',
+            deviceTemplate: data.deviceTemplateName,
+            entityId: data.deviceTemplateId
+          }
+        })
+      })
+
+      return Promise.all(channelTemplates)
+    },
+
+    createDevice (data) {
+      const location = locationService.generateLocation()
+      return $http({
+        method: 'POST',
+        url: `https://${CONFIG.account.blueprintHost}/api/v1/devices`,
+        data: {
+          accountId: CONFIG.account.accountId,
+          deviceTemplateId: data.deviceTemplateId,
+          organizationId: data.organizationId,
+          serialNumber: `${data.deviceTemplateName}-000001`,
+          longitude: location[0],
+          latitude: location[1]
         }
       })
     },

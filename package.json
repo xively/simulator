@@ -100,6 +100,7 @@
     "geojson-random": "0.2.2",
     "geojson-utils": "1.1.0",
     "jsforce": "1.6.1",
+    "json-loader": "0.5.4",
     "knex": "0.10.0",
     "lodash": "4.11.1",
     "moment": "2.13.0",

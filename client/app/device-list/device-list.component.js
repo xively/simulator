@@ -45,11 +45,11 @@ const devicesComponent = {
   `,
   controllerAs: 'deviceList',
   /* @ngInject */
-  controller ($q, devicesService, CONFIG) {
+  controller ($q, devicesService, blueprintService, CONFIG) {
     this.devices = []
     $q.all([
       devicesService.getDevices(),
-      devicesService.getDeviceTemplates()
+      blueprintService.getDeviceTemplates()
     ])
       .then(([devices, templates]) => {
         devices = _.toArray(devices)

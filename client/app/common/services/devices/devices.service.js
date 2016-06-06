@@ -104,20 +104,6 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
     }
 
     /**
-     * Get device templates from Blueprint
-     * @return {Promise}
-     */
-    getDeviceTemplates () {
-      return blueprintService.getV1('devices/templates')
-        .then((response) => {
-          return response.data.deviceTemplates.results.reduce((templates, template) => {
-            templates[template.id] = template
-            return templates
-          }, {})
-        })
-    }
-
-    /**
      * Get time series for a device
      * @param  {Object} device
      * @return {Promise}
