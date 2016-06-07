@@ -51,7 +51,7 @@ const salesforce = {
 
       this.loggedIn.catch((err) => {
         this.loggedIn = null
-        throw err
+        logger.error(err)
       })
     }
 
@@ -80,6 +80,7 @@ const salesforce = {
           }
         })
       })
+      .catch((err) => logger.error(err))
   },
 
   /**
@@ -102,6 +103,7 @@ const salesforce = {
           logger.info('Salesforce #addCases', `inserted successfully: ${cases[idx].Subject}`)
         })
       })
+      .catch((err) => logger.error(err))
   },
 
   /**
@@ -127,6 +129,7 @@ const salesforce = {
           logger.info('Salesforce #addContacts', `inserted successfully: ${JSON.stringify(contacts[idx])}`)
         })
       })
+      .catch((err) => logger.error(err))
   },
 
   /**

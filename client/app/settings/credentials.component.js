@@ -24,7 +24,7 @@ const credentialsComponent = {
                 ng-readonly="{{ !object.editable }}"/>
               <span ng-show="object.text" copy="object.text">copy</span>
             </span>
-            <span ng-if="object.isPassword && object.text">
+            <span ng-if="object.isPassword">
               <input class="pointer"
                 type="text"
                 value="Hidden. Click here to view."
