@@ -10,7 +10,6 @@ const map = require('./map')
 const NAMES = {
   HOME_ORG_TEMPLATE: 'Home',
   HOME_AIR_PUTIFIER: 'Home Air Purifier',
-  JACKET: 'Jacket',
   SOLAR_PANEL: 'Solar Panel',
   HOME_USER: 'Home User',
   WAREHOUSE_ORG_TEMPLATE: 'Warehouse',
@@ -23,7 +22,6 @@ const NAMES = {
 const DEVICES_PER_ORGANIZATION = {
   HOME_AIR_PUTIFIER: 3,
   INDUSTRIAL_HVAC: 10,
-  JACKET: 1,
   SOLAR_PANEL: 1
 }
 
@@ -78,18 +76,6 @@ const commercialDeviceFields = _.map({
   deviceTemplate: NAMES.INDUSTRIAL_HVAC
 }))
 
-const jacketDeviceFields = _.map({
-  hardwareVersion: 'string',
-  includedSensors: 'string',
-  color: 'string',
-  productionRun: 'string',
-  activatedDate: 'datetime'
-}, (fieldType, name) => ({
-  name,
-  fieldType,
-  deviceTemplate: NAMES.JACKET
-}))
-
 const solarPanelDeviceFields = _.map({
   hardwareVersion: 'string',
   includedSensors: 'string',
@@ -135,18 +121,6 @@ const commercialDeviceChannels = _.map({
   persistenceType,
   entityType: 'deviceTemplate',
   deviceTemplate: NAMES.INDUSTRIAL_HVAC
-}))
-
-const jacketDeviceChannels = _.map({
-  control: 'simple',
-  core: 'timeSeries',
-  'left-arm': 'timeSeries',
-  'right-arm': 'timeSeries'
-}, (persistenceType, name) => ({
-  name,
-  persistenceType,
-  entityType: 'deviceTemplate',
-  deviceTemplate: NAMES.JACKET
 }))
 
 const solarPanelDeviceChannels = _.map({
@@ -218,16 +192,6 @@ const rawDevices = [{
     })
   }
 }, {
-  name: NAMES.JACKET,
-  count: DEVICES_PER_ORGANIZATION.JACKET,
-  organizations: homeOrganizations,
-  generate: (options) => {
-    const generic = generateGenericDevice(Object.assign({ templateName: 'JACKET' }, options || {}))
-    return _.merge(generic, {
-      includedSensors: 'Core, Left arm, Right arm'
-    })
-  }
-}, {
   name: NAMES.INDUSTRIAL_HVAC,
   count: DEVICES_PER_ORGANIZATION.INDUSTRIAL_HVAC,
   organizations: warehouseOrganizations,
@@ -293,8 +257,6 @@ const config = {
   }, {
     name: NAMES.INDUSTRIAL_HVAC
   }, {
-    name: NAMES.JACKET
-  }, {
     name: NAMES.SOLAR_PANEL
   }],
   endUserTemplates: [{
@@ -305,8 +267,8 @@ const config = {
     name: NAMES.COMMERCIAL_SERVICE_TECHNICIAN
   }],
   organizations: [].concat(homeOrganizations).concat(warehouseOrganizations).concat(factoryOrganizations),
-  deviceFields: [].concat(homeDeviceFields).concat(commercialDeviceFields).concat(jacketDeviceFields).concat(solarPanelDeviceFields),
-  channelTemplates: [].concat(homeDeviceChannels).concat(commercialDeviceChannels).concat(jacketDeviceChannels).concat(solarPanelDeviceChannels),
+  deviceFields: [].concat(homeDeviceFields).concat(commercialDeviceFields).concat(solarPanelDeviceFields),
+  channelTemplates: [].concat(homeDeviceChannels).concat(commercialDeviceChannels).concat(solarPanelDeviceChannels),
   devices: _.flattenDeep(_.map(rawDevices, (rawDevice) => {
     return _.map(rawDevice.organizations, (organization, orgIdx) => {
       return _.times(rawDevice.count, (idx) => rawDevice.generate({ idx, organization, orgIdx }))
