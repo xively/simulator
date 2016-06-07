@@ -28,14 +28,14 @@ const config = {
     namespace: process.env.SF_PKG_NAMESPACE || 'xively'
   },
   account: {
-    idmHost: process.env.XIVELY_IDM_HOST,
-    integrationHost: process.env.XIVELY_INTEGRATION_HOST,
-    timeSeriesHost: process.env.XIVELY_TIMESERIES_HOST,
-    brokerHost: process.env.XIVELY_BROKER_HOST,
-    brokerPort: process.env.XIVELY_BROKER_WS_PORT,
+    idmHost: process.env.XIVELY_IDM_HOST || 'id.xively.com',
+    integrationHost: process.env.XIVELY_INTEGRATION_HOST || 'integration.xively.com',
+    timeSeriesHost: process.env.XIVELY_TIMESERIES_HOST || 'timeseries.xively.com',
+    brokerHost: process.env.XIVELY_BROKER_HOST || 'broker.xively.com',
+    brokerPort: process.env.XIVELY_BROKER_WS_PORT || 443,
     brokerUser: process.env.XIVELY_ACCOUNT_BROKER_USER,
     brokerPassword: process.env.XIVELY_ACCOUNT_BROKER_PASSWORD,
-    blueprintHost: process.env.XIVELY_BLUEPRINT_HOST,
+    blueprintHost: process.env.XIVELY_BLUEPRINT_HOST || 'blueprint.xively.com',
     accountId: process.env.XIVELY_ACCOUNT_ID,
     emailAddress: process.env.XIVELY_ACCOUNT_USER_NAME,
     idmUserId: process.env.XIVELY_ACCOUNT_USER_IDM_ID,
@@ -48,18 +48,6 @@ const config = {
   },
   meta: {
     env: process.env.NODE_ENV || 'development'
-  },
-  virtualdevice: {
-    userInfo: {
-      user: process.env.XIVELY_ACCOUNT_BROKER_USER,
-      password: process.env.XIVELY_ACCOUNT_BROKER_PASSWORD
-    },
-    mqtt: {
-      mqttBroker: process.env.XIVELY_BROKER_HOST,
-      mqttPort: process.env.XIVELY_BROKER_PORT,
-      mqttWsPort: process.env.XIVELY_BROKER_WS_PORT,
-      mqttUseSSL: true
-    }
   }
 }
 
