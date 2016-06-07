@@ -59,7 +59,7 @@ const virtualDeviceComponent = {
   },
   /* @ngInject */
   controller ($scope, DEVICES_CONFIG) {
-    this.config = DEVICES_CONFIG[this.device.template.name] || {}
+    this.config = _.cloneDeep(DEVICES_CONFIG[this.device.template.name] || {})
     this.selectedTemplate = _.find(this.templateOptions, { name: this.device.template.name })
 
     this.sensorsNotConfigured = _.pullAll(Object.keys(this.device.sensors), Object.keys(this.config.sensors || {}))
