@@ -74,6 +74,7 @@ const deviceConfig = {
   /* @ngInject */
   controller ($scope, $window, devicesService, settingsService, blueprintService, DEVICES_CONFIG) {
     const self = this
+    const ADD_NEW_DEVICE = 'Add New Device...'
     this.error = false
 
     blueprintService.getOrganizations()
@@ -111,12 +112,14 @@ const deviceConfig = {
 
       availableOptions.unshift({
         id: 'newdevice',
-        name: 'Add New Device...',
+        name: ADD_NEW_DEVICE,
         select () {
           self.setNewConfig({
             image: '',
             width: 800,
+            height: 700,
             widgets: [],
+            defaultSensor: '',
             sensors: {}
           })
         }
@@ -131,7 +134,7 @@ const deviceConfig = {
     this.config = {}
     $scope.$watch(() => this.config, (config = {}) => {
       this.json = JSON.stringify(config, null, 2)
-      if (this.options && this.options.selectedOption && this.options.selectedOption.name !== 'Add New Device...') {
+      if (this.options && this.options.selectedOption && this.options.selectedOption.name !== ADD_NEW_DEVICE) {
         settingsService.updateDeviceConfigDebounce(this.options.selectedOption.name, this.json)
       }
     }, true)
@@ -204,7 +207,7 @@ const deviceConfig = {
     }
 
     this.applyConfig = () => {
-      if (this.options.selectedOption.name !== 'Add New Device...') {
+      if (this.options.selectedOption.name !== ADD_NEW_DEVICE) {
         return $window.location.reload(true)
       }
 
