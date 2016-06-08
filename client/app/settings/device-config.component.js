@@ -230,6 +230,7 @@ const deviceConfig = {
             })
           ])
         })
+        .then(() => settingsService.updateDeviceConfigDebounce(this.newDeviceTemplate.tempalteName, this.json))
         .then(() => $window.location.reload(true))
     }
 
