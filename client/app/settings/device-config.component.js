@@ -136,6 +136,12 @@ const deviceConfig = {
       }
     }, true)
 
+    $scope.$watch(() => this.json, () => {
+      if (this.advancedMode && !this.error) {
+        settingsService.updateDeviceConfigDebounce(this.options.selectedOption.name, this.json)
+      }
+    }, true)
+
     this.update = (deviceForm) => {
       $scope.$applyAsync(() => {
         // apply image and width
