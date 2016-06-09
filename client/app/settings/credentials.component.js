@@ -45,7 +45,7 @@ const credentialsComponent = {
   `,
   controllerAs: 'credentials',
   /* @ngInject */
-  controller ($scope, applicationConfigService, CONFIG) {
+  controller ($scope, $window, applicationConfigService, CONFIG) {
     this.config = {
       'Xively Account': {
         link: {
@@ -112,6 +112,7 @@ const credentialsComponent = {
           salesforcePassword: Password.text,
           salesforceToken: Token.text
         })
+        .then(() => $window.location.reload(true))
       }
     }
 

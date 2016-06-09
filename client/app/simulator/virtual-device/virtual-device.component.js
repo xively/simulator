@@ -18,7 +18,7 @@ const virtualDeviceComponent = {
       </div>
     </div>
 
-    <div class="device-container" style="width: {{ ::virtualDevice.config.width }}px; max-height: {{ ::virtualDevice.config.height }}px" ng-if="virtualDevice.config.image">
+    <div class="device-container" style="width: {{ ::virtualDevice.config.width }}px" ng-if="virtualDevice.config.image">
       <div ng-repeat="(name, sensor) in ::virtualDevice.config.sensors">
         <tooltip ng-if="sensor.tooltip"
           options="sensor"
@@ -29,7 +29,7 @@ const virtualDeviceComponent = {
         </tooltip>
         <div ng-if="sensor.widget" bind-html-compile="virtualDevice.getHtml(sensor.widget)"></div>
       </div>
-      <img class="device-image" src="{{ virtualDevice.config.image }}" />
+      <img class="device-image" style="max-height: {{ ::virtualDevice.config.height }}px" src="{{ virtualDevice.config.image }}" />
     </div>
     <div class="no-image" ng-if="!virtualDevice.config.image">
       <h2>No image available</h2>
