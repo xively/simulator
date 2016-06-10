@@ -12,10 +12,12 @@
   "image": "https://ws.cubbyusercontent.com/p/_344ac3084abc47d4b0e52faf56494903/xively_by-LMI-under_habanero_logo.png/1505747296",
   "addons": [
     "xively:test",
-    "heroku-postgresql:hobby-dev"
+    "heroku-postgresql:hobby-dev",
+    "heroku-redis:hobby-dev",
+    "herokuconnect:demo"
   ],
   "scripts": {
-    "postdeploy": "node provision"
+    "postdeploy": "npm run provision"
   },
   "buildpacks": [
     {
@@ -35,9 +37,10 @@
       "description": "Your Salesforce token",
       "required": false
     },
-    "HABANERO_HOST": {
-      "description": "Heroku domain or app id for habanero",
-      "required": false
+    "HABANERO_EMBEDDED": {
+      "description": "Use habanero orchestrator rules engine",
+      "required": false,
+      "value": "false"
     }
   }
 }
