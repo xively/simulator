@@ -78,7 +78,7 @@ const virtualDeviceComponent = {
     // get html for a widget element
     this.getHtml = (widget) => {
       const { name, position } = widget
-      return `<${name} device="virtualDevice.device" style="position: absolute; top: ${position.top}px; left: ${position.left}px"></${name}>`
+      return `<${name} device="virtualDevice.device" options="sensor.widget.options" style="position: absolute; top: ${position.top}px; left: ${position.left}px"></${name}>`
     }
   }
 }
