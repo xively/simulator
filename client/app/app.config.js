@@ -7,10 +7,11 @@ function appConfig ($compileProvider, $logProvider, $provide, $urlRouterProvider
   $compileProvider.debugInfoEnabled(isProduction)
   $logProvider.debugEnabled(!isProduction)
 
+
   segmentProvider
       .setKey(CONFIG.tracking.segmentKey)
       .setDebug(CONFIG.tracking.segmentDebugEnabled)
-      .identify(CONFIG.account.accountId, {
+      .identify(window.location.host, {
         accountId: CONFIG.account.accountId,
         emailAddress: CONFIG.account.emailAddress,
         idmUserId: CONFIG.account.idmUserId,
