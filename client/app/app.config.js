@@ -1,5 +1,5 @@
 /* @ngInject */
-function appConfig ($compileProvider, $logProvider, $provide, $urlRouterProvider, CONFIG) {
+function appConfig ($compileProvider, $logProvider, $provide, $urlRouterProvider, CONFIG, segmentProvider) {
   let isProduction = false
   if (CONFIG.meta) {
     isProduction = CONFIG.meta.env === 'production'
@@ -7,6 +7,16 @@ function appConfig ($compileProvider, $logProvider, $provide, $urlRouterProvider
   $compileProvider.debugInfoEnabled(isProduction)
   $logProvider.debugEnabled(!isProduction)
 
+  segmentProvider
+      .setKey(CONFIG.tracking.segmentKey)
+      .setDebug(CONFIG.tracking.segmentDebugEnabled)
+      .identify(CONFIG.account.accountId, {
+        accountId: CONFIG.account.accountId,
+        emailAddress: CONFIG.account.emailAddress,
+        idmUserId: CONFIG.account.idmUserId,
+        blueprintUserId: CONFIG.account.blueprintUserId,
+      });
+    
   $urlRouterProvider.otherwise(($injector) => {
     const blueprintService = $injector.get('blueprintService')
     const $state = $injector.get('$state')

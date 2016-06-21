@@ -57,7 +57,7 @@ const tooltipComponent = {
   },
   controllerAs: 'tooltip',
   /* @ngInject */
-  controller ($element, $rootScope, $scope, socketService, EVENTS) {
+  controller ($element, $rootScope, $scope, socketService, segment, EVENTS) {
     Object.assign(this.options, { direction: 'top', distance: 100 }, this.options.tooltip)
 
     $scope.$watch(() => {
@@ -65,6 +65,9 @@ const tooltipComponent = {
     }, _.debounce((newValue) => {
       $scope.$applyAsync(() => {
         this.newValue = newValue
+
+        if(this.open)
+          segment.track(EVENTS.TRACKING.SENSOR_VALUE_CHANGED_SLIDER, {deviceName: this.device.name, label: this.label, value: this.value})
       })
     }, 100))
 
@@ -126,6 +129,9 @@ const tooltipComponent = {
         this.update(obj)
       }
       _.merge(this.device, device)
+
+
+
 
       if (notification) {
         $rootScope.$broadcast(EVENTS.NOTIFICATION, notification)

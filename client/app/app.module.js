@@ -14,6 +14,7 @@ const widgetsModule = require('../../config/devices/widgets')
 
 const app = angular.module('simulator', [
   require('angular-ui-router'),
+  require('angular-segment-analytics'),
   commonModule,
   navigationModule,
   devicesModule,

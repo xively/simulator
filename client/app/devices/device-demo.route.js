@@ -162,7 +162,7 @@ function deviceDemoRoute ($stateProvider) {
       }
     },
     /* @ngInject */
-    controller ($log, $scope, $rootScope, $state, $location, $window, $document, device, templates, devicesService, socketService, modalService, DEVICES_CONFIG, CONFIG, EVENTS) {
+    controller ($log, $scope, $rootScope, $state, $location, $window, $document, device, templates, devicesService, socketService, modalService, DEVICES_CONFIG, CONFIG, EVENTS, segment) {
       device.template = templates[device.deviceTemplateId]
       this.config = DEVICES_CONFIG[device.template.name] || {}
 
@@ -213,6 +213,8 @@ function deviceDemoRoute ($stateProvider) {
           name: template.name,
           device: _.find(devices, { deviceTemplateId: id }),
           navigate () {
+            segment.track(EVENTS.TRACKING.NEW_DEVICE_SELECTED_DROPDOWN, {deviceName: this.device.name, deviceId: this.device.id});
+
             $state.go('devices.device-demo', { id: this.device.id })
           }
         })).filter((option) => option.device)
@@ -270,6 +272,9 @@ function deviceDemoRoute ($stateProvider) {
       this.toggleMobileView = () => {
         this.mobileView = !this.mobileView
       }
+
+      //track outbound CPM link
+      segment.trackLink(document.querySelector('a.navigation-item.logo'), EVENTS.TRACKING.CPM_LINK_CLICKED);
     }
   })
 }

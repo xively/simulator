@@ -60,6 +60,10 @@ const config = {
       mqttWsPort: process.env.XIVELY_BROKER_WS_PORT,
       mqttUseSSL: true
     }
+  },
+  tracking: {
+    segmentKey: 'wlFsqsLSZefvvmvplELXL1k2a7WP7utF',
+    segmentDebugEnabled: process.env.NODE_ENV != 'production'
   }
 }
 
