@@ -1,5 +1,12 @@
 /* @ngInject */
-function redirectTo ($rootScope, $state, $location, segment, EVENTS) {
+function redirectTo ($rootScope, $state, $location, segment, EVENTS, CONFIG) {
+
+  segment.identify($location.host(), {
+    accountId: CONFIG.account.accountId,
+    emailAddress: CONFIG.account.emailAddress,
+    idmUserId: CONFIG.account.idmUserId,
+    blueprintUserId: CONFIG.account.blueprintUserId,
+  });
 
   //track if there's a mobile view (?navigation=0)
   if($location.search().navigation && $location.search().navigation == "0")

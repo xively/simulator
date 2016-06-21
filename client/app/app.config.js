@@ -11,13 +11,7 @@ function appConfig ($compileProvider, $logProvider, $provide, $urlRouterProvider
   segmentProvider
       .setKey(CONFIG.tracking.segmentKey)
       .setDebug(CONFIG.tracking.segmentDebugEnabled)
-      .identify(window.location.host, {
-        accountId: CONFIG.account.accountId,
-        emailAddress: CONFIG.account.emailAddress,
-        idmUserId: CONFIG.account.idmUserId,
-        blueprintUserId: CONFIG.account.blueprintUserId,
-      });
-    
+       
   $urlRouterProvider.otherwise(($injector) => {
     const blueprintService = $injector.get('blueprintService')
     const $state = $injector.get('$state')
