@@ -10,7 +10,8 @@ const EVENTS = {
     
     CPM_LINK_CLICKED: 'CPM link clicked',
     
-    MOBILE_VIEW_LOADED: 'mobile view loaded'
+    SIMULATOR_LOADED: 'simulator loaded',
+    MOBILE_VIEW_LOADED: 'simulator in mobile view loaded'
   }
 }
 

@@ -8,6 +8,8 @@ function redirectTo ($rootScope, $state, $location, segment, EVENTS, CONFIG) {
     blueprintUserId: CONFIG.account.blueprintUserId,
   });
 
+  segment.track(EVENTS.TRACKING.SIMULATOR_LOADED);
+
   //track if there's a mobile view (?navigation=0)
   if($location.search().navigation && $location.search().navigation == "0")
     segment.track(EVENTS.TRACKING.MOBILE_VIEW_LOADED);
