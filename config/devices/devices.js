@@ -456,6 +456,47 @@ const config = {
         }
       }
     }
+  },
+  'nest simulator': {
+    image: '/devices/images/industrial-hvac.png',
+    width: 800,
+    defaultSensor: 'dust',
+    widgets: ['nest'],
+    sensors: {
+      dust: {
+        min: 0,
+        max: 500,
+        wiggle: true,
+        unit: 'mg/m³',
+        tooltip: {
+          position: {
+            top: 20,
+            left: 165
+          },
+          labelPosition: {
+            top: 12,
+            left: -14
+          },
+          distance: 100,
+          direction: 'left',
+          input: true,
+          actions: [{
+            label: 'Trigger malfunction',
+            name: 'malfunction',
+            value: 'dust',
+            socket: true,
+            device: {
+              ok: false,
+              sensors: {
+                dust: {
+                  numericValue: -255
+                }
+              }
+            }
+          }]
+        }
+      }
+    }
   }
 }
 
