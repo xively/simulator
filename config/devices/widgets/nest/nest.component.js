@@ -24,50 +24,52 @@ const nestComponent = {
     $scope.state = AWAY
     $scope.targetPath
 
-    var access_token = "c.QBDi3jOvtmkYcPH8qBwZdY1sYhJBzSjR5Iq3tCim2qVGX6w98lXgTrVTN9RCNDlIxjCAf7LtS6us63laPuLWps7fbACwNwDQJEo648HG7VX0uzUxd9Xh0LYcFg7gnRhPdSLkwImm2J79c13M";
+    var accessToken = 'c.QBDi3jOvtmkYcPH8qBwZdY1sYhJBzSjR5Iq3tCim2qVGX6w98lXgTrVTN9RCNDlIxjCAf7LtS6us63laPuLWps7fbACwNwDQJEo648HG7VX0uzUxd9Xh0LYcFg7gnRhPdSLkwImm2J79c13M'
 
-    var ref = new Firebase('wss://developer-api.nest.com');
-    ref.authWithCustomToken(access_token, function(err, authData) {
-      if(err) {
+    /*global Firebase:true*/
+    /*eslint no-undef: "error"*/
+    var ref = new Firebase('wss://developer-api.nest.com')
+    ref.authWithCustomToken(accessToken, (err, authData) => {
+      if (err) {
         console.log('Nest auth error: ' + err)
       } else {
-        $scope.safeApply(function () {
+        $scope.safeApply(() => {
           console.log('Successfully logged into NEST')
           $scope.nestConnected = true
         })
       }
-    });
+    })
 
-    ref.on('value', function(snapshot) {
+    ref.on('value', (snapshot) => {
       var state = snapshot.val().structures[Object.keys(snapshot.val().structures)[0]].away
-      $scope.targetPath = "structures/" + Object.keys(snapshot.val().structures)[0] + "/away";
+      $scope.targetPath = 'structures/' + Object.keys(snapshot.val().structures)[0] + '/away'
 
-      $scope.safeApply(function () {
-        console.log('got value: ' + state);
+      $scope.safeApply(() => {
+        console.log('got value: ' + state)
         $scope.state = state
       })
-    });
+    })
 
-    $scope.$watch('state', function() {
-        console.log('hey2, myVar has changed!');
-    });
+    $scope.$watch('state', () => {
+      console.log('hey2, myVar has changed!')
+    })
 
-    $scope.switchState = function() {
-      var newState = $scope.state == AWAY ? HOME : AWAY
+    $scope.switchState = function () {
+      var newState = $scope.state === AWAY ? HOME : AWAY
       $scope.state = newState
-      ref.child($scope.targetPath).set(newState);
+      ref.child($scope.targetPath).set(newState)
     }
 
-    $scope.safeApply = function(fn) {
-      var phase = this.$root.$$phase;
-      if(phase == '$apply' || phase == '$digest') {
-        if(fn && (typeof(fn) === 'function')) {
-          fn();
+    $scope.safeApply = function (fn) {
+      var phase = this.$root.$$phase
+      if (phase === '$apply' || phase === '$digest') {
+        if (fn && (typeof (fn) === 'function')) {
+          fn()
         }
       } else {
-        this.$apply(fn);
+        this.$apply(fn)
       }
-    };
+    }
   }
 }
 
