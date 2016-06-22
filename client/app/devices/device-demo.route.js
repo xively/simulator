@@ -158,7 +158,7 @@ function deviceDemoRoute ($stateProvider) {
       device ($stateParams, $state, devicesService) {
         const id = $stateParams.id
         return devicesService.getDevice(id)
-          .catch(() => $state.go('devices'))
+        .catch(() => $state.go('devices'))
       }
     },
     /* @ngInject */
@@ -168,11 +168,11 @@ function deviceDemoRoute ($stateProvider) {
 
       const EXCLUDED_INFO_FIELDS = ['excludedInfoFields', 'simulate', 'subscribe', 'template', 'update', 'sensors', 'ok', 'channels']
       device.excludedInfoFields = EXCLUDED_INFO_FIELDS
-        .concat(DEVICES_CONFIG.general.excludedDeviceInfoFields, this.config.excludedDeviceInfoFields)
-        .filter(Boolean)
-        .map((fieldName) => {
-          return fieldName.toLowerCase()
-        })
+      .concat(DEVICES_CONFIG.general.excludedDeviceInfoFields, this.config.excludedDeviceInfoFields)
+      .filter(Boolean)
+      .map((fieldName) => {
+        return fieldName.toLowerCase()
+      })
 
       this.sensorsNotConfigured = _.reduce(device.sensors, (sensors, sensor, name) => {
         const configured = this.config.sensors && this.config.sensors[name] && (this.config.sensors[name].tooltip || this.config.sensors[name].widget)
@@ -188,7 +188,9 @@ function deviceDemoRoute ($stateProvider) {
       }, {})
 
       $scope.$watch(() => device.sensors, (sensors) => {
-        _.forEach(sensors, (sensor, name) => { this.sensors[name] = sensor.numericValue })
+        _.forEach(sensors, (sensor, name) => {
+          this.sensors[name] = sensor.numericValue
+        })
       }, true)
       this.device = device
 
@@ -211,15 +213,18 @@ function deviceDemoRoute ($stateProvider) {
       devicesService.getDevices().then((devices) => {
         const availableOptions = _.map((templates), (template, id) => ({
           name: template.name,
-          device: _.find(devices, { deviceTemplateId: id }),
+          device: _.find(devices, {deviceTemplateId: id}),
           navigate () {
-            segment.track(EVENTS.TRACKING.NEW_DEVICE_SELECTED_DROPDOWN, {deviceName: this.device.name, deviceId: this.device.id});
+            segment.track(EVENTS.TRACKING.NEW_DEVICE_SELECTED_DROPDOWN, {
+              deviceName: this.device.name,
+              deviceId: this.device.id
+            })
 
-            $state.go('devices.device-demo', { id: this.device.id })
+            $state.go('devices.device-demo', {id: this.device.id})
           }
         })).filter((option) => option.device)
 
-        const selectedOption = _.find(availableOptions, { name: device.template.name })
+        const selectedOption = _.find(availableOptions, {name: device.template.name})
 
         this.navigation = {
           availableOptions,
@@ -234,7 +239,9 @@ function deviceDemoRoute ($stateProvider) {
         modalService.open(name)
       }
 
-      this.block = ($event) => { $event.stopPropagation() }
+      this.block = ($event) => {
+        $event.stopPropagation()
+      }
 
       // simulate
       this.toggleSimulation = () => {
@@ -255,7 +262,7 @@ function deviceDemoRoute ($stateProvider) {
 
       // get html for a widget element
       this.getHtml = (widget) => {
-        const { name, position } = widget
+        const {name, position} = widget
         return `<${name} device="demo.device" style="position: absolute; top: ${position.top}px; left: ${position.left}px"></${name}>`
       }
 
@@ -273,8 +280,8 @@ function deviceDemoRoute ($stateProvider) {
         this.mobileView = !this.mobileView
       }
 
-      //track outbound CPM link
-      segment.trackLink(document.querySelector('a.navigation-item.logo'), EVENTS.TRACKING.CPM_LINK_CLICKED);
+      // track outbound CPM link
+      segment.trackLink($document.find('a.navigation-item.logo'), EVENTS.TRACKING.CPM_LINK_CLICKED)
     }
   })
 }

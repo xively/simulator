@@ -32,7 +32,10 @@ const fanControlComponent = {
         command: 'speed',
         option: ['off', 'low', 'high'][this.device.sensors.fan.numericValue]
       }))
-      segment.track(EVENTS.TRACKING.SENSOR_VALUE_CHANGED_BUTTON, {deviceName: this.device.name, value: ['off', 'low', 'high'][this.device.sensors.fan.numericValue]} );
+      segment.track(EVENTS.TRACKING.SENSOR_VALUE_CHANGED_BUTTON, {
+        deviceName: this.device.name,
+        value: ['off', 'low', 'high'][this.device.sensors.fan.numericValue]
+      })
     }
   }
 }

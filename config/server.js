@@ -63,7 +63,7 @@ const config = {
   },
   tracking: {
     segmentKey: 'wlFsqsLSZefvvmvplELXL1k2a7WP7utF',
-    segmentDebugEnabled: process.env.NODE_ENV != 'production'
+    segmentDebugEnabled: process.env.NODE_ENV !== 'production'
   }
 }
 
