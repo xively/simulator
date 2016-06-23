@@ -57,14 +57,22 @@ const tooltipComponent = {
   },
   controllerAs: 'tooltip',
   /* @ngInject */
-  controller ($element, $rootScope, $scope, socketService, EVENTS) {
-    Object.assign(this.options, { direction: 'top', distance: 100 }, this.options.tooltip)
+  controller ($element, $rootScope, $scope, socketService, segment, EVENTS) {
+    Object.assign(this.options, {direction: 'top', distance: 100}, this.options.tooltip)
 
     $scope.$watch(() => {
       return this.value
     }, _.debounce((newValue) => {
       $scope.$applyAsync(() => {
         this.newValue = newValue
+
+        if (this.open) {
+          segment.track(EVENTS.TRACKING.SENSOR_VALUE_CHANGED_SLIDER, {
+            deviceName: this.device.name,
+            label: this.label,
+            value: this.value
+          })
+        }
       })
     }, 100))
 
@@ -79,7 +87,7 @@ const tooltipComponent = {
     }
 
     this.getBoxStyle = () => {
-      const { direction, distance } = this.options
+      const {direction, distance} = this.options
       const sign = direction === 'right' || direction === 'bottom' ? '' : '-'
       const position = direction === 'left' || direction === 'right' ? `${sign}${distance}px, 0` : `0, ${sign}${distance}px`
 
@@ -91,7 +99,7 @@ const tooltipComponent = {
     }
 
     this.getLineStyle = () => {
-      const { direction } = this.options
+      const {direction} = this.options
       const rotation = {
         right: 0,
         bottom: 90,
@@ -110,12 +118,12 @@ const tooltipComponent = {
 
     this.showInput = () => {
       return (!this.options.actions || (this.options.actions && this.options.input)) &&
-        _.isNumber(this.options.min) &&
-        _.isNumber(this.options.max)
+          _.isNumber(this.options.min) &&
+          _.isNumber(this.options.max)
     }
 
-    this.sendUpdate = ({ name, value, device = {}, socket = false, notification }) => {
-      const obj = { value }
+    this.sendUpdate = ({name, value, device = {}, socket = false, notification}) => {
+      const obj = {value}
       if (name) {
         obj.name = name
       }

@@ -20,6 +20,7 @@ module.exports = function (config) {
   config.set({
     basePath: './client/app',
     files: [
+       './common/test.globals.js',
       '../../node_modules/babel-polyfill/dist/polyfill.js',
       'test.webpack.js',
       './**/*spec.js'
