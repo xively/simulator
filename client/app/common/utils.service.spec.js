@@ -4,6 +4,17 @@ const commonModule = require('./')
 describe('Utils', () => {
   beforeEach(angular.mock.module(commonModule))
 
+  beforeEach(angular.mock.module(($provide) => {
+    $provide.constant('CONFIG', {
+      account: {
+        accountId: 'a',
+        emailAddress: 'b',
+        idmUserId: 'c',
+        blueprintUserId: 'd'
+      }
+    })
+  }))
+
   let utils
   beforeEach(inject(($injector) => {
     utils = $injector.get('utils')

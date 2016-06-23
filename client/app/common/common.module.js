@@ -1,5 +1,6 @@
 const angular = require('angular')
 const EVENTS = require('./events.constant.js')
+const segmentConfig = require('./segment.constant.js')
 const authService = require('./auth.service')
 const mqttService = require('./mqtt.service')
 const blueprintService = require('./blueprint.service')
@@ -18,11 +19,13 @@ const commonComponents = require('./components')
 
 const common = angular.module('simulator.common', [
   require('angular-ui-router'),
+  require('angular-segment-analytics'),
   commonComponents
 ])
   .constant('CONFIG', window.APP_CONFIG || {})
   .constant('DEVICES_CONFIG', window.DEVICES_CONFIG || {})
   .constant('EVENTS', EVENTS)
+  .constant('segmentConfig', segmentConfig)
   .factory('authService', authService)
   .factory('mqttService', mqttService)
   .factory('blueprintService', blueprintService)
