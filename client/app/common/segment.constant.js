@@ -1,6 +1,6 @@
 const segmentConfig = {
-  segmentKey: 'wlFsqsLSZefvvmvplELXL1k2a7WP7utF',
-  segmentDebugEnabled: process.env.NODE_ENV !== 'production'
+  apiKey: 'wlFsqsLSZefvvmvplELXL1k2a7WP7utF',
+  debug: process.env.NODE_ENV !== 'production'
 }
 
 module.exports = segmentConfig

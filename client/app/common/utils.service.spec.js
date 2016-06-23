@@ -11,6 +11,10 @@ describe('Utils', () => {
         emailAddress: 'b',
         idmUserId: 'c',
         blueprintUserId: 'd'
+      },
+      tracking: {
+        segmentKey: '123',
+        segmentDebugEnabled: false
       }
     })
   }))
