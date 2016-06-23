@@ -11,10 +11,25 @@ describe('Authentication service', () => {
       emailAddress: 'email@email.com',
       password: 'pass',
       accountId: 1
+    },
+    tracking: {
+      segmentKey: '123',
+      segmentDebugEnabled: false
     }
   }
   beforeEach(angular.mock.module(($provide) => {
-    $provide.constant('CONFIG', config)
+    $provide.constant('CONFIG', {
+      account: {
+        idmHost: 'idm.host',
+        emailAddress: 'email@email.com',
+        password: 'pass',
+        accountId: 1
+      },
+      tracking: {
+        segmentKey: '123',
+        segmentDebugEnabled: false
+      }
+    })
   }))
 
   let authService

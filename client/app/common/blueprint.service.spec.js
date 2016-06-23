@@ -10,6 +10,10 @@ describe('Blueprint service', () => {
       account: {
         accountId: 1,
         blueprintHost: 'blueprint.com'
+      },
+      tracking: {
+        segmentKey: '123',
+        segmentDebugEnabled: false
       }
     })
   }))

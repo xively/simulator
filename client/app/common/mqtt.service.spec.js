@@ -6,7 +6,15 @@ describe('MQTT service', () => {
 
   // mock config
   beforeEach(angular.mock.module(($provide) => {
-    $provide.constant('CONFIG', { asd: 1 })
+    $provide.constant('CONFIG', {
+      asd: 1,
+      account: {
+        accountId: 'a',
+        emailAddress: 'b',
+        idmUserId: 'c',
+        blueprintUserId: 'd'
+      }
+    })
   }))
 
   let mqttService
