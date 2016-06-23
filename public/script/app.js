@@ -39114,13 +39114,13 @@
 
 /***/ },
 /* 317 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 	
 	var segmentConfig = {
-	  apiKey: 'wlFsqsLSZefvvmvplELXL1k2a7WP7utF',
-	  debug: (undefined) !== 'production'
+	  apiKey: window.APP_CONFIG.tracking.segmentKey,
+	  debug: window.APP_CONFIG.tracking.segmentDebugEnabled
 	};
 	
 	module.exports = segmentConfig;
