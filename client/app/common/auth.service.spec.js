@@ -11,10 +11,6 @@ describe('Authentication service', () => {
       emailAddress: 'email@email.com',
       password: 'pass',
       accountId: 1
-    },
-    tracking: {
-      segmentKey: '123',
-      segmentDebugEnabled: false
     }
   }
   beforeEach(angular.mock.module(($provide) => {
@@ -24,10 +20,6 @@ describe('Authentication service', () => {
         emailAddress: 'email@email.com',
         password: 'pass',
         accountId: 1
-      },
-      tracking: {
-        segmentKey: '123',
-        segmentDebugEnabled: false
       }
     })
   }))
