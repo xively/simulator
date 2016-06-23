@@ -9,7 +9,7 @@ const nestComponent = {
       </div>
       <div ng-show="nestConnected">
         <p>You are now {{state}}</p>
-        <button ng-click="switchState()">Switch to {{state == 'away' ? 'home' : 'away'}}</button>
+        <button ng-click="onSwitchClicked()">Switch to {{state == 'away' ? 'home' : 'away'}}</button>
       </div>
     </div>
   `,
@@ -18,16 +18,14 @@ const nestComponent = {
     device: '='
   },
   contollerAs: 'nest',
-  controller ($scope, $log) {
+  controller ($scope, $log, $stateParams, DEVICES_CONFIG, devicesService) {
     const AWAY = 'away'
     const HOME = 'home'
+    const accessToken = 'c.or3oxSwZzGmMFuqpHqdHFfkyC3Qx636SpqgVBuTlOUXNTrKcxvhupFtFuJMf2F0FwPimlAbQrAiOm9hsHcf8IcQfGpAsPifEWFxq5zIxcUiAp4j6lblWRolAhrleeNLi2X4ftIYZXxrc0YHf'
+
     $scope.state = AWAY
-    $scope.targetPath
+    $scope.targetPath = undefined
 
-    var accessToken = 'c.QBDi3jOvtmkYcPH8qBwZdY1sYhJBzSjR5Iq3tCim2qVGX6w98lXgTrVTN9RCNDlIxjCAf7LtS6us63laPuLWps7fbACwNwDQJEo648HG7VX0uzUxd9Xh0LYcFg7gnRhPdSLkwImm2J79c13M'
-
-    /*global Firebase:true*/
-    /*eslint no-undef: "error"*/
     var ref = new Firebase('wss://developer-api.nest.com')
     ref.authWithCustomToken(accessToken, (err, authData) => {
       if (err) {
@@ -42,23 +40,14 @@ const nestComponent = {
 
     ref.on('value', (snapshot) => {
       var state = snapshot.val().structures[Object.keys(snapshot.val().structures)[0]].away
+      console.log('Got value from nest ' + state)
+
       $scope.targetPath = 'structures/' + Object.keys(snapshot.val().structures)[0] + '/away'
 
       $scope.safeApply(() => {
-        console.log('got value: ' + state)
         $scope.state = state
       })
     })
-
-    $scope.$watch('state', () => {
-      console.log('hey2, myVar has changed!')
-    })
-
-    $scope.switchState = function () {
-      var newState = $scope.state === AWAY ? HOME : AWAY
-      $scope.state = newState
-      ref.child($scope.targetPath).set(newState)
-    }
 
     $scope.safeApply = function (fn) {
       var phase = this.$root.$$phase
@@ -70,6 +59,51 @@ const nestComponent = {
         this.$apply(fn)
       }
     }
+
+    $scope.onSwitchClicked = function () {
+      $scope.state = $scope.state === AWAY ? HOME : AWAY
+    }
+
+    $scope.$watch('state', (newValue, oldValue) => {
+      if (newValue === oldValue) {
+        console.log('initial state change, do nothing')
+        return
+      }
+
+      console.log('state changed to ' + newValue)
+      // Send new state to nest
+      if ($scope.targetPath !== undefined) {
+        console.log('Setting nest to ' + newValue)
+        ref.child($scope.targetPath).set(newValue)
+      }
+
+      // Update image should go into other side's controller
+      if ($scope.config !== undefined) {
+        $scope.state === AWAY ? $scope.config.image = '/devices/images/smartlock-design_locked.png' : $scope.config.image = '/devices/images/smartlock-design_open.png'
+      }
+
+      // VISION
+      // LOCK device writes nest only
+      // MOBILE device reads nest and displays it's state
+      // MQTT between LOCK and MOBILE
+      // When MOBILE comes online, checks lock state in BP
+      // Button on mobile device shows lock state
+      // If lock state is not locked and mobile
+      // receives an away state from nest
+      // Notification pops up
+    })
+
+    // TODO with resolve like in device-demo-route.js
+    const id = $stateParams.id
+    this.config = $scope.config = {}
+
+    devicesService.getDeviceTemplates().then((templates) => {
+      devicesService.getDevice(id).then((device) => {
+        device.template = templates[device.deviceTemplateId]
+        $scope.config = DEVICES_CONFIG[device.template.name] || {}
+        console.log($scope.config.image)
+      })
+    })
   }
 }
 

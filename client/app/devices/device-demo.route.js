@@ -122,7 +122,7 @@ function deviceDemoRoute ($stateProvider) {
                 </tooltip>
                 <div ng-if="sensor.widget" bind-html-compile="demo.getHtml(sensor.widget)"></div>
               </div>
-              <img class="device-image" src="{{ demo.config.image }}" />
+              <img class="device-image" ng-src="{{ demo.config.image }}" />
             </div>
             <div class="no-image" ng-if="!demo.config.image">
               <h2>No image available</h2>
