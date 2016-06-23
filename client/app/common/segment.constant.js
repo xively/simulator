@@ -1,6 +1,7 @@
+const isProd = window.APP_CONFIG.meta.env === 'production'
+
 const segmentConfig = {
-  apiKey: window.APP_CONFIG.tracking.segmentKey,
-  debug: window.APP_CONFIG.tracking.segmentDebugEnabled
+  apiKey: isProd ? window.APP_CONFIG.tracking.segmentKeyProd : window.APP_CONFIG.tracking.segmentKeyDev
 }
 
 module.exports = segmentConfig

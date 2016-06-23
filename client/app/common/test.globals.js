@@ -1,6 +1,9 @@
-APP_CONFIG = {
-    tracking: {
-        segmentKey: 'ab',
-        segmentDebugEnabled: false
-    }
+window.APP_CONFIG = {
+  meta: {
+    env: 'dads'
+  },
+  tracking: {
+    segmentKeyDev: 'ab',
+    segmentKeyProd: 'ab'
+  }
 }
