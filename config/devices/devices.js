@@ -460,9 +460,42 @@ const config = {
   'nest simulator': {
     image: '/devices/images/smartlock-design_locked.png',
     width: 800,
-    defaultSensor: 'dust',
+    defaultSensor: 'away',
     widgets: ['nest'],
     sensors: {
+      away: {
+        min: 0,
+        max: 1,
+        wiggle: true,
+        unit: 'true/false',
+        tooltip: {
+          position: {
+            top: 20,
+            left: 165
+          },
+          labelPosition: {
+            top: 12,
+            left: -14
+          },
+          distance: 100,
+          direction: 'left',
+          input: true,
+          actions: [{
+            label: 'Trigger malfunction',
+            name: 'malfunction',
+            value: 'away',
+            socket: true,
+            device: {
+              ok: false,
+              sensors: {
+                away: {
+                  numericValue: -255
+                }
+              }
+            }
+          }]
+        }
+      }
     }
   }
 }
