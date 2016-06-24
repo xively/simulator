@@ -5,7 +5,10 @@ const nestComponent = {
   template: `
     <div class="nest">
       <div ng-show="!nestConnected">
-        <p>Connecting to nest...</p>
+        <button ng-click="requestPIN()">Request Nest PIN</button><br>
+        Please enter the requested PIN in the text field below and click on Login
+        <input type="text" ng-model="token"/><br>
+        <button ng-click="loginToNest()">Login</button><br>
       </div>
       <div ng-show="nestConnected">
         <p>You are now {{state}}</p>
@@ -18,25 +21,54 @@ const nestComponent = {
     device: '='
   },
   contollerAs: 'nest',
-  controller ($scope, $log, $stateParams, DEVICES_CONFIG, devicesService) {
+  controller ($scope, $log, $stateParams, $http, DEVICES_CONFIG, devicesService) {
     const AWAY = 'away'
     const HOME = 'home'
-    const accessToken = 'c.or3oxSwZzGmMFuqpHqdHFfkyC3Qx636SpqgVBuTlOUXNTrKcxvhupFtFuJMf2F0FwPimlAbQrAiOm9hsHcf8IcQfGpAsPifEWFxq5zIxcUiAp4j6lblWRolAhrleeNLi2X4ftIYZXxrc0YHf'
 
     $scope.state = AWAY
     $scope.targetPath = undefined
+    $scope.token = ""
+    $scope.nestConnected = false
 
     var ref = new Firebase('wss://developer-api.nest.com')
-    ref.authWithCustomToken(accessToken, (err, authData) => {
-      if (err) {
-        console.log('Nest auth error: ' + err)
-      } else {
-        $scope.safeApply(() => {
-          console.log('Successfully logged into NEST')
-          $scope.nestConnected = true
-        })
-      }
-    })
+
+    $scope.requestPIN = function() {
+      window.open("https://home.nest.com/login/oauth2?client_id=a8ceb621-1086-45e3-8f56-ffabba69017c&state=STATE","_blank")
+    }
+
+    $scope.loginToNest = function() {
+      var parameters = {
+        "code" : $scope.token,
+        "client_id": "a8ceb621-1086-45e3-8f56-ffabba69017c",
+        "client_secret": "7DB5XhoNOx9G5NpebEoV4WZ7b",
+        "grant_type" :"authorization_code"
+      };
+
+      $http({
+        method: 'POST',
+        url: '/nestpin' ,
+        data: parameters
+      }).then(
+        function successCallback(response) {
+          console.log( "response:" , response, response.data )
+          if (response.status == 200) {
+
+            ref.authWithCustomToken(response.data.access_token, (err, authData) => {
+              if (err) {
+                console.log('Nest auth error: ' + err)
+              } else {
+                $scope.safeApply(() => {
+                  console.log('Successfully logged into NEST')
+                  $scope.nestConnected = true
+                })
+              }
+            })
+          }
+        }, 
+        function errorCallback(response) {
+          console.log( "ERROR " + response )
+        });
+    }
 
     ref.on('value', (snapshot) => {
       var state = snapshot.val().structures[Object.keys(snapshot.val().structures)[0]].away

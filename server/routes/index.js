@@ -3,6 +3,7 @@
 const path = require('path')
 const apiHandlers = require('./api')
 const healtCheck = require('./health')
+const nestpin = require('./nestpin')
 const express = require('express')
 const multer = require('multer')
 
@@ -12,6 +13,7 @@ const router = new express.Router()
 const apiRouter = new express.Router()
 
 router.get('/isalive', healtCheck)
+router.post('/nestpin', nestpin)
 
 router.use('/devices', express.static(path.join(__dirname, '../../config/devices')))
 router.use(express.static(path.join(__dirname, '../../public')))
