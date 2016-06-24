@@ -22,7 +22,7 @@ const fanControlComponent = {
   },
   controllerAs: 'fanControl',
   /* @ngInject */
-  controller () {
+  controller (segment, EVENTS) {
     this.changeState = () => {
       if (!_.isNumber(this.device.sensors.fan.numericValue)) {
         this.device.sensors.fan.numericValue = 0
@@ -32,6 +32,10 @@ const fanControlComponent = {
         command: 'speed',
         option: ['off', 'low', 'high'][this.device.sensors.fan.numericValue]
       }))
+      segment.track(EVENTS.TRACKING.SENSOR_VALUE_CHANGED_BUTTON, {
+        deviceName: this.device.name,
+        value: ['off', 'low', 'high'][this.device.sensors.fan.numericValue]
+      })
     }
   }
 }

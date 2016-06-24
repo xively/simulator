@@ -90,6 +90,7 @@
     "webpack-split-by-path": "0.0.8"
   },
   "dependencies": {
+    "angular-segment-analytics": "^1.1.11",
     "body-parser": "1.15.0",
     "chart.js": "1.1.1",
     "cookie-parser": "1.4.1",
