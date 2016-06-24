@@ -14,7 +14,14 @@ describe('Authentication service', () => {
     }
   }
   beforeEach(angular.mock.module(($provide) => {
-    $provide.constant('CONFIG', config)
+    $provide.constant('CONFIG', {
+      account: {
+        idmHost: 'idm.host',
+        emailAddress: 'email@email.com',
+        password: 'pass',
+        accountId: 1
+      }
+    })
   }))
 
   let authService
