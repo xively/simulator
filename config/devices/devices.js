@@ -464,6 +464,13 @@ const config = {
     widgets: ['nest'],
     sensors: {
       state: {
+        widget: {
+          name: 'nest-display',
+          position: {
+            top: 80,
+            left: 270
+          }
+        },
         min: 0,
         max: 1,
         wiggle: true,
