@@ -1,18 +1,46 @@
 nest-display {
   position: absolute;
-  width: 180px;
-  height: 30px;
-  background-color: #2e354a;
-  background-position: center;
-  background-repeat: no-repeat;
-  border: 1px solid #fafafa;
+  width: 24px;
+  height: 57px;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 14px;
+  border: 1px solid #57607e;
 
-  .display {
-    width: 100%;
+  .nest-display {
     height: 100%;
+    width: 60px;
+  }
 
-    &.malfunction {
-      background-image: url('./sensor-malfunction.png')
+  .nest-state-indicator {
+    position: absolute;
+    left: 5px;
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    top: 40px;
+    background-color: #ff6087;
+
+    &.state-1 {
+      top: 5px;
+      background-color: #ffffff;
+    }
+  }
+
+  ul {
+    position: absolute;
+    top: -15px;
+    right: -50px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-transform: uppercase;
+    font-size: 0.6875em;
+    color: #ffffff;
+
+    li {
+      margin: 0.375em 0;
+      padding-top: 15px;
     }
   }
 }

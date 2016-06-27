@@ -21,7 +21,7 @@ const nestComponent = {
     device: '='
   },
   contollerAs: 'nest',
-  controller ($scope, $log, $stateParams, $http, DEVICES_CONFIG, devicesService, socketService) {
+  controller ($scope, $http) {
     // VISION
     // LOCK device writes nest only
     // MOBILE device reads nest and displays it's state
@@ -134,23 +134,12 @@ const nestComponent = {
       var newState = $scope.lockState === LOCKED ? 0 : 1
       console.log('Setting new state to: ' + newState)
       device.sensors.state.numericValue = newState
+      // BRAINFUCK!
       device.update('lock', JSON.stringify({
         command: 'lock',
         option: newState
       }))
     }
-
-    // TODO with resolve like in device-demo-route.js
-    const id = $stateParams.id
-    this.config = $scope.config = {}
-
-    devicesService.getDeviceTemplates().then((templates) => {
-      devicesService.getDevice(id).then((device) => {
-        device.template = templates[device.deviceTemplateId]
-        $scope.config = DEVICES_CONFIG[device.template.name] || {}
-        console.log($scope.config.image)
-      })
-    })
   }
 }
 

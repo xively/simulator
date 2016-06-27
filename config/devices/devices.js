@@ -467,25 +467,13 @@ const config = {
         widget: {
           name: 'nest-display',
           position: {
-            top: 80,
-            left: 270
+            top: 450,
+            left: 400
           }
         },
         min: 0,
         max: 1,
-        wiggle: true,
-        tooltip: {
-          position: {
-            top: 20,
-            left: 165
-          },
-          labelPosition: {
-            top: 12,
-            left: -14
-          },
-          distance: 100,
-          direction: 'left'
-        }
+        wiggle: true
       }
     }
   }
