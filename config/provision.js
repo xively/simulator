@@ -92,7 +92,7 @@ const solarPanelDeviceFields = _.map({
 }))
 
 const nestSimulatorDeviceFields = _.map({
-  state: 'boolean'
+  lockState: 'boolean'
 }, (fieldType, name) => ({
   name,
   fieldType,
@@ -148,7 +148,9 @@ const solarPanelDeviceChannels = _.map({
 
 const nestSimulatorDeviceChannels = _.map({
   control: 'simple',
-  away: 'timeSeries'
+  state: 'timeSeries',
+  lock: 'simple',
+  token: 'simple'
 }, (persistenceType, name) => ({
   name,
   persistenceType,

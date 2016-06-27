@@ -38,7 +38,7 @@ const filterRule = (latestValue, sensors) => {
 
 const config = {
   general: {
-    hiddenChannels: ['sensor', 'control'],
+    hiddenChannels: ['sensor', 'control', 'lock', 'token'],
     excludedDeviceInfoFields: [
       'Created',
       'CreatedById',
@@ -460,14 +460,13 @@ const config = {
   'nest simulator': {
     image: '/devices/images/smartlock-design_locked.png',
     width: 800,
-    defaultSensor: 'away',
+    defaultSensor: 'state',
     widgets: ['nest'],
     sensors: {
-      away: {
+      state: {
         min: 0,
         max: 1,
         wiggle: true,
-        unit: 'true/false',
         tooltip: {
           position: {
             top: 20,
@@ -478,22 +477,7 @@ const config = {
             left: -14
           },
           distance: 100,
-          direction: 'left',
-          input: true,
-          actions: [{
-            label: 'Trigger malfunction',
-            name: 'malfunction',
-            value: 'away',
-            socket: true,
-            device: {
-              ok: false,
-              sensors: {
-                away: {
-                  numericValue: -255
-                }
-              }
-            }
-          }]
+          direction: 'left'
         }
       }
     }
