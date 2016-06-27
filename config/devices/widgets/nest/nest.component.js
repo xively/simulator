@@ -132,9 +132,10 @@ const nestComponent = {
     $scope.onSwitchClicked = function () {
       // Send lock message
       var newState = $scope.lockState === LOCKED ? 0 : 1
+      console.log('Setting new state to: ' + newState)
       device.sensors.state.numericValue = newState
-      device.update('state', JSON.stringify({
-        command: 'state',
+      device.update('lock', JSON.stringify({
+        command: 'lock',
         option: newState
       }))
     }

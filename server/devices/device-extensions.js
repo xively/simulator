@@ -58,6 +58,21 @@ const extensions = {
         message: `${Date.now()}, 'fan', ${value}, , \n`
       }
     }
+
+    if (command === 'lock') {
+      const lockOptions = device.sensors.get('state')
+      lockOptions.latestValue = value
+      device.sensors.set('state', lockOptions)
+      device.logger.sendLog({
+        level: 'informational',
+        message: `lock ${value}`
+      })
+
+      return {
+        channel: lockOptions.channel,
+        message: `${Date.now()}, 'state', ${lockOptions.latestValue}, , \n`
+      }
+    }
   },
 
   simulationTick (device) {
