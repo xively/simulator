@@ -54,7 +54,7 @@ const nestDisplayComponent = {
       }
     }
 
-    function updateNest(state) {
+    function updateNest (state) {
       // TODO set nest state here, after login
     }
 
