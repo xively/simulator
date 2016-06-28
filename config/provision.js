@@ -149,7 +149,6 @@ const solarPanelDeviceChannels = _.map({
 const nestSimulatorDeviceChannels = _.map({
   control: 'simple',
   state: 'timeSeries',
-  lock: 'simple',
   token: 'simple'
 }, (persistenceType, name) => ({
   name,
