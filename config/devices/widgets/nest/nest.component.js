@@ -12,7 +12,7 @@ const nestComponent = {
       </div>
       <div ng-show="nestConnected">
         <p>You are now {{nestState}}</p>
-        <button ng-click="onSwitchClicked()">{{lockState == 'lock' ? 'unlock' : 'lock'}}</button>
+        <button ng-click="onSwitchClicked()">{{lockState == 'lock' ? 'unlock' : 'lock'}} your lock</button>
       </div>
     </div>
   `,
@@ -45,6 +45,7 @@ const nestComponent = {
 
     var device = this.device
 
+    // eslint-disable-next-line no-use-before-define
     var ref = new Firebase('wss://developer-api.nest.com')
 
     $scope.requestPIN = () => {
