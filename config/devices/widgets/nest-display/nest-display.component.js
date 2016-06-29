@@ -18,8 +18,12 @@ const nestDisplayComponent = {
     device: '='
   },
   controllerAs: 'display',
-  controller ($scope, $stateParams, devicesService, DEVICES_CONFIG) {
+  controller ($scope, $stateParams, mqttService, devicesService, DEVICES_CONFIG) {
     var device = this.device
+    var nestAPI
+    var nestToken
+    var nestPath
+
     $scope.$watch(() => {
       return device.sensors.state.numericValue
     }, (newValue) => {
@@ -31,9 +35,6 @@ const nestDisplayComponent = {
       console.log('NEW VALUE: ', newValue)
       updateImage()
     })
-
-    // TODO read token from token channel
-    // log into nest
 
     this.changeState = () => {
       var newState = (this.device.sensors.state.numericValue + 1) % 2
@@ -55,13 +56,27 @@ const nestDisplayComponent = {
     }
 
     function updateNest (state) {
-      // TODO set nest state here, after login
+      if (nestAPI !== undefined) {
+        nestAPI.child(nestPath).set((state === 1) ? 'away' : 'home')
+      }
     }
 
     this.config = $scope.config = {}
 
     devicesService.getDeviceTemplates().then((templates) => {
       devicesService.getDevice($stateParams.id).then((d) => {
+        mqttService.subscribe(d.channels[0].channel.split('/state')[0] + '/token', function (newValue) {
+          if (newValue.token.stringValue !== undefined && newValue.token.stringValue !== '') {
+            nestToken = newValue.token.stringValue
+
+            nestAPI = new Firebase('wss://developer-api.nest.com')
+            nestAPI.auth(nestToken)
+            nestAPI.on('value', (snapshot) => {
+              nestPath = 'structures/' + Object.keys(snapshot.val().structures)[0] + '/away'
+            })
+          }
+        })
+
         $scope.config = DEVICES_CONFIG[templates[device.deviceTemplateId].name] || undefined
       })
     })

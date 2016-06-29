@@ -21,7 +21,7 @@ const nestComponent = {
     device: '='
   },
   contollerAs: 'nest',
-  controller ($scope, $http) {
+  controller ($scope, $http, mqttService) {
     // VISION
     // LOCK device writes nest only
     // MOBILE device reads nest and displays it's state
@@ -75,7 +75,8 @@ const nestComponent = {
                 $scope.safeApply(() => {
                   console.log('Successfully logged into NEST')
                   $scope.nestConnected = true
-                  // TODO send token to lock
+                  mqttService.sendMessage(device.channels[0].channel.split('/state')[0] + '/token',
+                    {stringValue: response.data.access_token})
                 })
               }
             })
@@ -89,7 +90,6 @@ const nestComponent = {
     ref.on('value', (snapshot) => {
       // Reading nest changes
       var state = snapshot.val().structures[Object.keys(snapshot.val().structures)[0]].away
-      console.log('Got value from nest ' + state)
 
       $scope.targetPath = 'structures/' + Object.keys(snapshot.val().structures)[0] + '/away'
 
