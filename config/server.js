@@ -41,6 +41,7 @@ const config = {
     idmUserId: process.env.XIVELY_ACCOUNT_USER_IDM_ID,
     blueprintUserId: process.env.XIVELY_ACCOUNT_USER_BP_ID,
     password: process.env.XIVELY_ACCOUNT_USER_PASSWORD,
+    appToken: process.env.APP_TOKEN,
     airnow: {
       apikey: '640AA087-B3E7-4098-B3F3-9F8EF81C0BC7',
       boundingbox: '-71.059289,42.335449,-71.017232,42.365642'

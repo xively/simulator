@@ -38,7 +38,7 @@ const filterRule = (latestValue, sensors) => {
 
 const config = {
   general: {
-    hiddenChannels: ['sensor', 'control'],
+    hiddenChannels: ['sensor', 'control', 'lock', 'token'],
     excludedDeviceInfoFields: [
       'Created',
       'CreatedById',
@@ -454,6 +454,26 @@ const config = {
           distance: 100,
           direction: 'bottom'
         }
+      }
+    }
+  },
+  'Door Lock': {
+    image: '/devices/images/smartlock-design_locked.png',
+    width: 800,
+    defaultSensor: 'state',
+    widgets: ['nest'],
+    sensors: {
+      state: {
+        widget: {
+          name: 'nest-display',
+          position: {
+            top: 450,
+            left: 400
+          }
+        },
+        min: 0,
+        max: 1,
+        wiggle: true
       }
     }
   }

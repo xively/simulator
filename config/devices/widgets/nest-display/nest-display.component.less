@@ -1,0 +1,46 @@
+nest-display {
+  position: absolute;
+  width: 24px;
+  height: 57px;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 14px;
+  border: 1px solid #57607e;
+
+  .nest-display {
+    height: 100%;
+    width: 60px;
+  }
+
+  .nest-state-indicator {
+    position: absolute;
+    left: 5px;
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    top: 40px;
+    background-color: #ffffff;
+
+    &.state-1 {
+      top: 5px;
+      background-color: #ff6087;
+    }
+  }
+
+  ul {
+    position: absolute;
+    top: -15px;
+    right: -67px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-transform: uppercase;
+    font-size: 0.6875em;
+    color: #ffffff;
+
+    li {
+      margin: 0.375em 0;
+      padding-top: 15px;
+    }
+  }
+}
