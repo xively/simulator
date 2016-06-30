@@ -457,7 +457,7 @@ const config = {
       }
     }
   },
-  'nest simulator': {
+  'Door Lock': {
     image: '/devices/images/smartlock-design_locked.png',
     width: 800,
     defaultSensor: 'state',

@@ -15,7 +15,7 @@ const NAMES = {
   WAREHOUSE_ORG_TEMPLATE: 'Warehouse',
   FACTORY_ORG_TEMPLATE: 'Factory',
   INDUSTRIAL_HVAC: 'Industrial HVAC',
-  NEST_SIMULATOR: 'nest simulator',
+  NEST_SIMULATOR: 'Door Lock',
   COMMERCIAL_OPERATIONS_MANAGER: 'Operations Manager',
   COMMERCIAL_SERVICE_TECHNICIAN: 'Service Technician'
 }
