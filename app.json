@@ -37,6 +37,11 @@
       "description": "Your Salesforce token",
       "required": false
     },
+    "DEVICE_HEARTBEAT": {
+      "description": "Virtual device auto ping",
+      "required": false,
+      "value": "true"
+    },
     "HABANERO_EMBEDDED": {
       "description": "Use habanero orchestrator rules engine",
       "required": false,
