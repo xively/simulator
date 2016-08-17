@@ -46,6 +46,9 @@ const config = {
       boundingbox: '-71.059289,42.335449,-71.017232,42.365642'
     }
   },
+  virtualdevice: {
+    heartbeat: process.env.DEVICE_HEARTBEAT === 'true'
+  },
   meta: {
     env: process.env.NODE_ENV || 'development'
   }

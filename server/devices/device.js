@@ -88,7 +88,9 @@ class Device {
 
       this.connectMqtt().then(() => {
         this.subscribeMqtt('control')
-        this.startGeneratingSensorValues()
+        if(serverConfig.virtualdevice.heartbeat) {
+          this.startGeneratingSensorValues()
+        }
       })
     }
     this.connections.add(socketId)
@@ -104,7 +106,9 @@ class Device {
 
     this.connections.delete(socketId)
     if (!this.connections.size) {
-      this.stopGeneratingSensorValues()
+      if(serverConfig.virtualdevice.heartbeat) {
+        this.stopGeneratingSensorValues()
+      }
       this.disconnectMqtt()
     }
   }
