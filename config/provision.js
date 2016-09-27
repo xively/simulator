@@ -244,7 +244,7 @@ const rawDevices = [{
   generate: (options) => {
     const generic = generateGenericDevice(Object.assign({ templateName: 'THUNDERBOARD' }, options || {}))
     return _.merge(generic, {
-      includedSensors: ''
+      includedSensors: 'Temp'
     })
   }
 }]

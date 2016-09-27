@@ -1,5 +1,5 @@
 require('./thunderboard.component.less')
-const buttonImage = require('../toggle-button/Button_Flat_White.svg')
+const buttonImage = require('../badge-button/Button_Flat_White.svg')
 
 var THREE = require('three')
 THREE.MTLLoader = require('./MTLLoader');
@@ -172,7 +172,6 @@ const thunderboardComponent = {
     setTimeout(setupController, 2000)
 
     this.toggleLed = (led) => {
-      console.log(this.device.sensors.io[led])
       if (this.device.sensors.io[led] === 0) {
         this.device.sensors.io[led] = 1;
       } else {

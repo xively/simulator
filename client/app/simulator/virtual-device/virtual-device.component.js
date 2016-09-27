@@ -62,6 +62,12 @@ const virtualDeviceComponent = {
     this.config = _.cloneDeep(DEVICES_CONFIG[this.device.template.name] || {})
     this.selectedTemplate = _.find(this.templateOptions, { name: this.device.template.name })
 
+    delete this.device.sensors['_log']
+    delete this.device.sensors['io']
+    delete this.device.sensors['motion']
+    delete this.device.sensors['environment']
+
+
     this.sensorsNotConfigured = _.pullAll(Object.keys(this.device.sensors), Object.keys(this.config.sensors || {}))
     this.sensors = this.sensorsNotConfigured.reduce((sensors, key) => {
       sensors[key] = 50

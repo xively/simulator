@@ -1,4 +1,4 @@
-public/
+
 provision/temp-heroku-app
 .env
 coverage/
