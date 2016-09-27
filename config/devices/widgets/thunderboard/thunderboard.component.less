@@ -1,0 +1,61 @@
+.toggle-button {
+  height:50px;
+  width: 135px;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom:35px;
+
+  svg {
+    height: 100%;
+    width: 100%;
+  }
+
+  span.red {
+    svg .st2 {
+      fill: #FF0000
+    }
+  }
+
+  span.green {
+    svg .st2 {
+      fill: #0EE300
+    }
+  }
+
+  span.blue {
+    svg .st2 {
+      fill: #0000FF
+    }
+  }
+
+  .label {
+    color: rgb(245, 190, 60);
+    text-transform: uppercase;
+    font-size: .7em;
+    clear:both;
+  }
+}
+
+.io-controls {
+  position: absolute;
+  top: 0px;
+  left: 570px;
+}
+
+.env-controls{
+  position: absolute;
+  top: 250px;
+  left: 25px;
+  min-width:500px;
+
+  .env-control {
+    float: left;
+    color:#fff;
+    text-align:center;
+    padding:10px 22px;
+
+    .value {
+      font-size:30px;
+    }
+  }
+}

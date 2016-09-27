@@ -73,6 +73,7 @@ class Device {
     } else {
       message = `${Date.now()}, ${name}, ${value}, , \n`
     }
+
     this.handleMessage(message)
   }
 
@@ -88,7 +89,7 @@ class Device {
 
       this.connectMqtt().then(() => {
         this.subscribeMqtt('control')
-        if(serverConfig.virtualdevice.heartbeat) {
+        if (serverConfig.virtualdevice.heartbeat) {
           this.startGeneratingSensorValues()
         }
       })
@@ -106,7 +107,7 @@ class Device {
 
     this.connections.delete(socketId)
     if (!this.connections.size) {
-      if(serverConfig.virtualdevice.heartbeat) {
+      if (serverConfig.virtualdevice.heartbeat) {
         this.stopGeneratingSensorValues()
       }
       this.disconnectMqtt()
@@ -167,6 +168,12 @@ class Device {
       // JSON
       const parsed = JSON.parse(message)
       response = this.handleJSON(parsed)
+      if (!response) {
+        response = parsed
+        response.channel = this.channels.find(function (c) {
+          return c.channel.endsWith(parsed.channel)
+        }).channel
+      }
     } catch (err) {
       // CSV
       try {

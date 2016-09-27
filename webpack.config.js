@@ -8,6 +8,7 @@ const LessPluginCleanCSS = require('less-plugin-clean-css')
 const LessPluginAutoPrefix = require('less-plugin-autoprefix')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const SplitByPathPlugin = require('webpack-split-by-path')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -38,7 +39,14 @@ const plugins = [
     path: path.join(`${__dirname}/../node_modules`)
   }]),
 
-  new ExtractTextPlugin(isProduction ? 'style/[name].[chunkhash].css' : 'style/[name].css')
+  new ExtractTextPlugin(isProduction ? 'style/[name].[chunkhash].css' : 'style/[name].css'),
+
+  new CopyWebpackPlugin([
+    { 
+      from: path.join(CONFIG_FOLDER, 'devices/widgets/thunderboard/obj'), 
+      to: path.join(DIST_FOLDER, 'obj')
+    }
+  ],{copyUnmodified: true})
 ]
 
 if (isProduction) {
