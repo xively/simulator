@@ -4,7 +4,7 @@ const buttonImage = require('./Button_Flat_White.svg')
 /* @ngInject */
 const badgeButtonComponent = {
   template: `
-    <div class="badge-button" ng-click="badgeControl.toggleButton()">
+    <div class="badge-button" style="height:{{ badgeControl.options.height }}px; width:{{ badgeControl.options.width }}px" ng-click="badgeControl.toggleButton()">
       <span ng-class="{ '{{badgeControl.options.toggleColor}}': badgeControl.buttonActive}">${buttonImage}</span>
       <span class="label">{{ badgeControl.options.label }}</span>
     </div>
