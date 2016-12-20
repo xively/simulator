@@ -79,10 +79,17 @@ const devicePanelComponent = {
   },
   controllerAs: 'devicePanel',
   /* @ngInject */
-  controller ($log, $scope, socketService, blueprintService, modalService, CONFIG, DEVICES_CONFIG) {
+  controller ($log, $scope, socketService, blueprintService, modalService, CONFIG, DEVICES_CONFIG, $location) {
     this.config = CONFIG
 
-    this.link = 'http://localhost:5000/#/devices/c3a5435e-87ba-41fa-b2bf-984accda9b95/mobile'
+    this.link = $location.protocol() + '://' + $location.host()
+
+    if ($location.port() !== 80 && $location.port() !== 443) {
+      this.link += ':' + $location.port().toString()
+    }
+
+    this.link += '/#/devices/' + this.device.id + '/mobile'
+
     this.openShareModal = () => {
       modalService.open('share')
     }
