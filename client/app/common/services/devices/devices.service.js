@@ -21,12 +21,10 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
           .filter((channel) => !(DEVICES_CONFIG.general.hiddenChannels || []).includes(channel.channelTemplateName))
         device.channels.forEach((channel) => {
           const name = channel.channel.split('/').pop()
-          if(name != '_log'){
-            device.sensors[name] = {
-              numericValue: '-',
-              stringValue: '-',
-              type: channel.persistenceType
-            }
+          device.sensors[name] = {
+            numericValue: '-',
+            stringValue: '-',
+            type: channel.persistenceType
           }
         })
         device.update = (name, value) => {
@@ -113,7 +111,6 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
       // for one channel
       if (_.isString(deviceOrChannel)) {
         const channel = deviceOrChannel
-        console.log("MIRAME: ", timeseriesService.getV4(`data/${channel}/latest`, { pageSize }))
         return timeseriesService.getV4(`data/${channel}/latest`, { pageSize })
         .then((response) => {
           if (response.status !== 200) {
