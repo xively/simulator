@@ -90,12 +90,7 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
       return blueprintService.getV1('devices', { pageSize: 1000 })
         .then((response) => response.data.devices.results)
         .then((devices) => {
-          let count = 0
-          devices.forEach((device) => {
-            count++
-            this.addDevice(device)
-          })
-          console.log("COUNT: ", count)
+          devices.forEach((device) => this.addDevice(device))
           return this.devices
         })
     }
