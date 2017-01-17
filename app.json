@@ -45,7 +45,7 @@
     "HABANERO_EMBEDDED": {
       "description": "Use habanero orchestrator rules engine",
       "required": false,
-      "value": "false"
+      "value": "true"
     }
   }
 }
