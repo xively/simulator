@@ -84,9 +84,9 @@ function devicesFactory ($log, $http, $q, mqttService, blueprintService, timeser
     /**
      * Get devices from Blueprint and subscribe for MQTT updates
      * @return {Promise}
-     */
+     */    
     getDevices () {
-      return blueprintService.getV1('devices', { pageSize: 100 })
+      return blueprintService.getV1('devices', { pageSize: 1000 })
         .then((response) => response.data.devices.results)
         .then((devices) => {
           devices.forEach((device) => this.addDevice(device))
