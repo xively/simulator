@@ -24,15 +24,13 @@ const filterComponent = {
   /* @ngInject */
   controller ($scope, $interval) {
     const dasharray = 630
-    this.dashOffset = 0
+    this.dashOffset = dasharray
     const max = 1000
-    this.value = 1000
-    this.measure = 'days'
+    this.value = 0
     this.lifeLeft = Math.round(this.value / 24)
 
     const setFilterValue = (value) => {
       this.value = value
-      this.dashOffset = 0
       this.dashOffset = Math.min(
         dasharray,
         (max - (value / max) * max) * (dasharray / max)
