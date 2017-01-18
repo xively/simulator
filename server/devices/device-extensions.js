@@ -22,7 +22,7 @@ const extensions = {
 
       return {
         channel: fanOptions.channel,
-        message: `${Date.now()}, 'fan', ${fanOptions.latestValue}, , \n`
+        message: `${Date.now()}, 'fan', ${fanOptions.latestValue}, \n`
       }
     }
 
@@ -55,7 +55,7 @@ const extensions = {
 
       return {
         channel: filterOptions.channel,
-        message: `${Date.now()}, 'fan', ${value}, , \n`
+        message: `${Date.now()}, 'fan', ${value}, \n`
       }
     }
   },

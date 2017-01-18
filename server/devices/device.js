@@ -71,7 +71,7 @@ class Device {
     if (_.isNaN(_.parseInt(value))) {
       message = value
     } else {
-      message = `${Date.now()}, ${name}, ${value}, , \n`
+      message = `${Date.now()}, ${name}, ${value}, \n`
     }
     this.handleMessage(message)
   }
@@ -88,7 +88,7 @@ class Device {
 
       this.connectMqtt().then(() => {
         this.subscribeMqtt('control')
-        if(serverConfig.virtualdevice.heartbeat) {
+        if (serverConfig.virtualdevice.heartbeat) {
           this.startGeneratingSensorValues()
         }
       })
@@ -106,7 +106,7 @@ class Device {
 
     this.connections.delete(socketId)
     if (!this.connections.size) {
-      if(serverConfig.virtualdevice.heartbeat) {
+      if (serverConfig.virtualdevice.heartbeat) {
         this.stopGeneratingSensorValues()
       }
       this.disconnectMqtt()
@@ -204,7 +204,7 @@ class Device {
 
     return {
       channel: options.channel,
-      message: `${timeStamp}, ${name}, ${sensorValue}, , \n`
+      message: `${timeStamp}, ${name}, ${sensorValue}, \n`
     }
   }
 
@@ -292,7 +292,7 @@ class Device {
 
       this.sensors.set(name, options)
 
-      const message = `${Date.now()}, ${name}, ${newValue}, , \n`
+      const message = `${Date.now()}, ${name}, ${newValue}, \n`
       this.publishMqtt(options.channel, message)
     })
   }

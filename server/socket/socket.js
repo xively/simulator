@@ -38,10 +38,12 @@ module.exports = function configureSocket (app, devices, rules) {
     })
 
     blueprintPromise.then((result) => {
-      salesforce.integrate().then(() => {
-        // salesforce.addContacts(result.endUsers)
-        salesforce.addAssets(result.devices)
-      })
+      if (process.env.SALESFORCE_SYNC_ALL_ASSETS === 'true') {
+        salesforce.integrate().then(() => {
+          // salesforce.addContacts(result.endUsers)
+          salesforce.addAssets(result.devices)
+        })
+      }
     })
   }
   updateData()
