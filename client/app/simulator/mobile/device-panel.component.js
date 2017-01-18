@@ -23,7 +23,7 @@ const devicePanelComponent = {
       <div class="content">
         <h2>Right now</h2>
         <div class="sensor-panels">
-          <div class="panel" ng-repeat="(name, sensor) in devicePanel.device.sensors">
+          <div class="panel" ng-repeat="(name, sensor) in devicePanel.mySensors">
             <p class="name">{{ ::name }}</p>
             <p class="value">
               {{ sensor.numericValue }}
@@ -79,13 +79,24 @@ const devicePanelComponent = {
   },
   controllerAs: 'devicePanel',
   /* @ngInject */
-  controller ($log, $scope, socketService, blueprintService, modalService, CONFIG, DEVICES_CONFIG) {
+  controller ($log, $scope, socketService, blueprintService, modalService, CONFIG, DEVICES_CONFIG, $location) {
     this.config = CONFIG
 
-    this.link = 'http://localhost:5000/#/devices/c3a5435e-87ba-41fa-b2bf-984accda9b95/mobile'
+    this.link = $location.protocol() + '://' + $location.host()
+
+    if ($location.port() !== 80 && $location.port() !== 443) {
+      this.link += ':' + $location.port().toString()
+    }
+
+    this.link += '/#/devices/' + this.device.id + '/mobile'
+
     this.openShareModal = () => {
       modalService.open('share')
     }
+
+    // CONC-670
+    this.mySensors = _.cloneDeep(this.device.sensors);
+    delete(this.mySensors._log);
 
     const EXCLUDED_INFO_FIELDS = ['excludedInfoFields', 'simulate', 'subscribe', 'template', 'update', 'sensors', 'ok', 'channels']
     this.device.excludedInfoFields = EXCLUDED_INFO_FIELDS
