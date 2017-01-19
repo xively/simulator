@@ -23,7 +23,7 @@ const devicePanelComponent = {
       <div class="content">
         <h2>Right now</h2>
         <div class="sensor-panels">
-          <div class="panel" ng-repeat="(name, sensor) in devicePanel.mySensors">
+          <div class="panel" ng-class="name" ng-repeat="(name, sensor) in devicePanel.mySensors">
             <p class="name">{{ ::name }}</p>
             <p class="value">
               {{ sensor.numericValue }}
@@ -95,7 +95,7 @@ const devicePanelComponent = {
     }
 
     // CONC-670
-    this.mySensors = _.cloneDeep(this.device.sensors)
+    this.mySensors = this.device.sensors
     delete (this.mySensors._log)
 
     const EXCLUDED_INFO_FIELDS = ['excludedInfoFields', 'simulate', 'subscribe', 'template', 'update', 'sensors', 'ok', 'channels']
