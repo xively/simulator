@@ -39,7 +39,7 @@
     },
     "SALESFORCE_SYNC_ALL_ASSETS": {
       "description": "Export all devices into Salesforce Account and Assets",
-      "required": true,
+      "required": false,
       "value": false
     },
     "DEVICE_HEARTBEAT": {
