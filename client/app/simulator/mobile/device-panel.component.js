@@ -95,8 +95,8 @@ const devicePanelComponent = {
     }
 
     // CONC-670
-    this.mySensors = _.cloneDeep(this.device.sensors);
-    delete(this.mySensors._log);
+    this.mySensors = _.cloneDeep(this.device.sensors)
+    delete (this.mySensors._log)
 
     const EXCLUDED_INFO_FIELDS = ['excludedInfoFields', 'simulate', 'subscribe', 'template', 'update', 'sensors', 'ok', 'channels']
     this.device.excludedInfoFields = EXCLUDED_INFO_FIELDS

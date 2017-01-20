@@ -37,6 +37,11 @@
       "description": "Your Salesforce token",
       "required": false
     },
+    "SALESFORCE_SYNC_ALL_ASSETS": {
+      "description": "Export all devices into Salesforce Account and Assets",
+      "required": true,
+      "value": false
+    },
     "DEVICE_HEARTBEAT": {
       "description": "Virtual device auto ping",
       "required": false,
