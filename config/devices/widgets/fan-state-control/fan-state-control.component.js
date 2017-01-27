@@ -32,6 +32,7 @@ const fanStateControlComponent = {
         option: this.buttons[value].toLowerCase()
       }))
       this.selected = value
+      this.device.sensors.fan.numericValue = value
     }
   }
 }
