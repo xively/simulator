@@ -7,6 +7,27 @@ const extensions = {
     const command = message.command
     const value = message.option
 
+    if (command.startsWith("fancustom")) {
+
+        
+      const fanOptions = device.sensors.get('fan')
+      fanOptions.latestValue = {
+        off: 0,
+        low: 1,
+        high: 2
+      }[value]
+      device.sensors.set('fan', fanOptions)
+      device.logger.sendLog({
+        level: 'informational',
+        message: `Fan ${value}`
+      })
+
+      return {
+        channel: fanOptions.channel,
+        message: `${Date.now()}, 'fan', ${fanOptions.latestValue}, \n`
+      }
+    }    
+
     if (command === 'speed') {
       const fanOptions = device.sensors.get('fan')
       fanOptions.latestValue = {

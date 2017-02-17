@@ -299,17 +299,28 @@ const config = {
         max: 100,
         wiggle: true,
         unit: '%',
+        custom: true,
+        widget: {
+          options: {
+            channel: "banana"
+          },
+          name: "custom-fan-control",
+          position: {
+            top: 200,
+            left: 680
+          }
+        },
         tooltip: {
           position: {
-            top: 235,
-            left: 215
+            top: 283,
+            left: 147
           },
           labelPosition: {
             top: -7,
             left: 14
           },
-          distance: 100,
-          direction: 'top'
+          distance: 143,
+          direction: 'left'
         }
       },
       filter: {

@@ -27,7 +27,8 @@ const virtualDeviceComponent = {
           update="virtualDevice.update(name, value)"
           device="virtualDevice.device">
         </tooltip>
-        <div ng-if="sensor.widget" bind-html-compile="virtualDevice.getHtml(sensor.widget)"></div>
+        <div ng-if="sensor.custom && sensor.widget" bind-html-compile="virtualDevice.getHtml(sensor.widget)"></div>
+        <div ng-if="!sensor.custom && sensor.widget" bind-html-compile="virtualDevice.getHtml(sensor.widget)"></div>
       </div>
       <img class="device-image" style="max-height: {{ ::virtualDevice.config.height }}px" src="{{ virtualDevice.config.image }}" />
     </div>
@@ -59,6 +60,11 @@ const virtualDeviceComponent = {
   },
   /* @ngInject */
   controller ($scope, DEVICES_CONFIG) {
+
+    console.debug('fernando');
+    console.debug(DEVICES_CONFIG);
+
+
     this.config = _.cloneDeep(DEVICES_CONFIG[this.device.template.name] || {})
     this.selectedTemplate = _.find(this.templateOptions, { name: this.device.template.name })
 
@@ -82,6 +88,7 @@ const virtualDeviceComponent = {
       const { name, position } = widget
       return `<${name} device="virtualDevice.device" options="sensor.widget.options" style="position: absolute; top: ${position.top}px; left: ${position.left}px"></${name}>`
     }
+    
   }
 }
 
