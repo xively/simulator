@@ -40,7 +40,7 @@
     "SALESFORCE_SYNC_ALL_ASSETS": {
       "description": "Export all devices into Salesforce Account and Assets",
       "required": false,
-      "value": false
+      "value": "false"
     },
     "DEVICE_HEARTBEAT": {
       "description": "Virtual device auto ping",
